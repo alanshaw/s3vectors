@@ -1,0 +1,4922 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "sse",
+  "vectors": [
+    {
+      "id": "sse-0001",
+      "kind": "api",
+      "title": "Copy an SSE-S3 encrypted object to an SSE-S3 encrypted destination",
+      "description": "Covers the sse-s3 -> sse-s3, STANDARD -> STANDARD, 8 MiB parametrization of test_copy_enc; KMS and non-STANDARD storage-class combinations need server-side provisioning and are not expressible.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "copy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20748",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "data": {
+        "aaa": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 8388608
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "aaa"
+            },
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "CopySource": "${res.b1.name}/testobj",
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "body": {
+              "$size": 8388608,
+              "$md5": "${data.aaa.md5}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0002",
+      "kind": "api",
+      "title": "Copy an SSE-C encrypted object to an SSE-C destination with a different key",
+      "description": "Covers the sse-c -> sse-c, STANDARD -> STANDARD, 8 MiB parametrization of test_copy_enc; KMS and non-STANDARD storage-class combinations need server-side provisioning and are not expressible.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "copy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20748",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "data": {
+        "aaa": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 8388608
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "aaa"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "CopySource": "${res.b1.name}/testobj",
+            "CopySourceSSECustomerAlgorithm": "AES256",
+            "CopySourceSSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "CopySourceSSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw==",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "6b+WOZ1T3cqZMxgThRcXAQBrS5mXKdDUphvpxptl9/4=",
+            "SSECustomerKeyMD5": "arxBvwY2V4SiOne6yppVPQ=="
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption-customer-algorithm": "AES256",
+              "x-amz-server-side-encryption-customer-key-md5": "arxBvwY2V4SiOne6yppVPQ=="
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "6b+WOZ1T3cqZMxgThRcXAQBrS5mXKdDUphvpxptl9/4=",
+            "SSECustomerKeyMD5": "arxBvwY2V4SiOne6yppVPQ=="
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption-customer-algorithm": "AES256",
+              "x-amz-server-side-encryption-customer-key-md5": "arxBvwY2V4SiOne6yppVPQ=="
+            },
+            "body": {
+              "$size": 8388608,
+              "$md5": "${data.aaa.md5}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0003",
+      "kind": "api",
+      "title": "UploadPartCopy from an SSE-S3 source into an SSE-S3 multipart upload",
+      "description": "Covers the sse-s3 -> sse-s3, STANDARD -> STANDARD, 8 MiB parametrization of test_copy_part_enc; KMS and non-STANDARD storage-class combinations need server-side provisioning and are not expressible.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "copy",
+        "multipart",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20703",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "data": {
+        "aaa": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 8388608
+        },
+        "bbb": {
+          "kind": "pattern",
+          "pattern": "B",
+          "size": 8388608
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "aaa"
+            },
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "ServerSideEncryption": "AES256"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "UploadPartCopy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "CopySource": "${res.b1.name}/testobj"
+          },
+          "capture": {
+            "etag1": "CopyPartResult.ETag"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "bbb"
+            }
+          },
+          "capture": {
+            "etag2": "ETag"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "body": {
+              "$size": 16777216,
+              "$md5": "ec4900687cbd24c9df7471e166f3c266"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0004",
+      "kind": "api",
+      "title": "UploadPartCopy from an SSE-C source into an SSE-C multipart upload enforces SSE-C headers",
+      "description": "Covers the sse-c -> sse-c, STANDARD -> STANDARD, 8 MiB parametrization of test_copy_part_enc; KMS and non-STANDARD storage-class combinations need server-side provisioning and are not expressible.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "copy",
+        "multipart",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20703",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "data": {
+        "aaa": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 8388608
+        },
+        "bbb": {
+          "kind": "pattern",
+          "pattern": "B",
+          "size": 8388608
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "aaa"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "6b+WOZ1T3cqZMxgThRcXAQBrS5mXKdDUphvpxptl9/4=",
+            "SSECustomerKeyMD5": "arxBvwY2V4SiOne6yppVPQ=="
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption-customer-algorithm": "AES256",
+              "x-amz-server-side-encryption-customer-key-md5": "arxBvwY2V4SiOne6yppVPQ=="
+            }
+          }
+        },
+        {
+          "operation": "UploadPartCopy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "CopySource": "${res.b1.name}/testobj",
+            "CopySourceSSECustomerAlgorithm": "AES256",
+            "CopySourceSSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "CopySourceSSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "operation": "UploadPartCopy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "CopySource": "${res.b1.name}/testobj",
+            "CopySourceSSECustomerAlgorithm": "AES256",
+            "CopySourceSSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "CopySourceSSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw==",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "6b+WOZ1T3cqZMxgThRcXAQBrS5mXKdDUphvpxptl9/4=",
+            "SSECustomerKeyMD5": "arxBvwY2V4SiOne6yppVPQ=="
+          },
+          "capture": {
+            "etag1": "CopyPartResult.ETag"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption-customer-algorithm": "AES256",
+              "x-amz-server-side-encryption-customer-key-md5": "arxBvwY2V4SiOne6yppVPQ=="
+            }
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "bbb"
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "bbb"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "bbb"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "6b+WOZ1T3cqZMxgThRcXAQBrS5mXKdDUphvpxptl9/4=",
+            "SSECustomerKeyMD5": "arxBvwY2V4SiOne6yppVPQ=="
+          },
+          "capture": {
+            "etag2": "ETag"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption-customer-algorithm": "AES256",
+              "x-amz-server-side-encryption-customer-key-md5": "arxBvwY2V4SiOne6yppVPQ=="
+            }
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}"
+                }
+              ]
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}"
+                }
+              ]
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "6b+WOZ1T3cqZMxgThRcXAQBrS5mXKdDUphvpxptl9/4=",
+            "SSECustomerKeyMD5": "arxBvwY2V4SiOne6yppVPQ=="
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption-customer-algorithm": "AES256",
+              "x-amz-server-side-encryption-customer-key-md5": "arxBvwY2V4SiOne6yppVPQ=="
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "testobj2",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "6b+WOZ1T3cqZMxgThRcXAQBrS5mXKdDUphvpxptl9/4=",
+            "SSECustomerKeyMD5": "arxBvwY2V4SiOne6yppVPQ=="
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption-customer-algorithm": "AES256",
+              "x-amz-server-side-encryption-customer-key-md5": "arxBvwY2V4SiOne6yppVPQ=="
+            },
+            "body": {
+              "$size": 16777216,
+              "$md5": "ec4900687cbd24c9df7471e166f3c266"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0005",
+      "kind": "api",
+      "title": "SSE-C write and read-back of a 13-byte object",
+      "tags": [
+        "tier-1",
+        "sse",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10706",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": "AAAAAAAAAAAAA",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "body": "AAAAAAAAAAAAA"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0006",
+      "kind": "api",
+      "title": "SSE-C write and read-back of a 1-byte object",
+      "tags": [
+        "tier-1",
+        "sse",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10688",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": "A",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "body": "A"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0007",
+      "kind": "api",
+      "title": "SSE-C write and read-back of a 1 KiB object",
+      "tags": [
+        "tier-1",
+        "sse",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10694",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1024
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "body": {
+              "$data": "a"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0008",
+      "kind": "api",
+      "title": "SSE-C write and read-back of a 1 MiB object",
+      "tags": [
+        "tier-1",
+        "sse",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10700",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1048576
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "body": {
+              "$data": "a"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0009",
+      "kind": "api",
+      "title": "DeleteBucketEncryption is idempotent and removes the SSE-S3 configuration",
+      "tags": [
+        "tier-3",
+        "sse",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14589",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "DeleteBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "GetBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "error": "ServerSideEncryptionConfigurationNotFoundError"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0010",
+      "kind": "api",
+      "title": "GetBucketEncryption before and after configuring SSE-S3 default encryption",
+      "tags": [
+        "tier-3",
+        "sse",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14545",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "error": "ServerSideEncryptionConfigurationNotFoundError"
+          }
+        },
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 200,
+            "response": {
+              "ServerSideEncryptionConfiguration": {
+                "Rules": [
+                  {
+                    "ApplyServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0011",
+      "kind": "api",
+      "title": "GetObjectAttributes on an SSE-C object requires the customer key headers",
+      "description": "The source also asserts the attributes ETag equals the PutObject ETag; that exact equality is not expressible here (the source strips the quotes before comparing and the SSE-C ETag value is not derivable), so the ETag is asserted as present.",
+      "tags": [
+        "tier-3",
+        "sse",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19285",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "aaa": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1000
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "Body": {
+              "$data": "aaa"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "ObjectAttributes": [
+              "ETag",
+              "Checksum",
+              "ObjectParts",
+              "StorageClass",
+              "ObjectSize"
+            ]
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "ObjectAttributes": [
+              "ETag",
+              "Checksum",
+              "ObjectParts",
+              "StorageClass",
+              "ObjectSize"
+            ],
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "DeleteMarker": {
+                "$absent": true
+              },
+              "VersionId": {
+                "$absent": true
+              },
+              "ObjectSize": 1000,
+              "ETag": {
+                "$exists": true
+              },
+              "StorageClass": "STANDARD",
+              "ObjectParts": {
+                "$absent": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0012",
+      "kind": "api",
+      "title": "PutBucketEncryption with SSE-S3 default encryption succeeds",
+      "tags": [
+        "tier-3",
+        "sse",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14532",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0013",
+      "kind": "api",
+      "title": "PutObject with an invalid server-side encryption algorithm returns 400 InvalidArgument",
+      "description": "x-amz-server-side-encryption: 'aes:kms' (aes, not aws) is not a valid algorithm. The source injects it as a raw header before signing; expressed as a raw-HTTP PUT so no SDK enum validation intervenes. Empty object body.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "errors",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12974",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/testobj",
+            "headers": {
+              "x-amz-server-side-encryption": "aes:kms"
+            },
+            "body": ""
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0014",
+      "kind": "api",
+      "title": "PutObject with both SSE-KMS and SSE-C headers returns 400 InvalidArgument",
+      "description": "The source test injects the conflicting raw headers before signing, using a dummy KMS key id ('fool-me-once') and the ceph s3-tests public dummy SSE-C fixture. Empty object body.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "errors",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12923",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/testobj",
+            "headers": {
+              "x-amz-server-side-encryption": "aws:kms",
+              "x-amz-server-side-encryption-aws-kms-key-id": "fool-me-once",
+              "x-amz-server-side-encryption-customer-algorithm": "AES256",
+              "x-amz-server-side-encryption-customer-key": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+              "x-amz-server-side-encryption-customer-key-md5": "DWygnHRtgiJ77HCm+1rvHw=="
+            },
+            "body": ""
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0015",
+      "kind": "api",
+      "title": "PutObject with both SSE-S3 and SSE-C headers returns 400 InvalidArgument",
+      "description": "The source test injects the conflicting raw headers before signing; the SSE-C key is the ceph s3-tests public dummy fixture. Empty object body.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "errors",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12900",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/testobj",
+            "headers": {
+              "x-amz-server-side-encryption": "AES256",
+              "x-amz-server-side-encryption-customer-algorithm": "AES256",
+              "x-amz-server-side-encryption-customer-key": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+              "x-amz-server-side-encryption-customer-key-md5": "DWygnHRtgiJ77HCm+1rvHw=="
+            },
+            "body": ""
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0016",
+      "kind": "api",
+      "title": "PutObject with SSE-S3 AES256 plus a KMS key id returns 400 InvalidArgument",
+      "description": "x-amz-server-side-encryption: AES256 conflicts with x-amz-server-side-encryption-aws-kms-key-id; the key id is a dummy value ('fool-me-once'). Empty object body.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12950",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "ServerSideEncryption": "AES256",
+            "SSEKMSKeyId": "fool-me-once"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0017",
+      "kind": "api",
+      "title": "PutObject with SSE-C key and key-MD5 but no algorithm header returns 400",
+      "description": "Raw-HTTP step: the request deliberately omits the customer-algorithm header.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10830",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a100": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/testobj",
+            "headers": {
+              "x-amz-server-side-encryption-customer-key": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+              "x-amz-server-side-encryption-customer-key-md5": "DWygnHRtgiJ77HCm+1rvHw=="
+            },
+            "body": {
+              "$data": "a100"
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0018",
+      "kind": "api",
+      "title": "Bucket policy denying non-AES256 SSE-C algorithms: AES192 PutObject gets 403, AES256 succeeds",
+      "tags": [
+        "tier-3",
+        "sse",
+        "sse-c",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11176",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":\"s3:PutObject\",\"Principal\":{\"AWS\":\"*\"},\"Effect\":\"Deny\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringNotEquals\":{\"s3:x-amz-server-side-encryption-customer-algorithm\":\"AES256\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "SSECustomerAlgorithm": "AES192"
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "bar",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0019",
+      "kind": "api",
+      "title": "Bucket policy denying unencrypted uploads: plain PutObject gets 403, SSE-C PutObject succeeds",
+      "tags": [
+        "tier-3",
+        "sse",
+        "sse-c",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11146",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":\"s3:PutObject\",\"Principal\":{\"AWS\":\"*\"},\"Effect\":\"Deny\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"Null\":{\"s3:x-amz-server-side-encryption-customer-algorithm\":\"true\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "bar"
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "bar",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0020",
+      "kind": "api",
+      "title": "PutObject with SSE-C key and a non-matching key MD5 returns 400",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10783",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a100": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a100"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "AAAAAAAAAAAAAAAAAAAAAA=="
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0021",
+      "kind": "api",
+      "title": "SSE-C object: HEAD without the key returns 400, HEAD with the key succeeds",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10711",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a1000": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1000
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a1000"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0022",
+      "kind": "api",
+      "title": "Completed SSE-C multipart object: readable with the upload key, GET with a different key returns 400",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "multipart",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11044",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "sse-0022/obj",
+          "size": 31457280
+        },
+        "p1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 5242880
+        },
+        "p2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 5242880,
+          "length": 5242880
+        },
+        "p3": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 10485760,
+          "length": 5242880
+        },
+        "p4": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 15728640,
+          "length": 5242880
+        },
+        "p5": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 20971520,
+          "length": 5242880
+        },
+        "p6": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 26214400,
+          "length": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Metadata": {
+              "foo": "bar"
+            },
+            "ContentType": "text/plain",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "p1"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "p2"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag2": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 3,
+            "Body": {
+              "$data": "p3"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag3": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 4,
+            "Body": {
+              "$data": "p4"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag4": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 5,
+            "Body": {
+              "$data": "p5"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag5": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 6,
+            "Body": {
+              "$data": "p6"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag6": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}"
+                },
+                {
+                  "PartNumber": 3,
+                  "ETag": "${cap.etag3}"
+                },
+                {
+                  "PartNumber": 4,
+                  "ETag": "${cap.etag4}"
+                },
+                {
+                  "PartNumber": 5,
+                  "ETag": "${cap.etag5}"
+                },
+                {
+                  "PartNumber": 6,
+                  "ETag": "${cap.etag6}"
+                }
+              ]
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "multipart_enc"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Size": 31457280
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "headers": {
+              "content-type": "text/plain"
+            },
+            "response": {
+              "Metadata": {
+                "foo": "bar"
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "6b+WOZ1T3cqZMxgThRcXAQBrS5mXKdDUphvpxptl9/4=",
+            "SSECustomerKeyMD5": "arxBvwY2V4SiOne6yppVPQ=="
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0023",
+      "kind": "api",
+      "title": "UploadPart with a different SSE-C key than the multipart initiation returns 400",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "multipart",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10990",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "part1": {
+          "kind": "prng",
+          "seed": "sse-0023/part1",
+          "size": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Metadata": {
+              "foo": "bar"
+            },
+            "ContentType": "text/plain",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "part1"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "6b+WOZ1T3cqZMxgThRcXAQBrS5mXKdDUphvpxptl9/4=",
+            "SSECustomerKeyMD5": "arxBvwY2V4SiOne6yppVPQ=="
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0024",
+      "kind": "api",
+      "title": "UploadPart with the multipart SSE-C key but a non-matching key MD5 returns 400",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "multipart",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11018",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "part1": {
+          "kind": "prng",
+          "seed": "sse-0024/part1",
+          "size": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Metadata": {
+              "foo": "bar"
+            },
+            "ContentType": "text/plain",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "part1"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "AAAAAAAAAAAAAAAAAAAAAA=="
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0025",
+      "kind": "api",
+      "title": "SSE-C multipart upload (6 aligned 5MiB parts): complete, list size, full read-back and boundary-sampling ranged reads",
+      "description": "The source test range-reads the whole object at step sizes 1000000, 10000000 and partlen-1/partlen/partlen+1; this vector samples the boundary-relevant chunks of each pass (first chunk, part-boundary-crossing chunk, tail chunk).",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "multipart",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10897",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "sse-0025/obj",
+          "size": 31457280
+        },
+        "p1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 5242880
+        },
+        "p2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 5242880,
+          "length": 5242880
+        },
+        "p3": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 10485760,
+          "length": 5242880
+        },
+        "p4": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 15728640,
+          "length": 5242880
+        },
+        "p5": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 20971520,
+          "length": 5242880
+        },
+        "p6": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 26214400,
+          "length": 5242880
+        },
+        "ra1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 1000000
+        },
+        "ra2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 5000000,
+          "length": 1000000
+        },
+        "ra3": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 31000000,
+          "length": 457280
+        },
+        "rb1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 10000000
+        },
+        "rb2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 30000000,
+          "length": 1457280
+        },
+        "rc1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 5242879
+        },
+        "rc2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 5242879,
+          "length": 5242879
+        },
+        "rc3": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 31457274,
+          "length": 6
+        },
+        "re1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 5242881
+        },
+        "re2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 26214405,
+          "length": 5242875
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Metadata": {
+              "foo": "bar"
+            },
+            "ContentType": "text/plain",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "p1"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "p2"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag2": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 3,
+            "Body": {
+              "$data": "p3"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag3": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 4,
+            "Body": {
+              "$data": "p4"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag4": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 5,
+            "Body": {
+              "$data": "p5"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag5": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 6,
+            "Body": {
+              "$data": "p6"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag6": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}"
+                },
+                {
+                  "PartNumber": 3,
+                  "ETag": "${cap.etag3}"
+                },
+                {
+                  "PartNumber": 4,
+                  "ETag": "${cap.etag4}"
+                },
+                {
+                  "PartNumber": 5,
+                  "ETag": "${cap.etag5}"
+                },
+                {
+                  "PartNumber": 6,
+                  "ETag": "${cap.etag6}"
+                }
+              ]
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "multipart_enc"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Size": 31457280
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "headers": {
+              "content-type": "text/plain"
+            },
+            "response": {
+              "Metadata": {
+                "foo": "bar"
+              },
+              "ContentLength": 31457280
+            },
+            "body": {
+              "$data": "obj"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-999999",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 1000000
+            },
+            "body": {
+              "$data": "ra1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=5000000-5999999",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 1000000
+            },
+            "body": {
+              "$data": "ra2"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=31000000-31457279",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 457280
+            },
+            "body": {
+              "$data": "ra3"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-9999999",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 10000000
+            },
+            "body": {
+              "$data": "rb1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=30000000-31457279",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 1457280
+            },
+            "body": {
+              "$data": "rb2"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-5242878",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242879
+            },
+            "body": {
+              "$data": "rc1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=5242879-10485757",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242879
+            },
+            "body": {
+              "$data": "rc2"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=31457274-31457279",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 6
+            },
+            "body": {
+              "$data": "rc3"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=5242880-10485759",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242880
+            },
+            "body": {
+              "$data": "p2"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=26214400-31457279",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242880
+            },
+            "body": {
+              "$data": "p6"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-5242880",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242881
+            },
+            "body": {
+              "$data": "re1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=26214405-31457279",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242875
+            },
+            "body": {
+              "$data": "re2"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0026",
+      "kind": "api",
+      "title": "PutObject with SSE-C algorithm header but no key is rejected",
+      "description": "Raw-HTTP step: the request deliberately sends only the customer-algorithm header with no key material.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10816",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a100": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/testobj",
+            "headers": {
+              "x-amz-server-side-encryption-customer-algorithm": "AES256"
+            },
+            "body": {
+              "$data": "a100"
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0027",
+      "kind": "api",
+      "title": "PutObject with SSE-C algorithm and key but no key-MD5 header is rejected",
+      "description": "The source test injects the headers at the wire level to bypass the SDK's automatic key-MD5 computation, so this is a raw-HTTP step.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10801",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a100": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/testobj",
+            "headers": {
+              "x-amz-server-side-encryption-customer-algorithm": "AES256",
+              "x-amz-server-side-encryption-customer-key": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs="
+            },
+            "body": {
+              "$data": "a100"
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0028",
+      "kind": "api",
+      "title": "SSE-C object read with a different key returns 400",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10756",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a100": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a100"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "6b+WOZ1T3cqZMxgThRcXAQBrS5mXKdDUphvpxptl9/4=",
+            "SSECustomerKeyMD5": "arxBvwY2V4SiOne6yppVPQ=="
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0029",
+      "kind": "api",
+      "title": "SSE-C object cannot be read without supplying the key",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10736",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a1000": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1000
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a1000"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0030",
+      "kind": "api",
+      "title": "SSE-C multipart upload with parts not aligned to the 4k encryption block size: complete, list size, full and ranged read-back",
+      "description": "Parts are 5MiB+1 bytes (not a multiple of the 4k encryption block size). The source test range-reads the whole object at several step sizes; this vector samples the boundary-relevant chunks of each pass.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-c",
+        "multipart",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L10943",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "sse-0030/obj",
+          "size": 31457280
+        },
+        "u1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 5242881
+        },
+        "u2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 5242881,
+          "length": 5242881
+        },
+        "u3": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 10485762,
+          "length": 5242881
+        },
+        "u4": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 15728643,
+          "length": 5242881
+        },
+        "u5": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 20971524,
+          "length": 5242881
+        },
+        "u6": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 26214405,
+          "length": 5242875
+        },
+        "qa1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 1000000
+        },
+        "qa2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 5000000,
+          "length": 1000000
+        },
+        "qa3": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 31000000,
+          "length": 457280
+        },
+        "qb1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 10000000
+        },
+        "qb2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 30000000,
+          "length": 1457280
+        },
+        "qc1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 5242880
+        },
+        "qc2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 5242880,
+          "length": 5242880
+        },
+        "qe1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 5242882
+        },
+        "qe2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 26214410,
+          "length": 5242870
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Metadata": {
+              "foo": "bar"
+            },
+            "ContentType": "text/plain",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "u1"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "u2"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag2": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 3,
+            "Body": {
+              "$data": "u3"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag3": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 4,
+            "Body": {
+              "$data": "u4"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag4": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 5,
+            "Body": {
+              "$data": "u5"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag5": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 6,
+            "Body": {
+              "$data": "u6"
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "capture": {
+            "etag6": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}"
+                },
+                {
+                  "PartNumber": 3,
+                  "ETag": "${cap.etag3}"
+                },
+                {
+                  "PartNumber": 4,
+                  "ETag": "${cap.etag4}"
+                },
+                {
+                  "PartNumber": 5,
+                  "ETag": "${cap.etag5}"
+                },
+                {
+                  "PartNumber": 6,
+                  "ETag": "${cap.etag6}"
+                }
+              ]
+            },
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "multipart_enc"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Size": 31457280
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "headers": {
+              "content-type": "text/plain"
+            },
+            "response": {
+              "Metadata": {
+                "foo": "bar"
+              },
+              "ContentLength": 31457280
+            },
+            "body": {
+              "$data": "obj"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-999999",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 1000000
+            },
+            "body": {
+              "$data": "qa1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=5000000-5999999",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 1000000
+            },
+            "body": {
+              "$data": "qa2"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=31000000-31457279",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 457280
+            },
+            "body": {
+              "$data": "qa3"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-9999999",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 10000000
+            },
+            "body": {
+              "$data": "qb1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=30000000-31457279",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 1457280
+            },
+            "body": {
+              "$data": "qb2"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-5242879",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242880
+            },
+            "body": {
+              "$data": "qc1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=5242880-10485759",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242880
+            },
+            "body": {
+              "$data": "qc2"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-5242880",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242881
+            },
+            "body": {
+              "$data": "u1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=26214405-31457279",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242875
+            },
+            "body": {
+              "$data": "u6"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-5242881",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242882
+            },
+            "body": {
+              "$data": "qe1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=26214410-31457279",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 5242870
+            },
+            "body": {
+              "$data": "qe2"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0031",
+      "kind": "api",
+      "title": "PutObject with a KMS key id but without declaring aws:kms encryption returns 400",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-kms",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11294",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a100": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a100"
+            },
+            "SSEKMSKeyId": "testkey-2"
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0032",
+      "kind": "api",
+      "title": "GetObject with SSE-KMS request headers returns 400",
+      "description": "Raw-HTTP step: the GetObject API has no server-side-encryption request members, so the source test injects the x-amz-server-side-encryption headers at the wire level.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-kms",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11491",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testobj",
+          "body": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "GET",
+            "path": "/${res.b1.name}/testobj",
+            "headers": {
+              "x-amz-server-side-encryption": "aws:kms",
+              "x-amz-server-side-encryption-aws-kms-key-id": "testkey-1"
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0033",
+      "kind": "api",
+      "title": "Bucket default SSE-S3 encryption: 1-byte upload and read-back report x-amz-server-side-encryption: AES256",
+      "tags": [
+        "tier-3",
+        "sse",
+        "sse-s3",
+        "bucket-encryption",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14654",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": "A"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "body": "A"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0034",
+      "kind": "api",
+      "title": "Bucket default SSE-S3 encryption: 1KiB upload and read-back report x-amz-server-side-encryption: AES256",
+      "tags": [
+        "tier-3",
+        "sse",
+        "sse-s3",
+        "bucket-encryption",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14661",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a1k": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1024
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a1k"
+            }
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "body": {
+              "$data": "a1k"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0035",
+      "kind": "api",
+      "title": "Bucket default SSE-S3 encryption: HEAD reports AES256; HEAD carrying an x-amz-server-side-encryption request header returns 400",
+      "tags": [
+        "tier-3",
+        "sse",
+        "sse-s3",
+        "bucket-encryption",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14736",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a1000": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1000
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a1000"
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "http": {
+            "method": "HEAD",
+            "path": "/${res.b1.name}/testobj",
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0036",
+      "kind": "api",
+      "title": "Bucket default SSE-S3 encryption: multipart upload (6 aligned 5MiB parts) completes, lists at full size, and reads back AES256-encrypted with metadata and ranged reads",
+      "description": "The source test range-reads the whole object at step sizes 1000000 and 10000000; this vector samples the boundary-relevant chunks of each pass (first chunk, part-boundary-crossing chunk, tail chunk).",
+      "tags": [
+        "tier-3",
+        "sse",
+        "sse-s3",
+        "bucket-encryption",
+        "multipart",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14761",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "sse-0036/obj",
+          "size": 31457280
+        },
+        "p1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 5242880
+        },
+        "p2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 5242880,
+          "length": 5242880
+        },
+        "p3": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 10485760,
+          "length": 5242880
+        },
+        "p4": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 15728640,
+          "length": 5242880
+        },
+        "p5": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 20971520,
+          "length": 5242880
+        },
+        "p6": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 26214400,
+          "length": 5242880
+        },
+        "ra1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 1000000
+        },
+        "ra2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 5000000,
+          "length": 1000000
+        },
+        "ra3": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 31000000,
+          "length": 457280
+        },
+        "rb1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 10000000
+        },
+        "rb2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 30000000,
+          "length": 1457280
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Metadata": {
+              "foo": "bar"
+            },
+            "ContentType": "text/plain"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "p1"
+            }
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "p2"
+            }
+          },
+          "capture": {
+            "etag2": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 3,
+            "Body": {
+              "$data": "p3"
+            }
+          },
+          "capture": {
+            "etag3": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 4,
+            "Body": {
+              "$data": "p4"
+            }
+          },
+          "capture": {
+            "etag4": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 5,
+            "Body": {
+              "$data": "p5"
+            }
+          },
+          "capture": {
+            "etag5": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 6,
+            "Body": {
+              "$data": "p6"
+            }
+          },
+          "capture": {
+            "etag6": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}"
+                },
+                {
+                  "PartNumber": 3,
+                  "ETag": "${cap.etag3}"
+                },
+                {
+                  "PartNumber": 4,
+                  "ETag": "${cap.etag4}"
+                },
+                {
+                  "PartNumber": 5,
+                  "ETag": "${cap.etag5}"
+                },
+                {
+                  "PartNumber": 6,
+                  "ETag": "${cap.etag6}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "multipart_enc"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Size": 31457280
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc"
+          },
+          "expect": {
+            "headers": {
+              "content-type": "text/plain",
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "response": {
+              "Metadata": {
+                "foo": "bar"
+              },
+              "ContentLength": 31457280
+            },
+            "body": {
+              "$data": "obj"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-999999"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 1000000
+            },
+            "body": {
+              "$data": "ra1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=5000000-5999999"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 1000000
+            },
+            "body": {
+              "$data": "ra2"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=31000000-31457279"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 457280
+            },
+            "body": {
+              "$data": "ra3"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=0-9999999"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 10000000
+            },
+            "body": {
+              "$data": "rb1"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_enc",
+            "Range": "bytes=30000000-31457279"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 1457280
+            },
+            "body": {
+              "$data": "rb2"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0037",
+      "kind": "api",
+      "title": "Bucket default SSE-S3 encryption: 1MiB upload and read-back report x-amz-server-side-encryption: AES256",
+      "tags": [
+        "tier-3",
+        "sse",
+        "sse-s3",
+        "bucket-encryption",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14668",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a1m": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1048576
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a1m"
+            }
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "body": {
+              "$data": "a1m"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0038",
+      "kind": "api",
+      "title": "Bucket default SSE-S3 encryption: 8MiB upload and read-back report x-amz-server-side-encryption: AES256",
+      "tags": [
+        "tier-3",
+        "sse",
+        "sse-s3",
+        "bucket-encryption",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14675",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a8m": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 8388608
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a8m"
+            }
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "body": {
+              "$data": "a8m"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0039",
+      "kind": "api",
+      "title": "Explicit SSE-S3 (ServerSideEncryption=AES256): 1-byte upload and read-back report x-amz-server-side-encryption: AES256",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-s3",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14918",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": "A",
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "body": "A"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0040",
+      "kind": "api",
+      "title": "Explicit SSE-S3 (ServerSideEncryption=AES256): 1KiB upload and read-back report x-amz-server-side-encryption: AES256",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-s3",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14924",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a1k": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1024
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a1k"
+            },
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "body": {
+              "$data": "a1k"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0041",
+      "kind": "api",
+      "title": "Explicit SSE-S3 (ServerSideEncryption=AES256): 1MiB upload and read-back report x-amz-server-side-encryption: AES256",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-s3",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14930",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a1m": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1048576
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a1m"
+            },
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "body": {
+              "$data": "a1m"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0042",
+      "kind": "api",
+      "title": "Explicit SSE-S3 (ServerSideEncryption=AES256): 8MiB upload and read-back report x-amz-server-side-encryption: AES256",
+      "tags": [
+        "tier-1",
+        "sse",
+        "sse-s3",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14936",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a8m": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 8388608
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": {
+              "$data": "a8m"
+            },
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            },
+            "body": {
+              "$data": "a8m"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0043",
+      "kind": "api",
+      "title": "SSE-S3 (AES256) round-trip on PutObject, CopyObject and multipart upload",
+      "description": "SSE-C portion of the source test is omitted: its customer key is 34 bytes, which AWS rejects, so the test self-skips that branch.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "multipart",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/17.py#L15",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "mp": {
+          "kind": "pattern",
+          "pattern": "M",
+          "size": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "encrypted-sse-s3.txt",
+            "Body": "This is encrypted data using SSE-S3",
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "encrypted-sse-s3.txt"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "encrypted-sse-s3.txt"
+          },
+          "expect": {
+            "body": "This is encrypted data using SSE-S3"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "copied-encrypted.txt",
+            "CopySource": "${res.b1.name}/encrypted-sse-s3.txt",
+            "ServerSideEncryption": "AES256"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "copied-encrypted.txt"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-encrypted.bin",
+            "ServerSideEncryption": "AES256"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-encrypted.bin",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "mp"
+            }
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-encrypted.bin",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-encrypted.bin"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0044",
+      "kind": "api",
+      "title": "Bucket default encryption (AES256) is applied to objects uploaded without SSE parameters",
+      "tags": [
+        "tier-3",
+        "sse",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/17.py#L15",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryptionConfiguration": {
+                "Rules": [
+                  {
+                    "ApplyServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "default-encrypted.txt",
+            "Body": "This should be encrypted by default"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "default-encrypted.txt"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0045",
+      "kind": "api",
+      "title": "GetObject with a mismatched SSE-C key is denied",
+      "description": "SSE-C keys are the well-known test bytes '0'*32 (upload) and '1'*32 (mismatched read). The source accepted BadRequest, InvalidRequest or 403; converted to the AWS behavior of 403 AccessDenied.",
+      "tags": [
+        "tier-1",
+        "sse",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_additional.py#L240",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Body": "encrypted data",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=",
+            "SSECustomerKeyMD5": "zZ5FnqcIqUjVwvWmyog4zw=="
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": "MTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTE=",
+            "SSECustomerKeyMD5": "GoDL8oWeAZVZNl1r5Hh5Tg=="
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0046",
+      "kind": "api",
+      "title": "PutObject with SSE-S3 (AES256) reports the encryption in PutObject and HeadObject responses",
+      "tags": [
+        "tier-1",
+        "sse",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_additional.py#L30",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "sse-s3-object",
+            "Body": "encrypted test data",
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "sse-s3-object"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0047",
+      "kind": "api",
+      "title": "CreateMultipartUpload with SSE-S3 echoes ServerSideEncryption AES256",
+      "tags": [
+        "tier-1",
+        "sse",
+        "multipart",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_create_multipart_additional.py#L30",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "sse-s3-object",
+            "ServerSideEncryption": "AES256"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          },
+          "expect": {
+            "response": {
+              "UploadId": {
+                "$exists": true
+              },
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "AbortMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "sse-s3-object",
+            "UploadId": "${cap.uploadId}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0048",
+      "kind": "api",
+      "title": "PutObject with SSE-S3 returns AES256 and GetObject reports it",
+      "tags": [
+        "tier-1",
+        "sse",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/encryption/test_encryption_edge_cases.py#L24",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "sse-s3-encrypted",
+            "Body": "encrypted data",
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "sse-s3-encrypted"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0049",
+      "kind": "api",
+      "title": "SSE-C object is readable only with the customer key",
+      "tags": [
+        "tier-1",
+        "sse",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/encryption/test_encryption_edge_cases.py#L50",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "sse-c-encrypted",
+            "Body": "customer key encrypted",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": {
+              "$base64": "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE="
+            },
+            "SSECustomerKeyMD5": "Xsqb0+sHwAbNQ65I395/0w=="
+          },
+          "expect": {
+            "response": {
+              "SSECustomerAlgorithm": "AES256"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "sse-c-encrypted"
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "sse-c-encrypted",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": {
+              "$base64": "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE="
+            },
+            "SSECustomerKeyMD5": "Xsqb0+sHwAbNQ65I395/0w=="
+          },
+          "expect": {
+            "body": "customer key encrypted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0050",
+      "kind": "api",
+      "title": "Bucket default encryption applies SSE-S3 to uploads that specify none",
+      "tags": [
+        "tier-3",
+        "sse",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/encryption/test_encryption_edge_cases.py#L104",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "default-encrypted",
+            "Body": "should be encrypted by default"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0051",
+      "kind": "api",
+      "title": "Invalid SSE algorithm and undersized SSE-C key are rejected",
+      "tags": [
+        "tier-1",
+        "sse",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/encryption/test_encryption_edge_cases.py#L168",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "invalid-algo",
+            "Body": "test",
+            "ServerSideEncryption": "INVALID"
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bad-key-length",
+            "Body": "test",
+            "SSECustomerAlgorithm": "AES256",
+            "SSECustomerKey": {
+              "$base64": "c2hvcnQ="
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0052",
+      "kind": "api",
+      "title": "SSE-S3 bucket encryption configuration round-trips",
+      "tags": [
+        "tier-3",
+        "sse",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/encryption/test_server_side_encryption.py#L26",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetBucketEncryption",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryptionConfiguration": {
+                "Rules": [
+                  {
+                    "ApplyServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0053",
+      "kind": "api",
+      "title": "CopyObject can add SSE-S3 encryption to an unencrypted object",
+      "tags": [
+        "tier-1",
+        "sse",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/encryption/test_server_side_encryption.py#L226",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "unencrypted-source",
+          "body": "copy encryption test"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "encrypted-copy",
+            "CopySource": {
+              "Bucket": "${res.b1.name}",
+              "Key": "unencrypted-source"
+            },
+            "ServerSideEncryption": "AES256"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "encrypted-copy"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sse-0054",
+      "kind": "api",
+      "title": "Multipart upload initiated with SSE-S3 produces an encrypted object",
+      "tags": [
+        "tier-1",
+        "sse",
+        "multipart",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/encryption/test_server_side_encryption.py#L262",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "part1": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-encrypted",
+            "ServerSideEncryption": "AES256"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-encrypted",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "part1"
+            }
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-encrypted",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-encrypted"
+          },
+          "expect": {
+            "response": {
+              "ServerSideEncryption": "AES256"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

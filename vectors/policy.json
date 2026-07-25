@@ -1,0 +1,3195 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "policy",
+  "vectors": [
+    {
+      "id": "policy-0001",
+      "kind": "api",
+      "title": "GetBucketPolicyStatus reports IsPublic true after an authenticated-read canned ACL",
+      "tags": [
+        "tier-3",
+        "policy",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14099",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "authenticated-read"
+          }
+        },
+        {
+          "operation": "GetBucketPolicyStatus",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PolicyStatus": {
+                "IsPublic": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0002",
+      "kind": "api",
+      "title": "GetBucketPolicyStatus on a fresh private bucket reports IsPublic false",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14086",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetBucketPolicyStatus",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PolicyStatus": {
+                "IsPublic": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0003",
+      "kind": "api",
+      "title": "GetBucketPolicyStatus stays IsPublic false after attaching a policy restricted by source IP",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14135",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetBucketPolicyStatus",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PolicyStatus": {
+                "IsPublic": false
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": {\"AWS\": \"*\"}, \"Action\": \"s3:ListBucket\", \"Resource\": [\"arn:aws:s3:::${res.b1.name}\", \"arn:aws:s3:::${res.b1.name}/*\"], \"Condition\": {\"IpAddress\": {\"aws:SourceIp\": \"10.0.0.0/32\"}}}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicyStatus",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PolicyStatus": {
+                "IsPublic": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0004",
+      "kind": "api",
+      "title": "GetBucketPolicyStatus reports IsPublic true after a public-read canned ACL",
+      "tags": [
+        "tier-3",
+        "policy",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14092",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "GetBucketPolicyStatus",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PolicyStatus": {
+                "IsPublic": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0005",
+      "kind": "api",
+      "title": "GetBucketPolicyStatus flips to IsPublic true after attaching a public bucket policy",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14107",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetBucketPolicyStatus",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PolicyStatus": {
+                "IsPublic": false
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": {\"AWS\": \"*\"}, \"Action\": \"s3:ListBucket\", \"Resource\": [\"arn:aws:s3:::${res.b1.name}\", \"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicyStatus",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PolicyStatus": {
+                "IsPublic": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0006",
+      "kind": "api",
+      "title": "Put, get and delete a bucket policy; get after delete returns NoSuchBucketPolicy",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11956",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "asdf",
+          "body": "asdf"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": {\"AWS\": \"*\"}, \"Action\": \"s3:ListBucket\", \"Resource\": [\"arn:aws:s3:::${res.b1.name}\", \"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": {\"AWS\": \"*\"}, \"Action\": \"s3:ListBucket\", \"Resource\": [\"arn:aws:s3:::${res.b1.name}\", \"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+            }
+          }
+        },
+        {
+          "operation": "DeleteBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "error": "NoSuchBucketPolicy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0007",
+      "kind": "api",
+      "title": "Allow policy restricted to a specific principal reports non-public policy status",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14167",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": {\"AWS\": \"arn:aws:iam::s3tenant1:root\"}, \"Action\": \"s3:ListBucket\", \"Resource\": [\"arn:aws:s3:::${res.b1.name}\", \"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicyStatus",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PolicyStatus": {
+                "IsPublic": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0008",
+      "kind": "api",
+      "title": "Deny bucket policy blocks GetPublicAccessBlock",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14236",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": true,
+              "IgnorePublicAcls": true,
+              "BlockPublicPolicy": true,
+              "RestrictPublicBuckets": false
+            }
+          }
+        },
+        {
+          "operation": "GetPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PublicAccessBlockConfiguration": {
+                "BlockPublicAcls": true,
+                "IgnorePublicAcls": true,
+                "BlockPublicPolicy": true,
+                "RestrictPublicBuckets": false
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Action\": \"s3:GetBucketPublicAccessBlock\", \"Principal\": {\"AWS\": \"*\"}, \"Effect\": \"Deny\", \"Resource\": \"arn:aws:s3:::${res.b1.name}\"}]}"
+          }
+        },
+        {
+          "operation": "GetPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0009",
+      "kind": "api",
+      "title": "HeadObject under a prefix-conditioned ListBucket policy: 404 inside the prefix, 403 outside",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20384",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": {\"AWS\": \"*\"}, \"Action\": \"s3:ListBucket\", \"Resource\": \"arn:aws:s3:::${res.b1.name}\", \"Condition\": {\"StringLike\": {\"s3:prefix\": \"public/*\"}}}]}"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "public/object"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 404
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "private/object"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0010",
+      "kind": "api",
+      "title": "IgnorePublicAcls makes public-read ACLs behave as private",
+      "tags": [
+        "tier-3",
+        "policy",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14415",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "identity": "alt"
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "key1",
+            "Body": "abcde",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "key1"
+          },
+          "identity": "alt",
+          "expect": {
+            "body": "abcde"
+          }
+        },
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": false,
+              "IgnorePublicAcls": true,
+              "BlockPublicPolicy": false,
+              "RestrictPublicBuckets": false
+            }
+          }
+        },
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "key1"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0011",
+      "kind": "api",
+      "title": "Delete public access block, then get returns NoSuchPublicAccessBlockConfiguration",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14441",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": true,
+              "IgnorePublicAcls": true,
+              "BlockPublicPolicy": true,
+              "RestrictPublicBuckets": false
+            }
+          }
+        },
+        {
+          "operation": "GetPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PublicAccessBlockConfiguration": {
+                "BlockPublicAcls": true,
+                "IgnorePublicAcls": true,
+                "BlockPublicPolicy": true,
+                "RestrictPublicBuckets": false
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeletePublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "GetPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "error": "NoSuchPublicAccessBlockConfiguration"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0012",
+      "kind": "api",
+      "title": "PutPublicAccessBlock round-trips the configuration",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14264",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": true,
+              "IgnorePublicAcls": true,
+              "BlockPublicPolicy": true,
+              "RestrictPublicBuckets": false
+            }
+          }
+        },
+        {
+          "operation": "GetPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PublicAccessBlockConfiguration": {
+                "BlockPublicAcls": true,
+                "IgnorePublicAcls": true,
+                "BlockPublicPolicy": true,
+                "RestrictPublicBuckets": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0013",
+      "kind": "api",
+      "title": "GetPublicAccessBlock after deleting the configuration returns NoSuchPublicAccessBlockConfiguration",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14219",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeletePublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "GetPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "error": "NoSuchPublicAccessBlockConfiguration"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0014",
+      "kind": "api",
+      "title": "BlockPublicAcls rejects PutObject with public canned ACLs but allows private",
+      "tags": [
+        "tier-3",
+        "policy",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14312",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": true,
+              "IgnorePublicAcls": false,
+              "BlockPublicPolicy": false,
+              "RestrictPublicBuckets": false
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo1",
+            "Body": "",
+            "ACL": "public-read"
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo2",
+            "Body": "",
+            "ACL": "public-read-write"
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo3",
+            "Body": "",
+            "ACL": "authenticated-read"
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo4",
+            "Body": "",
+            "ACL": "private"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0015",
+      "kind": "api",
+      "title": "BlockPublicPolicy rejects putting a public bucket policy",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14340",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": false,
+              "IgnorePublicAcls": false,
+              "BlockPublicPolicy": true,
+              "RestrictPublicBuckets": false
+            }
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          },
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0016",
+      "kind": "api",
+      "title": "BlockPublicAcls rejects PutBucketAcl with public and authenticated-read canned ACLs",
+      "tags": [
+        "tier-3",
+        "policy",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14283",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": true,
+              "IgnorePublicAcls": false,
+              "BlockPublicPolicy": true,
+              "RestrictPublicBuckets": false
+            }
+          }
+        },
+        {
+          "operation": "GetPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PublicAccessBlockConfiguration": {
+                "BlockPublicAcls": true,
+                "BlockPublicPolicy": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read-write"
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "authenticated-read"
+          },
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0017",
+      "kind": "api",
+      "title": "Bucket policy allowing s3:ListBucket to everyone grants list access to another account (ListObjects)",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11510",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "asdf",
+          "body": "asdf"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:ListBucket\",\"Resource\":[\"arn:aws:s3:::${res.b1.name}\",\"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+          }
+        },
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "identity": "alt",
+          "expect": {
+            "response": {
+              "Contents": {
+                "$length": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0018",
+      "kind": "api",
+      "title": "Deny s3:ListBucket bucket policy overrides authenticated-read bucket ACL (ListObjects)",
+      "tags": [
+        "tier-3",
+        "policy",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11650",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "asdf",
+          "body": "asdf"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "authenticated-read"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:ListBucket\",\"Resource\":[\"arn:aws:s3:::${res.b1.name}\",\"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+          }
+        },
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0019",
+      "kind": "api",
+      "title": "Bucket policy combining Allow effect with NotPrincipal is rejected",
+      "description": "The source accepts either InvalidArgument or MalformedPolicy as the error code (AWS returns MalformedPolicy); only the 400 status is asserted here.",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14192",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"NotPrincipal\":{\"AWS\":\"arn:aws:iam::s3tenant1:root\"},\"Action\":\"s3:ListBucket\",\"Resource\":[\"arn:aws:s3:::${res.b1.name}\",\"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0020",
+      "kind": "api",
+      "title": "Wildcard-resource policy fetched via GetBucketPolicy can be applied to another bucket (ListObjects)",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11821",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "asdf",
+          "body": "asdf"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b2",
+          "key": "abcd",
+          "body": "abcd"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:ListBucket\",\"Resource\":[\"arn:aws:s3:::*\",\"arn:aws:s3:::*/*\"]}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "capture": {
+            "policy": "Policy"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "${cap.policy}"
+          }
+        },
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "identity": "alt",
+          "expect": {
+            "response": {
+              "Contents": {
+                "$length": 1
+              }
+            }
+          }
+        },
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "${res.b2.name}"
+          },
+          "identity": "alt",
+          "expect": {
+            "response": {
+              "Contents": {
+                "$length": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0021",
+      "kind": "api",
+      "title": "GetObjectAcl allowed only when s3:ExistingObjectTag condition matches; other operations stay denied",
+      "tags": [
+        "tier-3",
+        "policy",
+        "tagging",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13221",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "publictag",
+          "body": "publictag"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "privatetag",
+          "body": "privatetag"
+        },
+        {
+          "type": "object",
+          "handle": "o3",
+          "bucket": "b1",
+          "key": "invalidtag",
+          "body": "invalidtag"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObjectAcl\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringEquals\":{\"s3:ExistingObjectTag/security\":\"public\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "public"
+                },
+                {
+                  "Key": "foo",
+                  "Value": "bar"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "privatetag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "private"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "invalidtag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security1",
+                  "Value": "public"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "privatetag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "invalidtag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0022",
+      "kind": "api",
+      "title": "GetObject allowed only when s3:ExistingObjectTag condition matches the object's tag",
+      "tags": [
+        "tier-3",
+        "policy",
+        "tagging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12455",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "publictag",
+          "body": "publictag"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "privatetag",
+          "body": "privatetag"
+        },
+        {
+          "type": "object",
+          "handle": "o3",
+          "bucket": "b1",
+          "key": "invalidtag",
+          "body": "invalidtag"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringEquals\":{\"s3:ExistingObjectTag/security\":\"public\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "public"
+                },
+                {
+                  "Key": "foo",
+                  "Value": "bar"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "privatetag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "private"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "invalidtag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security1",
+                  "Value": "public"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "privatetag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "invalidtag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0023",
+      "kind": "api",
+      "title": "CreateMultipartUpload requires s3:PutObject on the object ARN, not the bucket ARN",
+      "tags": [
+        "tier-3",
+        "policy",
+        "multipart",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11753",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "mpobj"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}\"}]}"
+          }
+        },
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "mpobj"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/mpobj\"}]}"
+          }
+        },
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "mpobj"
+          },
+          "identity": "alt"
+        }
+      ]
+    },
+    {
+      "id": "policy-0024",
+      "kind": "api",
+      "title": "Deny statement on s3:x-amz-acl public* blocks PutObject with a public canned ACL but not a plain put",
+      "tags": [
+        "tier-3",
+        "policy",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12798",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"},{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringLike\":{\"s3:x-amz-acl\":\"public*\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "private-key",
+            "Body": "private-key"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "public-key",
+            "Body": "public-key",
+            "ACL": "public-read"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0025",
+      "kind": "api",
+      "title": "PutObject conditioned on s3:x-amz-copy-source restricts which sources may be copied",
+      "tags": [
+        "tier-3",
+        "policy",
+        "copy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12700",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "public/foo",
+          "body": "public/foo"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "public/bar",
+          "body": "public/bar"
+        },
+        {
+          "type": "object",
+          "handle": "o3",
+          "bucket": "b1",
+          "key": "private/foo",
+          "body": "private/foo"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b2.name}/*\",\"Condition\":{\"StringLike\":{\"s3:x-amz-copy-source\":\"${res.b1.name}/public/*\"}}}]}"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "CopySource": "${res.b1.name}/public/foo",
+            "Key": "new_foo"
+          },
+          "identity": "alt"
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "new_foo"
+          },
+          "identity": "alt",
+          "expect": {
+            "body": "public/foo"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "CopySource": "${res.b1.name}/public/bar",
+            "Key": "new_foo2"
+          },
+          "identity": "alt"
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "new_foo2"
+          },
+          "identity": "alt",
+          "expect": {
+            "body": "public/bar"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "CopySource": "${res.b1.name}/private/foo",
+            "Key": "new_foo2"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0026",
+      "kind": "api",
+      "title": "PutObject conditioned on s3:x-amz-metadata-directive allows COPY and denies copies without it",
+      "tags": [
+        "tier-3",
+        "policy",
+        "copy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12748",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "public/foo",
+          "body": "public/foo"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "public/bar",
+          "body": "public/bar"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b2.name}/*\",\"Condition\":{\"StringEquals\":{\"s3:x-amz-metadata-directive\":\"COPY\"}}}]}"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "CopySource": "${res.b1.name}/public/foo",
+            "Key": "new_foo",
+            "MetadataDirective": "COPY"
+          },
+          "identity": "alt"
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "new_foo"
+          },
+          "identity": "alt",
+          "expect": {
+            "body": "public/foo"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "CopySource": "${res.b1.name}/public/bar",
+            "Key": "new_foo2",
+            "Metadata": {
+              "foo": "bar"
+            }
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0027",
+      "kind": "api",
+      "title": "Policy requiring aws:kms denies PutObject requesting AES256 encryption",
+      "tags": [
+        "tier-3",
+        "policy",
+        "sse",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13149",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringNotEquals\":{\"s3:x-amz-server-side-encryption\":\"aws:kms\"}}},{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"Null\":{\"s3:x-amz-server-side-encryption\":\"true\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": "testobj",
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0028",
+      "kind": "api",
+      "title": "PutObject allowed only when s3:RequestObjectTag condition matches the request tagging",
+      "description": "The source test intends the second put to carry the x-amz-tagging header (its event hook is registered on the wrong client); expressed here via the Tagging parameter.",
+      "tags": [
+        "tier-3",
+        "policy",
+        "tagging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13192",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringEquals\":{\"s3:RequestObjectTag/security\":\"public\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": "testobj"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": "testobj",
+            "Tagging": "security=public"
+          },
+          "identity": "alt"
+        }
+      ]
+    },
+    {
+      "id": "policy-0029",
+      "kind": "api",
+      "title": "StringNotEquals deny on s3:x-amz-server-side-encryption rejects wrong SSE algorithm and accepts AES256",
+      "tags": [
+        "tier-3",
+        "policy",
+        "sse",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13029",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringNotEquals\":{\"s3:x-amz-server-side-encryption\":\"AES256\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": "testobj",
+            "ServerSideEncryption": "AES192"
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0030",
+      "kind": "api",
+      "title": "Policy requiring AES256 denies PutObject requesting aws:kms encryption",
+      "description": "The KMS key id does not need to exist: the request is denied by the bucket policy before any KMS use.",
+      "tags": [
+        "tier-3",
+        "policy",
+        "sse",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13057",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringNotEquals\":{\"s3:x-amz-server-side-encryption\":\"AES256\"}}},{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"Null\":{\"s3:x-amz-server-side-encryption\":\"true\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": "testobj",
+            "ServerSideEncryption": "aws:kms",
+            "SSEKMSKeyId": "fool-me-twice"
+          },
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0031",
+      "kind": "api",
+      "title": "Deny unencrypted PutObject via Null condition on s3:x-amz-server-side-encryption",
+      "tags": [
+        "tier-3",
+        "policy",
+        "sse",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13000",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"Null\":{\"s3:x-amz-server-side-encryption\":\"true\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "Body": "testobj"
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testobj",
+            "ServerSideEncryption": "AES256"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-server-side-encryption": "AES256"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0032",
+      "kind": "api",
+      "title": "StringLikeIfExists condition on aws:Referer allows matching referers and denies non-matching ones",
+      "tags": [
+        "tier-3",
+        "policy",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11898",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": ""
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"Allow Public Access to All Objects\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Condition\":{\"StringLikeIfExists\":{\"aws:Referer\":\"http://www.example.com/*\"}},\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "http": {
+            "method": "GET",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "referer": "http://www.example.com/"
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "http": {
+            "method": "GET",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "referer": "http://www.example.com/index.html"
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "http": {
+            "method": "GET",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "referer": "http://example.com"
+            }
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0033",
+      "kind": "api",
+      "title": "Bucket policy allowing s3:ListBucket to everyone grants list access to another account (ListObjectsV2)",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11540",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "asdf",
+          "body": "asdf"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:ListBucket\",\"Resource\":[\"arn:aws:s3:::${res.b1.name}\",\"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "identity": "alt",
+          "expect": {
+            "response": {
+              "Contents": {
+                "$length": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0034",
+      "kind": "api",
+      "title": "Deny s3:ListBucket bucket policy overrides authenticated-read bucket ACL (ListObjectsV2)",
+      "tags": [
+        "tier-3",
+        "policy",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11686",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "asdf",
+          "body": "asdf"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "authenticated-read"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Deny\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:ListBucket\",\"Resource\":[\"arn:aws:s3:::${res.b1.name}\",\"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0035",
+      "kind": "api",
+      "title": "Wildcard-resource policy fetched via GetBucketPolicy can be applied to another bucket (ListObjectsV2)",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L11859",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "asdf",
+          "body": "asdf"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b2",
+          "key": "abcd",
+          "body": "abcd"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:ListBucket\",\"Resource\":[\"arn:aws:s3:::*\",\"arn:aws:s3:::*/*\"]}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "capture": {
+            "policy": "Policy"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "${cap.policy}"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "identity": "alt",
+          "expect": {
+            "response": {
+              "Contents": {
+                "$length": 1
+              }
+            }
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b2.name}"
+          },
+          "identity": "alt",
+          "expect": {
+            "response": {
+              "Contents": {
+                "$length": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0036",
+      "kind": "api",
+      "title": "RestrictPublicBuckets public access block revokes anonymous access granted by a public bucket policy",
+      "tags": [
+        "tier-3",
+        "policy",
+        "anon-access",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14375",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeletePublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "bar"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Action\": \"s3:GetObject\", \"Principal\": {\"AWS\": \"*\"}, \"Effect\": \"Allow\", \"Resource\": \"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "identity": "anonymous",
+          "expect": {
+            "body": "bar"
+          }
+        },
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": false,
+              "IgnorePublicAcls": false,
+              "BlockPublicPolicy": false,
+              "RestrictPublicBuckets": true
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "identity": "anonymous",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0037",
+      "kind": "api",
+      "title": "Public access block configuration round-trips full, partial and all-false settings and can be deleted",
+      "tags": [
+        "tier-3",
+        "policy",
+        "acl",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/25.py#L14",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": true,
+              "IgnorePublicAcls": true,
+              "BlockPublicPolicy": true,
+              "RestrictPublicBuckets": true
+            }
+          }
+        },
+        {
+          "operation": "GetPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PublicAccessBlockConfiguration": {
+                "BlockPublicAcls": true,
+                "IgnorePublicAcls": true,
+                "BlockPublicPolicy": true,
+                "RestrictPublicBuckets": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": true,
+              "IgnorePublicAcls": false,
+              "BlockPublicPolicy": false,
+              "RestrictPublicBuckets": false
+            }
+          }
+        },
+        {
+          "operation": "GetPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PublicAccessBlockConfiguration": {
+                "BlockPublicAcls": true,
+                "IgnorePublicAcls": false,
+                "BlockPublicPolicy": false
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "PublicAccessBlockConfiguration": {
+              "BlockPublicAcls": false,
+              "IgnorePublicAcls": false,
+              "BlockPublicPolicy": false,
+              "RestrictPublicBuckets": false
+            }
+          }
+        },
+        {
+          "operation": "GetPublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "PublicAccessBlockConfiguration": {
+                "BlockPublicAcls": false,
+                "IgnorePublicAcls": false,
+                "BlockPublicPolicy": false,
+                "RestrictPublicBuckets": false
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeletePublicAccessBlock",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0038",
+      "kind": "api",
+      "title": "PutBucketPolicy accepts Action and Resource as arrays",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy_advanced.py#L151",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"s3:GetObject\",\"s3:GetObjectVersion\",\"s3:ListBucket\",\"s3:ListBucketVersions\"],\"Resource\":[\"arn:aws:s3:::${res.b1.name}\",\"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0039",
+      "kind": "api",
+      "title": "PutBucketPolicy accepts a policy with multiple Allow and Deny statements",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy_advanced.py#L31",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"AllowGetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"},{\"Sid\":\"AllowListBucket\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:ListBucket\",\"Resource\":\"arn:aws:s3:::${res.b1.name}\"},{\"Sid\":\"DenyDeleteObject\",\"Effect\":\"Deny\",\"Principal\":\"*\",\"Action\":\"s3:DeleteObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$matches": "\"Statement\""
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0040",
+      "kind": "api",
+      "title": "PutBucketPolicy accepts an AWS service Principal",
+      "description": "The source test skipped when MinIO rejected the Service principal with MalformedPolicy; AWS accepts service principals such as logging.s3.amazonaws.com.",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy_advanced.py#L385",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0041",
+      "kind": "api",
+      "title": "PutBucketPolicy accepts wildcard Resource patterns including a prefix wildcard",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy_advanced.py#L100",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"s3:GetObject\",\"s3:PutObject\"],\"Resource\":[\"arn:aws:s3:::${res.b1.name}/*\",\"arn:aws:s3:::${res.b1.name}/prefix/*\"]}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0042",
+      "kind": "api",
+      "title": "PutBucketPolicy accepts the s3:* wildcard Action",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy_advanced.py#L438",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:*\",\"Resource\":[\"arn:aws:s3:::${res.b1.name}\",\"arn:aws:s3:::${res.b1.name}/*\"]}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0043",
+      "kind": "api",
+      "title": "PutBucketPolicy replaces an existing bucket policy",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy_advanced.py#L268",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Deny\",\"Principal\":\"*\",\"Action\":\"s3:DeleteObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$matches": "\"Statement\""
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0044",
+      "kind": "api",
+      "title": "PutBucketPolicy accepts statements carrying Sid identifiers",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy_advanced.py#L207",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicReadGetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"},{\"Sid\":\"DenyUnencryptedObjectUploads\",\"Effect\":\"Deny\",\"Principal\":\"*\",\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$matches": "\"Statement\""
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0045",
+      "kind": "api",
+      "title": "DeleteBucketPolicy removes the policy; subsequent GetBucketPolicy returns NoSuchBucketPolicy",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy.py#L385",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$exists": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucketPolicy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0046",
+      "kind": "api",
+      "title": "GetBucketPolicy on a bucket without a policy returns NoSuchBucketPolicy",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy.py#L359",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucketPolicy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0047",
+      "kind": "api",
+      "title": "GetBucketPolicy on a non-existent bucket returns NoSuchBucket",
+      "description": "The source test also tolerated NoSuchBucketPolicy (MinIO); AWS returns NoSuchBucket when the bucket itself does not exist.",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy.py#L332",
+      "steps": [
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "s3vectors-nonexistent-policy-get-3b7d1f"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0048",
+      "kind": "api",
+      "title": "PutBucketPolicy with syntactically invalid JSON returns MalformedPolicy",
+      "description": "The source test also tolerated InvalidArgument and InvalidJSON; AWS returns MalformedPolicy for a policy document that is not valid JSON.",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy.py#L70",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{ invalid json }"
+          },
+          "expect": {
+            "status": 400,
+            "error": "MalformedPolicy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0049",
+      "kind": "api",
+      "title": "PutBucketPolicy on a non-existent bucket returns NoSuchBucket",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy.py#L29",
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "s3vectors-nonexistent-policy-put-9c4e2a",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::s3vectors-nonexistent-policy-put-9c4e2a/*\"}]}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0050",
+      "kind": "api",
+      "title": "PutBucketPolicy allowing public read succeeds and is retrievable via GetBucketPolicy",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy.py#L214",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicReadGetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$matches": "\"Statement\""
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0051",
+      "kind": "api",
+      "title": "PutBucketPolicy with a Deny statement succeeds and is retrievable",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy.py#L273",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"DenyDeleteObject\",\"Effect\":\"Deny\",\"Principal\":\"*\",\"Action\":\"s3:DeleteObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0052",
+      "kind": "api",
+      "title": "PutBucketPolicy accepts an IpAddress condition block and GetBucketPolicy returns it",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy_conditions.py#L82",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"IpAddress\":{\"aws:SourceIp\":[\"192.168.1.0/24\",\"10.0.0.0/8\"]}}}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0053",
+      "kind": "api",
+      "title": "PutBucketPolicy accepts a StringLike condition block and GetBucketPolicy returns it",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy_conditions.py#L29",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringLike\":{\"s3:prefix\":[\"photos/*\",\"videos/*\"]}}}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Policy": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0054",
+      "kind": "api",
+      "title": "PutBucketPolicy stores a policy that GetBucketPolicy returns",
+      "tags": [
+        "tier-3",
+        "policy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/policies/test_bucket_policies.py#L18",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicReadGetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 200,
+            "response": {
+              "Policy": {
+                "$matches": "s3:GetObject"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0055",
+      "kind": "api",
+      "title": "PutBucketPolicy rejects a malformed JSON policy",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/policies/test_bucket_policies.py#L232",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"invalid\": json}"
+          },
+          "expect": {
+            "status": 400,
+            "error": "MalformedPolicy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-0056",
+      "kind": "api",
+      "title": "DeleteBucketPolicy removes the policy so GetBucketPolicy returns NoSuchBucketPolicy",
+      "tags": [
+        "tier-3",
+        "policy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/policies/test_bucket_policies.py#L316",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicReadGetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
+          }
+        },
+        {
+          "operation": "DeleteBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "GetBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucketPolicy"
+          }
+        }
+      ]
+    }
+  ]
+}

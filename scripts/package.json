@@ -1,0 +1,15 @@
+{
+  "name": "s3-compat-test-vectors",
+  "version": "1.0.0",
+  "description": "Language-independent test vectors for S3 API compatibility",
+  "scripts": {
+    "validate": "node validate.js",
+    "validate:digests": "node validate.js --digests",
+    "test": "node datagen.js --self-test && node validate.js"
+  },
+  "license": "Apache-2.0 OR MIT",
+  "devDependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  }
+}

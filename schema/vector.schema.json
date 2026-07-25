@@ -1,0 +1,459 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/cloud-portable/storage/main/schema/vector.schema.json",
+  "title": "S3 compatibility test vector file",
+  "description": "A file of language-independent test vectors for S3 API compatibility. See README.md for normative prose: placeholder grammar, generated-data algorithm, matcher semantics and runner outcome semantics.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "area": {
+      "description": "Feature area of this file. Every vector id in the file must be prefixed '<area>-'.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "vectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/vector" }
+    }
+  },
+  "required": ["area", "vectors"],
+  "additionalProperties": false,
+
+  "$defs": {
+    "vector": {
+      "oneOf": [
+        { "$ref": "#/$defs/apiVector" },
+        { "$ref": "#/$defs/signingVector" }
+      ]
+    },
+
+    "vectorId": {
+      "description": "Stable identifier: '<area>-<NNNN>'. Numbers are assigned monotonically per file and never reused or renumbered.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*-[0-9]{4}$"
+    },
+
+    "tags": {
+      "description": "Overlapping classification tags. Exactly one tier tag (tier-1|tier-2|tier-3) is required.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9:._-]*$" },
+      "contains": { "enum": ["tier-1", "tier-2", "tier-3"] },
+      "minContains": 1,
+      "maxContains": 1
+    },
+
+    "handle": {
+      "description": "Name for a prerequisite resource, dataset or captured value.",
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+    },
+
+    "identity": {
+      "description": "Identity a step is executed as: 'main' (default), 'anonymous' (unsigned), 'invalid' (well-formed signature with an unknown access key), or the handle of a 'credential' prerequisite.",
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+    },
+
+    "apiVector": {
+      "description": "A server round-trip test: prerequisites are established by the runner, then steps execute sequentially.",
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/vectorId" },
+        "kind": { "const": "api" },
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "tags": { "$ref": "#/$defs/tags" },
+        "source": {
+          "description": "URL (typically a github permalink with line number) of the test this vector was derived from.",
+          "type": "string",
+          "format": "uri"
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/prerequisite" }
+        },
+        "data": {
+          "description": "Named deterministic datasets referenced via {\"$data\": name} and ${data.name.*} placeholders.",
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/handle" },
+          "additionalProperties": { "$ref": "#/$defs/dataSpec" }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/step" }
+        }
+      },
+      "required": ["id", "kind", "title", "tags", "steps"],
+      "additionalProperties": false
+    },
+
+    "prerequisite": {
+      "description": "A condition the runner must establish before step 1. If it cannot be established the vector outcome is 'blocked', not 'fail'.",
+      "oneOf": [
+        { "$ref": "#/$defs/bucketPrerequisite" },
+        { "$ref": "#/$defs/objectPrerequisite" },
+        { "$ref": "#/$defs/credentialPrerequisite" }
+      ]
+    },
+
+    "bucketPrerequisite": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "bucket" },
+        "handle": { "$ref": "#/$defs/handle" },
+        "versioning": { "enum": ["Enabled", "Suspended"] },
+        "objectLock": { "type": "boolean" }
+      },
+      "required": ["type", "handle"],
+      "additionalProperties": false
+    },
+
+    "objectPrerequisite": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "object" },
+        "handle": { "$ref": "#/$defs/handle" },
+        "bucket": {
+          "description": "Handle of a bucket prerequisite in this vector.",
+          "$ref": "#/$defs/handle"
+        },
+        "key": { "type": "string", "minLength": 1 },
+        "body": { "$ref": "#/$defs/contentDescriptor" },
+        "contentType": { "type": "string" },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "required": ["type", "handle", "bucket", "key"],
+      "additionalProperties": false
+    },
+
+    "credentialPrerequisite": {
+      "description": "A second, distinct identity. Attributes: accessKeyId, canonicalId, displayName.",
+      "type": "object",
+      "properties": {
+        "type": { "const": "credential" },
+        "handle": { "$ref": "#/$defs/handle" }
+      },
+      "required": ["type", "handle"],
+      "additionalProperties": false
+    },
+
+    "dataSpec": {
+      "oneOf": [
+        { "$ref": "#/$defs/prngData" },
+        { "$ref": "#/$defs/patternData" },
+        { "$ref": "#/$defs/sliceData" }
+      ]
+    },
+
+    "prngData": {
+      "description": "Deterministic bytes: SHA-256 counter mode. block(i) = SHA256(UTF8(seed) || BE64(i)); stream = block(0) || block(1) || ...; data = stream[0:size]. Seed convention: '<vector-id>/<name>'.",
+      "type": "object",
+      "properties": {
+        "kind": { "const": "prng" },
+        "seed": { "type": "string", "minLength": 1 },
+        "size": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["kind", "seed", "size"],
+      "additionalProperties": false
+    },
+
+    "patternData": {
+      "description": "The pattern bytes repeated and truncated to size. Exactly one of pattern (UTF-8) or patternBase64.",
+      "type": "object",
+      "properties": {
+        "kind": { "const": "pattern" },
+        "pattern": { "type": "string", "minLength": 1 },
+        "patternBase64": { "type": "string", "pattern": "^[A-Za-z0-9+/]+={0,2}$" },
+        "size": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["kind", "size"],
+      "oneOf": [
+        { "required": ["pattern"], "not": { "required": ["patternBase64"] } },
+        { "required": ["patternBase64"], "not": { "required": ["pattern"] } }
+      ],
+      "additionalProperties": false
+    },
+
+    "sliceData": {
+      "description": "A byte range of another dataset in this vector. 'of' must name a prng or pattern entry (no chained slices).",
+      "type": "object",
+      "properties": {
+        "kind": { "const": "slice" },
+        "of": { "$ref": "#/$defs/handle" },
+        "offset": { "type": "integer", "minimum": 0 },
+        "length": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["kind", "of", "offset", "length"],
+      "additionalProperties": false
+    },
+
+    "contentDescriptor": {
+      "description": "Bytes: a UTF-8 string literal, {\"$data\": name} referencing a dataset, or {\"$base64\": ...} for inline binary.",
+      "anyOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "properties": { "$data": { "$ref": "#/$defs/handle" } },
+          "required": ["$data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "$base64": { "type": "string", "pattern": "^[A-Za-z0-9+/]*={0,2}$" } },
+          "required": ["$base64"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "step": {
+      "oneOf": [
+        { "$ref": "#/$defs/operationStep" },
+        { "$ref": "#/$defs/httpStep" }
+      ]
+    },
+
+    "operationStep": {
+      "description": "An S3 API operation by name with API-model member names as params. When expect is omitted the step must simply succeed.",
+      "type": "object",
+      "properties": {
+        "operation": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]+$" },
+        "params": { "type": "object" },
+        "identity": { "$ref": "#/$defs/identity" },
+        "presign": {
+          "description": "Execute this operation via a runner-minted presigned URL fetched as a plain unsigned HTTP request.",
+          "type": "object",
+          "properties": {
+            "expiresIn": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["expiresIn"],
+          "additionalProperties": false
+        },
+        "capture": { "$ref": "#/$defs/capture" },
+        "expect": { "$ref": "#/$defs/expect" }
+      },
+      "required": ["operation"],
+      "additionalProperties": false
+    },
+
+    "httpStep": {
+      "description": "Raw HTTP escape hatch for wire-level tests. sign defaults to true (runner SigV4-signs with the step identity); sign:false sends the request byte-literal.",
+      "type": "object",
+      "properties": {
+        "http": {
+          "type": "object",
+          "properties": {
+            "method": { "type": "string", "pattern": "^[A-Z]+$" },
+            "path": { "type": "string", "pattern": "^/" },
+            "query": {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              }
+            },
+            "headers": {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  { "type": "string" },
+                  { "type": "array", "items": { "type": "string" } }
+                ]
+              }
+            },
+            "body": { "$ref": "#/$defs/contentDescriptor" }
+          },
+          "required": ["method", "path"],
+          "additionalProperties": false
+        },
+        "sign": { "type": "boolean", "default": true },
+        "identity": { "$ref": "#/$defs/identity" },
+        "capture": { "$ref": "#/$defs/capture" },
+        "expect": { "$ref": "#/$defs/expect" }
+      },
+      "required": ["http"],
+      "additionalProperties": false
+    },
+
+    "capture": {
+      "description": "Map of capture-name to a dotted path into the parsed API-model response (operation steps) or into {status, headers} (http steps). Captured values are referenced by later steps as ${cap.name}.",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/handle" },
+      "additionalProperties": { "$ref": "#/$defs/capturePath" }
+    },
+
+    "capturePath": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_-]*(\\.[A-Za-z_][A-Za-z0-9_-]*|\\[[0-9]+\\])*$"
+    },
+
+    "expect": {
+      "description": "Assertions on the step outcome. Presence of 'error' means the step is expected to fail. All keys optional; an empty/omitted expect means the step must succeed.",
+      "type": "object",
+      "properties": {
+        "status": { "type": "integer", "minimum": 100, "maximum": 599 },
+        "error": {
+          "anyOf": [
+            { "type": "string", "minLength": 1 },
+            {
+              "type": "object",
+              "properties": {
+                "code": { "type": "string", "minLength": 1 },
+                "message": { "$ref": "#/$defs/matcher" }
+              },
+              "required": ["code"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "headers": {
+          "description": "Response header assertions. Header names must be lowercase.",
+          "type": "object",
+          "propertyNames": { "pattern": "^[^A-Z]+$" },
+          "additionalProperties": { "$ref": "#/$defs/matcher" }
+        },
+        "response": {
+          "description": "Operation steps only: subset match against the parsed API-model response.",
+          "$ref": "#/$defs/subsetObject"
+        },
+        "body": { "$ref": "#/$defs/bodyExpect" }
+      },
+      "additionalProperties": false
+    },
+
+    "matcher": {
+      "description": "Uniform matcher: scalar = exact equality; object with no $-prefixed keys = recursive subset match; array = exact length and ordered element-wise match; object with all keys $-prefixed = assertion object.",
+      "anyOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/matcher" } },
+        { "$ref": "#/$defs/assertionObject" },
+        { "$ref": "#/$defs/subsetObject" }
+      ]
+    },
+
+    "assertionObject": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "$exists": { "const": true },
+        "$absent": { "const": true },
+        "$eq": {},
+        "$matches": { "type": "string", "format": "regex" },
+        "$length": { "type": "integer", "minimum": 0 },
+        "$contains": { "$ref": "#/$defs/matcher" }
+      },
+      "additionalProperties": false
+    },
+
+    "subsetObject": {
+      "description": "Recursive subset match: every listed field must match; extra actual fields are ignored. Keys must not start with '$' (use {\"$eq\": ...} to match such a literal).",
+      "type": "object",
+      "propertyNames": { "pattern": "^[^$]" },
+      "additionalProperties": { "$ref": "#/$defs/matcher" }
+    },
+
+    "bodyExpect": {
+      "description": "Exact body bytes (content descriptor) or a digest assertion over the body.",
+      "anyOf": [
+        { "$ref": "#/$defs/contentDescriptor" },
+        {
+          "type": "object",
+          "minProperties": 1,
+          "properties": {
+            "$size": { "type": "integer", "minimum": 0 },
+            "$md5": { "type": "string", "pattern": "^([0-9a-f]{32}|\\$\\{data\\.[A-Za-z_][A-Za-z0-9_]*\\.md5\\})$" },
+            "$sha256": { "type": "string", "pattern": "^([0-9a-f]{64}|\\$\\{data\\.[A-Za-z_][A-Za-z0-9_]*\\.sha256\\})$" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "signingVector": {
+      "description": "An offline AWS Signature Version 4 signing test: given a request, credentials and scope, assert the canonical request, string to sign and Authorization header. No placeholder interpolation applies inside signing vectors.",
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/vectorId" },
+        "kind": { "const": "signing" },
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "tags": { "$ref": "#/$defs/tags" },
+        "source": { "type": "string", "format": "uri" },
+        "request": { "$ref": "#/$defs/signingRequest" },
+        "credentials": {
+          "description": "Published dummy credentials from the AWS test suite. Never real secrets.",
+          "type": "object",
+          "properties": {
+            "accessKeyId": { "type": "string", "minLength": 1 },
+            "secretAccessKey": { "type": "string", "minLength": 1 },
+            "sessionToken": { "type": "string", "minLength": 1 }
+          },
+          "required": ["accessKeyId", "secretAccessKey"],
+          "additionalProperties": false
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "dateTime": { "type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z$" },
+            "region": { "type": "string", "minLength": 1 },
+            "service": { "type": "string", "minLength": 1 }
+          },
+          "required": ["dateTime", "region", "service"],
+          "additionalProperties": false
+        },
+        "expect": {
+          "type": "object",
+          "properties": {
+            "canonicalRequest": { "type": "string" },
+            "stringToSign": { "type": "string" },
+            "authorization": { "type": "string", "minLength": 1 },
+            "signedRequest": { "type": "string" }
+          },
+          "required": ["authorization"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "kind", "title", "tags", "request", "credentials", "scope", "expect"],
+      "additionalProperties": false
+    },
+
+    "signingRequest": {
+      "type": "object",
+      "properties": {
+        "method": { "type": "string", "pattern": "^[A-Z]+$" },
+        "uri": {
+          "description": "The raw, un-normalized request-target exactly as it appears in the request line (path normalization is part of what is under test).",
+          "type": "string",
+          "minLength": 1
+        },
+        "headers": {
+          "description": "Ordered [name, value] pairs. A pair array (not a map) because duplicate header keys, ordering and multiline values are under test.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              { "type": "string", "minLength": 1 },
+              { "type": "string" }
+            ],
+            "items": false,
+            "minItems": 2
+          }
+        },
+        "body": { "type": "string" }
+      },
+      "required": ["method", "uri", "headers"],
+      "additionalProperties": false
+    }
+  }
+}

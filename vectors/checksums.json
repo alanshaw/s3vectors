@@ -1,0 +1,3328 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "checksums",
+  "vectors": [
+    {
+      "id": "checksums-0001",
+      "kind": "api",
+      "title": "GetObjectAttributes on a SHA256-checksummed single-part object reports size, ETag, storage class and checksum with no ObjectParts",
+      "tags": [
+        "tier-3",
+        "checksums",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19219",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a1k": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1024
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "myobj",
+            "Body": {
+              "$data": "a1k"
+            },
+            "ChecksumAlgorithm": "SHA256",
+            "ChecksumSHA256": "${data.a1k.sha256B64}"
+          },
+          "expect": {
+            "response": {
+              "ChecksumSHA256": "${data.a1k.sha256B64}"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "myobj",
+            "ObjectAttributes": [
+              "ETag",
+              "Checksum",
+              "ObjectParts",
+              "StorageClass",
+              "ObjectSize"
+            ]
+          },
+          "expect": {
+            "response": {
+              "ObjectSize": 1024,
+              "ETag": "${data.a1k.md5}",
+              "StorageClass": "STANDARD",
+              "Checksum": {
+                "ChecksumSHA256": "${data.a1k.sha256B64}"
+              },
+              "ObjectParts": {
+                "$absent": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0002",
+      "kind": "api",
+      "title": "GetObjectAttributes on a SHA256-checksummed 13-part multipart object reports size, composite checksum and per-part checksums",
+      "tags": [
+        "tier-3",
+        "checksums",
+        "multipart",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19047",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "checksums-0002/obj",
+          "size": 67108864
+        },
+        "p1": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 0,
+          "length": 5242880
+        },
+        "p2": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 5242880,
+          "length": 5242880
+        },
+        "p3": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 10485760,
+          "length": 5242880
+        },
+        "p4": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 15728640,
+          "length": 5242880
+        },
+        "p5": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 20971520,
+          "length": 5242880
+        },
+        "p6": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 26214400,
+          "length": 5242880
+        },
+        "p7": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 31457280,
+          "length": 5242880
+        },
+        "p8": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 36700160,
+          "length": 5242880
+        },
+        "p9": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 41943040,
+          "length": 5242880
+        },
+        "p10": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 47185920,
+          "length": 5242880
+        },
+        "p11": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 52428800,
+          "length": 5242880
+        },
+        "p12": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 57671680,
+          "length": 5242880
+        },
+        "p13": {
+          "kind": "slice",
+          "of": "obj",
+          "offset": 62914560,
+          "length": 4194304
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "ChecksumAlgorithm": "SHA256",
+            "ContentType": "text/plain",
+            "Metadata": {
+              "foo": "bar"
+            }
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "p1"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e1": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "p2"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e2": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 3,
+            "Body": {
+              "$data": "p3"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e3": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 4,
+            "Body": {
+              "$data": "p4"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e4": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 5,
+            "Body": {
+              "$data": "p5"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e5": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 6,
+            "Body": {
+              "$data": "p6"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e6": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 7,
+            "Body": {
+              "$data": "p7"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e7": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 8,
+            "Body": {
+              "$data": "p8"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e8": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 9,
+            "Body": {
+              "$data": "p9"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e9": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 10,
+            "Body": {
+              "$data": "p10"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e10": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 11,
+            "Body": {
+              "$data": "p11"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e11": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 12,
+            "Body": {
+              "$data": "p12"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e12": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 13,
+            "Body": {
+              "$data": "p13"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "e13": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.e1}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.e2}"
+                },
+                {
+                  "PartNumber": 3,
+                  "ETag": "${cap.e3}"
+                },
+                {
+                  "PartNumber": 4,
+                  "ETag": "${cap.e4}"
+                },
+                {
+                  "PartNumber": 5,
+                  "ETag": "${cap.e5}"
+                },
+                {
+                  "PartNumber": 6,
+                  "ETag": "${cap.e6}"
+                },
+                {
+                  "PartNumber": 7,
+                  "ETag": "${cap.e7}"
+                },
+                {
+                  "PartNumber": 8,
+                  "ETag": "${cap.e8}"
+                },
+                {
+                  "PartNumber": 9,
+                  "ETag": "${cap.e9}"
+                },
+                {
+                  "PartNumber": 10,
+                  "ETag": "${cap.e10}"
+                },
+                {
+                  "PartNumber": 11,
+                  "ETag": "${cap.e11}"
+                },
+                {
+                  "PartNumber": 12,
+                  "ETag": "${cap.e12}"
+                },
+                {
+                  "PartNumber": 13,
+                  "ETag": "${cap.e13}"
+                }
+              ]
+            }
+          },
+          "capture": {
+            "uploadChecksum": "ChecksumSHA256"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum"
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart_checksum",
+            "ObjectAttributes": [
+              "ETag",
+              "Checksum",
+              "ObjectParts",
+              "StorageClass",
+              "ObjectSize"
+            ]
+          },
+          "expect": {
+            "response": {
+              "ObjectSize": 67108864,
+              "Checksum": {
+                "ChecksumSHA256": "${cap.uploadChecksum}"
+              },
+              "ObjectParts": {
+                "TotalPartsCount": 13,
+                "Parts": [
+                  {
+                    "PartNumber": 1,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p1.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 2,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p2.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 3,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p3.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 4,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p4.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 5,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p5.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 6,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p6.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 7,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p7.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 8,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p8.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 9,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p9.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 10,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p10.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 11,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p11.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 12,
+                    "Size": 5242880,
+                    "ChecksumSHA256": "${data.p12.sha256B64}"
+                  },
+                  {
+                    "PartNumber": 13,
+                    "Size": 4194304,
+                    "ChecksumSHA256": "${data.p13.sha256B64}"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0003",
+      "kind": "api",
+      "title": "PutObject with CRC64NVME checksum: echoed on put, hidden on plain HEAD, shown with ChecksumMode, bad digest rejected",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14983",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a1k": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1024
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "myobj",
+            "Body": {
+              "$data": "a1k"
+            },
+            "ChecksumAlgorithm": "CRC64NVME",
+            "ChecksumCRC64NVME": "${data.a1k.crc64nvmeB64}"
+          },
+          "expect": {
+            "response": {
+              "ChecksumCRC64NVME": "${data.a1k.crc64nvmeB64}"
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "myobj"
+          },
+          "expect": {
+            "response": {
+              "ChecksumCRC64NVME": {
+                "$absent": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "myobj",
+            "ChecksumMode": "ENABLED"
+          },
+          "expect": {
+            "response": {
+              "ChecksumCRC64NVME": "${data.a1k.crc64nvmeB64}"
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "myobj",
+            "Body": {
+              "$data": "a1k"
+            },
+            "ChecksumAlgorithm": "CRC64NVME",
+            "ChecksumCRC64NVME": "bad"
+          },
+          "expect": {
+            "status": 400,
+            "error": "BadDigest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0004",
+      "kind": "api",
+      "title": "PutObject with SHA256 checksum: echoed on put, hidden on plain HEAD, shown with ChecksumMode, bad digest rejected",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14961",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "a1k": {
+          "kind": "pattern",
+          "pattern": "A",
+          "size": 1024
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "myobj",
+            "Body": {
+              "$data": "a1k"
+            },
+            "ChecksumAlgorithm": "SHA256",
+            "ChecksumSHA256": "${data.a1k.sha256B64}"
+          },
+          "expect": {
+            "response": {
+              "ChecksumSHA256": "${data.a1k.sha256B64}"
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "myobj"
+          },
+          "expect": {
+            "response": {
+              "ChecksumSHA256": {
+                "$absent": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "myobj",
+            "ChecksumMode": "ENABLED"
+          },
+          "expect": {
+            "response": {
+              "ChecksumSHA256": "${data.a1k.sha256B64}"
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "myobj",
+            "Body": {
+              "$data": "a1k"
+            },
+            "ChecksumAlgorithm": "SHA256",
+            "ChecksumSHA256": "bad"
+          },
+          "expect": {
+            "status": 400,
+            "error": "BadDigest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0005",
+      "kind": "api",
+      "title": "Object uploaded with ChecksumAlgorithm SHA256 is retrievable with intact body",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "object-crud",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L431",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "checksum-object",
+            "Body": "test content for checksums",
+            "ChecksumAlgorithm": "SHA256"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "checksum-object"
+          },
+          "expect": {
+            "body": "test content for checksums"
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0006",
+      "kind": "api",
+      "title": "GetObjectAttributes with Checksum attribute succeeds for an object uploaded with ChecksumAlgorithm CRC32",
+      "tags": [
+        "tier-3",
+        "checksums",
+        "object-crud",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_attributes.py#L260",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "x1000": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 1000
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-1",
+            "Body": {
+              "$data": "x1000"
+            },
+            "ChecksumAlgorithm": "CRC32"
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-1",
+            "ObjectAttributes": [
+              "ETag",
+              "Checksum",
+              "ObjectParts"
+            ]
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0007",
+      "kind": "api",
+      "title": "GetObjectAttributes with Checksum attribute succeeds for an object uploaded with ChecksumAlgorithm SHA1",
+      "tags": [
+        "tier-3",
+        "checksums",
+        "object-crud",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_attributes.py#L260",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "x1000": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 1000
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-2",
+            "Body": {
+              "$data": "x1000"
+            },
+            "ChecksumAlgorithm": "SHA1"
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-2",
+            "ObjectAttributes": [
+              "ETag",
+              "Checksum",
+              "ObjectParts"
+            ]
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0008",
+      "kind": "api",
+      "title": "GetObjectAttributes with Checksum attribute succeeds for an object uploaded with ChecksumAlgorithm SHA256",
+      "tags": [
+        "tier-3",
+        "checksums",
+        "object-crud",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_attributes.py#L260",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "x1000": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 1000
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-3",
+            "Body": {
+              "$data": "x1000"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-3",
+            "ObjectAttributes": [
+              "ETag",
+              "Checksum",
+              "ObjectParts"
+            ]
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0009",
+      "kind": "api",
+      "title": "HeadObject with ChecksumMode=ENABLED returns the CRC32 checksum from PutObject",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_head_object_additional.py#L211",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-1",
+            "Body": "",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "capture": {
+            "putCrc32": "ChecksumCRC32"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-1",
+            "ChecksumMode": "ENABLED"
+          },
+          "expect": {
+            "response": {
+              "ChecksumCRC32": "${cap.putCrc32}",
+              "ChecksumType": "FULL_OBJECT"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0010",
+      "kind": "api",
+      "title": "HeadObject with ChecksumMode=ENABLED returns the SHA1 checksum from PutObject",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_head_object_additional.py#L211",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "xbody": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 200
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-2",
+            "Body": {
+              "$data": "xbody"
+            },
+            "ChecksumAlgorithm": "SHA1"
+          },
+          "capture": {
+            "putSha1": "ChecksumSHA1"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-2",
+            "ChecksumMode": "ENABLED"
+          },
+          "expect": {
+            "response": {
+              "ChecksumSHA1": "${cap.putSha1}",
+              "ChecksumType": "FULL_OBJECT"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0011",
+      "kind": "api",
+      "title": "HeadObject with ChecksumMode=ENABLED returns the SHA256 checksum from PutObject",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_head_object_additional.py#L211",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "xbody": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 400
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-3",
+            "Body": {
+              "$data": "xbody"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "putSha256": "ChecksumSHA256"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-3",
+            "ChecksumMode": "ENABLED"
+          },
+          "expect": {
+            "response": {
+              "ChecksumSHA256": "${cap.putSha256}",
+              "ChecksumType": "FULL_OBJECT"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0012",
+      "kind": "api",
+      "title": "PutObject with an incorrect ChecksumSHA256 returns BadDigest",
+      "description": "The supplied checksum is a valid base64 32-byte value that does not match the body. The original test accepts several codes (InvalidRequest, BadDigest, XAmzContentSHA256Mismatch, XAmzContentChecksumMismatch); AWS returns BadDigest.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_additional.py#L308",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "checksum-mismatch-object",
+            "Body": "test data",
+            "ChecksumAlgorithm": "SHA256",
+            "ChecksumSHA256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+          },
+          "expect": {
+            "status": 400,
+            "error": "BadDigest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0013",
+      "kind": "api",
+      "title": "PutObject with a correct ChecksumCRC32 succeeds and echoes the checksum",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_additional.py#L259",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "body": {
+          "kind": "pattern",
+          "pattern": "crc32 test data",
+          "size": 15
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "checksum-crc32-object",
+            "Body": {
+              "$data": "body"
+            },
+            "ChecksumAlgorithm": "CRC32",
+            "ChecksumCRC32": "${data.body.crc32B64}"
+          },
+          "expect": {
+            "response": {
+              "ChecksumCRC32": "${data.body.crc32B64}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0014",
+      "kind": "api",
+      "title": "PutObject with a correct ChecksumSHA256 succeeds and echoes the checksum",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_additional.py#L213",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "body": {
+          "kind": "pattern",
+          "pattern": "checksum test data",
+          "size": 18
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "checksum-sha256-object",
+            "Body": {
+              "$data": "body"
+            },
+            "ChecksumAlgorithm": "SHA256",
+            "ChecksumSHA256": "${data.body.sha256B64}"
+          },
+          "expect": {
+            "response": {
+              "ChecksumSHA256": "${data.body.sha256B64}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0015",
+      "kind": "api",
+      "title": "UploadPart with ChecksumAlgorithm CRC32 but a CRC32C checksum header is rejected",
+      "description": "The multipart upload and the part both declare CRC32, but the part carries an x-amz-checksum-crc32c value instead. The source test accepted InvalidRequest or InvalidArgument; both are HTTP 400.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_upload_part_checksums.py#L43",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "ChecksumAlgorithm": "CRC32",
+            "ChecksumCRC32C": "m0cB1Q=="
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0016",
+      "kind": "api",
+      "title": "UploadPart declaring a checksum algorithm different from the multipart upload's is rejected",
+      "description": "The multipart upload was initialized with CRC32 but the part declares ChecksumAlgorithm SHA1. The source test accepted InvalidRequest or InvalidArgument; both are HTTP 400.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_upload_part_checksums.py#L184",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "ChecksumAlgorithm": "SHA1"
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0017",
+      "kind": "api",
+      "title": "UploadPart with a checksum value of a different algorithm than the upload's is rejected",
+      "description": "The multipart upload was initialized with CRC32 but the part carries an x-amz-checksum-sha256 value. The source test accepted InvalidRequest or InvalidArgument; both are HTTP 400.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_upload_part_checksums.py#L224",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "ChecksumSHA256": "uU0nuZNNPgilLlLX2n2r+sSE7+N6U4DukIj3rOLvzek="
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0018",
+      "kind": "api",
+      "title": "UploadPartCopy succeeds when source and multipart upload use different checksum algorithms",
+      "description": "The source object carries a SHA1 checksum while the multipart upload declares SHA256; the copy must succeed and return a CopyPartResult with an ETag. The source test skipped on InvalidArgument/NotImplemented (MinIO tolerance); on AWS the copy succeeds.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_upload_part_checksums.py#L489",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 300
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-object",
+            "Body": {
+              "$data": "src"
+            },
+            "ChecksumAlgorithm": "SHA1"
+          }
+        },
+        {
+          "operation": "UploadPartCopy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "CopySource": "${res.b1.name}/source-object"
+          },
+          "expect": {
+            "response": {
+              "CopyPartResult": {
+                "ETag": {
+                  "$exists": true
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0019",
+      "kind": "api",
+      "title": "UploadPartCopy from a CRC32-checksummed source into a CRC32 multipart upload succeeds",
+      "description": "Source object and multipart upload use the same checksum algorithm; the copy must succeed and return a CopyPartResult with an ETag. The source test skipped on NotImplemented/InvalidArgument (MinIO tolerance); on AWS the copy succeeds.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_upload_part_checksums.py#L375",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 300
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-object",
+            "Body": {
+              "$data": "src"
+            },
+            "ChecksumAlgorithm": "CRC32"
+          }
+        },
+        {
+          "operation": "UploadPartCopy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "CopySource": "${res.b1.name}/source-object"
+          },
+          "expect": {
+            "response": {
+              "CopyPartResult": {
+                "ETag": {
+                  "$exists": true
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0020",
+      "kind": "api",
+      "title": "UploadPartCopy into a checksum-less multipart upload returns no checksums in CopyPartResult",
+      "description": "The source object was uploaded with a SHA1 checksum but the multipart upload declares no checksum algorithm, so the CopyPartResult must not contain any checksum members.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_upload_part_checksums.py#L433",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 300
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-object",
+            "Body": {
+              "$data": "src"
+            },
+            "ChecksumAlgorithm": "SHA1"
+          }
+        },
+        {
+          "operation": "UploadPartCopy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "CopySource": "${res.b1.name}/source-object"
+          },
+          "expect": {
+            "response": {
+              "CopyPartResult": {
+                "ChecksumCRC32": {
+                  "$absent": true
+                },
+                "ChecksumCRC32C": {
+                  "$absent": true
+                },
+                "ChecksumSHA1": {
+                  "$absent": true
+                },
+                "ChecksumSHA256": {
+                  "$absent": true
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0021",
+      "kind": "api",
+      "title": "UploadPart with two different checksum headers is rejected",
+      "description": "The part carries both an x-amz-checksum-sha1 and an x-amz-checksum-crc32c value. The source test accepted InvalidRequest or InvalidArgument; both are HTTP 400.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_upload_part_checksums.py#L84",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "ChecksumAlgorithm": "CRC32C"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "ChecksumSHA1": "Kq5sNclPz7QV2+lfQIuc6R7oRu0=",
+            "ChecksumCRC32C": "m0cB1Q=="
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0022",
+      "kind": "api",
+      "title": "UploadPart with ChecksumAlgorithm CRC32 succeeds and returns an ETag",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_upload_part_checksums.py#L324",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj-CRC32",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj-CRC32",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": "test data",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0023",
+      "kind": "api",
+      "title": "UploadPart with ChecksumAlgorithm SHA1 succeeds and returns an ETag",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_upload_part_checksums.py#L324",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj-SHA1",
+            "ChecksumAlgorithm": "SHA1"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj-SHA1",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": "test data",
+            "ChecksumAlgorithm": "SHA1"
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0024",
+      "kind": "api",
+      "title": "UploadPart with ChecksumAlgorithm SHA256 succeeds and returns an ETag",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_upload_part_checksums.py#L324",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj-SHA256",
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj-SHA256",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": "test data",
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0025",
+      "kind": "api",
+      "title": "GetObjectAttributes checksum matches PutObject checksum (CRC32)",
+      "description": "One of four per-algorithm cases from the source loop.",
+      "tags": [
+        "tier-3",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L217",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0025/d",
+          "size": 120
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-1",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "capture": {
+            "putChecksum": "ChecksumCRC32"
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-1",
+            "ObjectAttributes": [
+              "Checksum"
+            ]
+          },
+          "expect": {
+            "response": {
+              "Checksum": {
+                "ChecksumCRC32": "${cap.putChecksum}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0026",
+      "kind": "api",
+      "title": "GetObjectAttributes checksum matches PutObject checksum (CRC32C)",
+      "description": "One of four per-algorithm cases from the source loop.",
+      "tags": [
+        "tier-3",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L217",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0026/d",
+          "size": 240
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-2",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "CRC32C"
+          },
+          "capture": {
+            "putChecksum": "ChecksumCRC32C"
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-2",
+            "ObjectAttributes": [
+              "Checksum"
+            ]
+          },
+          "expect": {
+            "response": {
+              "Checksum": {
+                "ChecksumCRC32C": "${cap.putChecksum}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0027",
+      "kind": "api",
+      "title": "GetObjectAttributes checksum matches PutObject checksum (SHA1)",
+      "description": "One of four per-algorithm cases from the source loop.",
+      "tags": [
+        "tier-3",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L217",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0027/d",
+          "size": 360
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-3",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "SHA1"
+          },
+          "capture": {
+            "putChecksum": "ChecksumSHA1"
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-3",
+            "ObjectAttributes": [
+              "Checksum"
+            ]
+          },
+          "expect": {
+            "response": {
+              "Checksum": {
+                "ChecksumSHA1": "${cap.putChecksum}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0028",
+      "kind": "api",
+      "title": "GetObjectAttributes checksum matches PutObject checksum (SHA256)",
+      "description": "One of four per-algorithm cases from the source loop.",
+      "tags": [
+        "tier-3",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L217",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0028/d",
+          "size": 480
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-4",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "putChecksum": "ChecksumSHA256"
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-4",
+            "ObjectAttributes": [
+              "Checksum"
+            ]
+          },
+          "expect": {
+            "response": {
+              "Checksum": {
+                "ChecksumSHA256": "${cap.putChecksum}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0029",
+      "kind": "api",
+      "title": "GetObjectAttributes returns the CRC32 checksum recorded at PutObject",
+      "tags": [
+        "tier-3",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L169",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0029/d",
+          "size": 512
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object-attrs-crc32",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "capture": {
+            "putCrc32": "ChecksumCRC32"
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object-attrs-crc32",
+            "ObjectAttributes": [
+              "Checksum"
+            ]
+          },
+          "expect": {
+            "response": {
+              "Checksum": {
+                "ChecksumCRC32": "${cap.putCrc32}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0030",
+      "kind": "api",
+      "title": "ListObjectsV2 lists all objects uploaded with checksum algorithms",
+      "description": "Uploads four objects with CRC32/CRC32C/SHA1/SHA256 checksum algorithms and lists the bucket. The source test's per-entry ChecksumAlgorithm shape check was conditional on the field being present and is not asserted here.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L289",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d1": {
+          "kind": "prng",
+          "seed": "checksums-0030/d1",
+          "size": 100
+        },
+        "d2": {
+          "kind": "prng",
+          "seed": "checksums-0030/d2",
+          "size": 200
+        },
+        "d3": {
+          "kind": "prng",
+          "seed": "checksums-0030/d3",
+          "size": 300
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-0",
+            "Body": "",
+            "ChecksumAlgorithm": "CRC32"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-1",
+            "Body": {
+              "$data": "d1"
+            },
+            "ChecksumAlgorithm": "CRC32C"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-2",
+            "Body": {
+              "$data": "d2"
+            },
+            "ChecksumAlgorithm": "SHA1"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-3",
+            "Body": {
+              "$data": "d3"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Contents": {
+                "$length": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0031",
+      "kind": "api",
+      "title": "PutObject of an empty body with ChecksumAlgorithm CRC32 returns a CRC32 checksum",
+      "description": "One of four per-algorithm cases from the source loop; this iteration's body size is 200 * 0 = 0 bytes.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L113",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object-crc32",
+            "Body": "",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "expect": {
+            "response": {
+              "ChecksumCRC32": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0032",
+      "kind": "api",
+      "title": "PutObject with ChecksumAlgorithm CRC32C returns a CRC32C checksum",
+      "description": "One of four per-algorithm cases from the source loop.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L113",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0032/d",
+          "size": 200
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object-crc32c",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "CRC32C"
+          },
+          "expect": {
+            "response": {
+              "ChecksumCRC32C": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0033",
+      "kind": "api",
+      "title": "PutObject with ChecksumAlgorithm SHA1 returns a SHA1 checksum",
+      "description": "One of four per-algorithm cases from the source loop.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L113",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0033/d",
+          "size": 400
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object-sha1",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "SHA1"
+          },
+          "expect": {
+            "response": {
+              "ChecksumSHA1": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0034",
+      "kind": "api",
+      "title": "PutObject with ChecksumAlgorithm SHA256 returns a SHA256 checksum (600-byte body)",
+      "description": "One of four per-algorithm cases from the source loop.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L113",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0034/d",
+          "size": 600
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object-sha256",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "expect": {
+            "response": {
+              "ChecksumSHA256": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0035",
+      "kind": "api",
+      "title": "PutObject with ChecksumAlgorithm CRC32 returns a CRC32 checksum",
+      "description": "The source test also asserted ChecksumType == FULL_OBJECT only when the field was present; that conditional check is omitted.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L49",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0035/d",
+          "size": 1024
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object-crc32",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "expect": {
+            "response": {
+              "ChecksumCRC32": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0036",
+      "kind": "api",
+      "title": "PutObject with ChecksumAlgorithm SHA256 returns a SHA256 checksum",
+      "description": "The source test also asserted ChecksumType == FULL_OBJECT only when the field was present; that conditional check is omitted.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L81",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0036/d",
+          "size": 2048
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object-sha256",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "expect": {
+            "response": {
+              "ChecksumSHA256": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0037",
+      "kind": "api",
+      "title": "PutObject with an incorrect client-provided CRC32 checksum is rejected",
+      "description": "AWS returns 400 BadDigest for an x-amz-checksum-crc32 mismatch. The source test also accepted InvalidRequest, InvalidDigest and XAmzContentChecksumMismatch from other implementations.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L387",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0037/d",
+          "size": 1024
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object-bad-checksum",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumCRC32": "AAAAAA=="
+          },
+          "expect": {
+            "status": 400,
+            "error": "BadDigest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0038",
+      "kind": "api",
+      "title": "PutObject with a correct client-provided CRC32 checksum succeeds and echoes it",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_checksums.py#L352",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "prng",
+          "seed": "checksums-0038/d",
+          "size": 1024
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object-provided-crc32",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumCRC32": "${data.d.crc32B64}"
+          },
+          "expect": {
+            "response": {
+              "ChecksumCRC32": "${data.d.crc32B64}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0039",
+      "kind": "api",
+      "title": "Multipart upload with CRC32 part checksums completes successfully",
+      "tags": [
+        "tier-1",
+        "multipart",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_complete_multipart_checksums.py#L30",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "x5m": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "x5m"
+            },
+            "ChecksumCRC32": "${data.x5m.crc32B64}"
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "x5m"
+            },
+            "ChecksumCRC32": "${data.x5m.crc32B64}"
+          },
+          "capture": {
+            "etag2": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}",
+                  "ChecksumCRC32": "${data.x5m.crc32B64}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}",
+                  "ChecksumCRC32": "${data.x5m.crc32B64}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0040",
+      "kind": "api",
+      "title": "Multipart upload with SHA256 part checksums completes successfully",
+      "tags": [
+        "tier-1",
+        "multipart",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_complete_multipart_checksums.py#L96",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "y5m": {
+          "kind": "pattern",
+          "pattern": "y",
+          "size": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "y5m"
+            },
+            "ChecksumSHA256": "${data.y5m.sha256B64}"
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "y5m"
+            },
+            "ChecksumSHA256": "${data.y5m.sha256B64}"
+          },
+          "capture": {
+            "etag2": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}",
+                  "ChecksumSHA256": "${data.y5m.sha256B64}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}",
+                  "ChecksumSHA256": "${data.y5m.sha256B64}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0041",
+      "kind": "api",
+      "title": "CopyObject across buckets preserves the source SHA256 checksum",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_checksums.py#L370",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "cross-bucket checksum data",
+          "size": 26
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "checksum-object",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "SHA256",
+            "ChecksumSHA256": "${data.d.sha256B64}"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "checksum-object",
+            "CopySource": "${res.b1.name}/checksum-object"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ChecksumSHA256": "${data.d.sha256B64}"
+              }
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "checksum-object"
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0042",
+      "kind": "api",
+      "title": "CopyObject with MetadataDirective=COPY preserves the source checksum",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_checksums.py#L426",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "test data for directive",
+          "size": 23
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-object",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "SHA256",
+            "ChecksumSHA256": "${data.d.sha256B64}"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object",
+            "MetadataDirective": "COPY"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ChecksumSHA256": "${data.d.sha256B64}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0043",
+      "kind": "api",
+      "title": "CopyObject of a checksummed object returns 200 with a CopyObjectResult",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_checksums.py#L478",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "response field test data",
+          "size": 24
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-object",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "SHA256",
+            "ChecksumSHA256": "${data.d.sha256B64}"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object"
+          },
+          "expect": {
+            "status": 200,
+            "response": {
+              "CopyObjectResult": {
+                "ETag": {
+                  "$exists": true
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0044",
+      "kind": "api",
+      "title": "CopyObject with ChecksumAlgorithm=CRC32 computes a CRC32 checksum for the destination",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_checksums.py#L319",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": {
+            "$data": "d"
+          }
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "test data for CRC32",
+          "size": 19
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ChecksumCRC32": "${data.d.crc32B64}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0045",
+      "kind": "api",
+      "title": "CopyObject with ChecksumAlgorithm=SHA256 computes a checksum for the destination",
+      "description": "Source object has no checksum; copying with ChecksumAlgorithm=SHA256 returns the computed SHA256 in CopyObjectResult.",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_checksums.py#L76",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": {
+            "$data": "d"
+          }
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "test data for checksum creation",
+          "size": 31
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object",
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ChecksumSHA256": "${data.d.sha256B64}"
+              }
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object"
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0046",
+      "kind": "api",
+      "title": "CopyObject with ChecksumAlgorithm=SHA1 computes a SHA1 checksum",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_checksums.py#L535",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": {
+            "$data": "d"
+          }
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "multi-algorithm test data",
+          "size": 25
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-sha1",
+            "CopySource": "${res.b1.name}/source-object",
+            "ChecksumAlgorithm": "SHA1"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ChecksumSHA1": "${data.d.sha1B64}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0047",
+      "kind": "api",
+      "title": "CopyObject with ChecksumAlgorithm=SHA256 computes a SHA256 checksum",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_checksums.py#L535",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": {
+            "$data": "d"
+          }
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "multi-algorithm test data",
+          "size": 25
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-sha256",
+            "CopySource": "${res.b1.name}/source-object",
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ChecksumSHA256": "${data.d.sha256B64}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0048",
+      "kind": "api",
+      "title": "CopyObject preserves the source object's existing SHA256 checksum",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_checksums.py#L133",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "test data with checksum",
+          "size": 23
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-object",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "SHA256",
+            "ChecksumSHA256": "${data.d.sha256B64}"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ChecksumSHA256": "${data.d.sha256B64}"
+              }
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object"
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0049",
+      "kind": "api",
+      "title": "CopyObject with ChecksumAlgorithm=SHA256 replaces the source's CRC32 checksum",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_checksums.py#L189",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "test data for checksum replacement",
+          "size": 34
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-object",
+            "Body": {
+              "$data": "d"
+            },
+            "ChecksumAlgorithm": "CRC32",
+            "ChecksumCRC32": "${data.d.crc32B64}"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object",
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ChecksumSHA256": "${data.d.sha256B64}"
+              }
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object"
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0050",
+      "kind": "api",
+      "title": "CopyObject onto itself with MetadataDirective=REPLACE adds a SHA256 checksum",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_checksums.py#L263",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": {
+            "$data": "d"
+          }
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "test data for self-copy checksum",
+          "size": 32
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "CopySource": "${res.b1.name}/test-object",
+            "MetadataDirective": "REPLACE",
+            "ChecksumAlgorithm": "SHA256"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ChecksumSHA256": "${data.d.sha256B64}"
+              }
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object"
+          }
+        }
+      ]
+    },
+    {
+      "id": "checksums-0051",
+      "kind": "api",
+      "title": "CreateMultipartUpload with ChecksumAlgorithm CRC32 echoes the algorithm",
+      "tags": [
+        "tier-1",
+        "checksums",
+        "multipart",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_create_multipart_special.py#L29",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "checksum-object",
+            "ChecksumAlgorithm": "CRC32"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          },
+          "expect": {
+            "response": {
+              "UploadId": {
+                "$exists": true
+              },
+              "ChecksumAlgorithm": "CRC32"
+            }
+          }
+        },
+        {
+          "operation": "AbortMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "checksum-object",
+            "UploadId": "${cap.uploadId}"
+          }
+        }
+      ]
+    }
+  ]
+}

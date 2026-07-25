@@ -1,0 +1,3961 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "tagging",
+  "vectors": [
+    {
+      "id": "tagging-0001",
+      "kind": "api",
+      "title": "GetObjectTagging allowed only when s3:ExistingObjectTag condition matches the object's tag",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12510",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "publictag",
+          "body": "publictag"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "privatetag",
+          "body": "privatetag"
+        },
+        {
+          "type": "object",
+          "handle": "o3",
+          "bucket": "b1",
+          "key": "invalidtag",
+          "body": "invalidtag"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringEquals\":{\"s3:ExistingObjectTag/security\":\"public\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "public"
+                },
+                {
+                  "Key": "foo",
+                  "Value": "bar"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "privatetag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "private"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "invalidtag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security1",
+                  "Value": "public"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "privatetag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "invalidtag"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0002",
+      "kind": "api",
+      "title": "PutObjectTagging allowed only while s3:ExistingObjectTag condition matches, and replacing the matching tag revokes access",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12572",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "publictag",
+          "body": "publictag"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "privatetag",
+          "body": "privatetag"
+        },
+        {
+          "type": "object",
+          "handle": "o3",
+          "bucket": "b1",
+          "key": "invalidtag",
+          "body": "invalidtag"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringEquals\":{\"s3:ExistingObjectTag/security\":\"public\"}}}]}"
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "public"
+                },
+                {
+                  "Key": "foo",
+                  "Value": "bar"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "privatetag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "private"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "public"
+                },
+                {
+                  "Key": "foo",
+                  "Value": "bar"
+                }
+              ]
+            }
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "privatetag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "public"
+                },
+                {
+                  "Key": "foo",
+                  "Value": "bar"
+                }
+              ]
+            }
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "private"
+                }
+              ]
+            }
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "publictag",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "security",
+                  "Value": "public"
+                },
+                {
+                  "Key": "foo",
+                  "Value": "bar"
+                }
+              ]
+            }
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0003",
+      "kind": "api",
+      "title": "Bucket policy allowing s3:DeleteObjectTagging to everyone lets another account delete object tags",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12359",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputtagsacl",
+          "body": "testputtagsacl"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:DeleteObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/testputtagsacl\"}]}"
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtagsacl",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                },
+                {
+                  "Key": "2",
+                  "Value": "2"
+                },
+                {
+                  "Key": "3",
+                  "Value": "3"
+                },
+                {
+                  "Key": "4",
+                  "Value": "4"
+                },
+                {
+                  "Key": "5",
+                  "Value": "5"
+                },
+                {
+                  "Key": "6",
+                  "Value": "6"
+                },
+                {
+                  "Key": "7",
+                  "Value": "7"
+                },
+                {
+                  "Key": "8",
+                  "Value": "8"
+                },
+                {
+                  "Key": "9",
+                  "Value": "9"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "DeleteObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtagsacl"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtagsacl"
+          },
+          "expect": {
+            "response": {
+              "TagSet": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0004",
+      "kind": "api",
+      "title": "HeadObject reports the number of tags in the x-amz-tagging-count header",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12043",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputtags",
+          "body": "testputtags"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtags",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtags"
+          },
+          "expect": {
+            "status": 200,
+            "headers": {
+              "x-amz-tagging-count": "2"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0005",
+      "kind": "api",
+      "title": "PutObjectTagging then GetObjectTagging returns the same tag set",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12029",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputtags",
+          "body": "testputtags"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtags",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0006",
+      "kind": "api",
+      "title": "Bucket policy allowing s3:GetObjectTagging to everyone lets another account read object tags",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12314",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputtagsacl",
+          "body": "testputtagsacl"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/testputtagsacl\"}]}"
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtagsacl",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                },
+                {
+                  "Key": "2",
+                  "Value": "2"
+                },
+                {
+                  "Key": "3",
+                  "Value": "3"
+                },
+                {
+                  "Key": "4",
+                  "Value": "4"
+                },
+                {
+                  "Key": "5",
+                  "Value": "5"
+                },
+                {
+                  "Key": "6",
+                  "Value": "6"
+                },
+                {
+                  "Key": "7",
+                  "Value": "7"
+                },
+                {
+                  "Key": "8",
+                  "Value": "8"
+                },
+                {
+                  "Key": "9",
+                  "Value": "9"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtagsacl"
+          },
+          "identity": "alt",
+          "expect": {
+            "response": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                },
+                {
+                  "Key": "2",
+                  "Value": "2"
+                },
+                {
+                  "Key": "3",
+                  "Value": "3"
+                },
+                {
+                  "Key": "4",
+                  "Value": "4"
+                },
+                {
+                  "Key": "5",
+                  "Value": "5"
+                },
+                {
+                  "Key": "6",
+                  "Value": "6"
+                },
+                {
+                  "Key": "7",
+                  "Value": "7"
+                },
+                {
+                  "Key": "8",
+                  "Value": "8"
+                },
+                {
+                  "Key": "9",
+                  "Value": "9"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0007",
+      "kind": "api",
+      "title": "DeleteObjectTagging returns 204 and removes all tags",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12183",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputmodifytags",
+          "body": "testputmodifytags"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmodifytags",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmodifytags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmodifytags"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmodifytags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0008",
+      "kind": "api",
+      "title": "PutObjectTagging with 129-char tag keys fails with InvalidTag and stores no tags",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12108",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputexcesskeytags",
+          "body": "testputexcesskeytags"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputexcesskeytags",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                  "Value": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                },
+                {
+                  "Key": "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+                  "Value": "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+                },
+                {
+                  "Key": "222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
+                  "Value": "2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
+                },
+                {
+                  "Key": "333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
+                  "Value": "3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+                },
+                {
+                  "Key": "444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
+                  "Value": "4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+                },
+                {
+                  "Key": "555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555",
+                  "Value": "5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"
+                },
+                {
+                  "Key": "666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666",
+                  "Value": "6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666"
+                },
+                {
+                  "Key": "777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777",
+                  "Value": "7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
+                },
+                {
+                  "Key": "888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888",
+                  "Value": "8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888"
+                },
+                {
+                  "Key": "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+                  "Value": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidTag"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputexcesskeytags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0009",
+      "kind": "api",
+      "title": "PutObjectTagging with 11 tags fails with InvalidTag and stores no tags",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12072",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputmaxtags",
+          "body": "testputmaxtags"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmaxtags",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                },
+                {
+                  "Key": "2",
+                  "Value": "2"
+                },
+                {
+                  "Key": "3",
+                  "Value": "3"
+                },
+                {
+                  "Key": "4",
+                  "Value": "4"
+                },
+                {
+                  "Key": "5",
+                  "Value": "5"
+                },
+                {
+                  "Key": "6",
+                  "Value": "6"
+                },
+                {
+                  "Key": "7",
+                  "Value": "7"
+                },
+                {
+                  "Key": "8",
+                  "Value": "8"
+                },
+                {
+                  "Key": "9",
+                  "Value": "9"
+                },
+                {
+                  "Key": "10",
+                  "Value": "10"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidTag"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmaxtags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0010",
+      "kind": "api",
+      "title": "PutObjectTagging with 257-char tag values fails with InvalidTag and stores no tags",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12130",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputexcesskeytags",
+          "body": "testputexcesskeytags"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputexcesskeytags",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                  "Value": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                },
+                {
+                  "Key": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+                  "Value": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+                },
+                {
+                  "Key": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
+                  "Value": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
+                },
+                {
+                  "Key": "33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
+                  "Value": "33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+                },
+                {
+                  "Key": "44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
+                  "Value": "44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+                },
+                {
+                  "Key": "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555",
+                  "Value": "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"
+                },
+                {
+                  "Key": "66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666",
+                  "Value": "66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666"
+                },
+                {
+                  "Key": "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777",
+                  "Value": "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
+                },
+                {
+                  "Key": "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888",
+                  "Value": "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888"
+                },
+                {
+                  "Key": "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+                  "Value": "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidTag"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputexcesskeytags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0011",
+      "kind": "api",
+      "title": "PutObjectTagging accepts 10 tags with maximum-size 128-char keys and 256-char values",
+      "description": "The original test used random strings and only asserted each returned pair was among the input pairs; this vector uses deterministic strings and asserts one representative pair round-trips and the count is 10.",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12087",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputmaxkeysize",
+          "body": "testputmaxkeysize"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmaxkeysize",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                  "Value": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                },
+                {
+                  "Key": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+                  "Value": "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+                },
+                {
+                  "Key": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
+                  "Value": "2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
+                },
+                {
+                  "Key": "33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
+                  "Value": "3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+                },
+                {
+                  "Key": "44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
+                  "Value": "4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+                },
+                {
+                  "Key": "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555",
+                  "Value": "5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"
+                },
+                {
+                  "Key": "66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666",
+                  "Value": "6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666"
+                },
+                {
+                  "Key": "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777",
+                  "Value": "7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
+                },
+                {
+                  "Key": "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888",
+                  "Value": "8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888"
+                },
+                {
+                  "Key": "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+                  "Value": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmaxkeysize"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 10,
+                "$contains": {
+                  "Key": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                  "Value": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0012",
+      "kind": "api",
+      "title": "PutObjectTagging accepts the maximum of 10 tags and returns them all",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12059",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputmaxtags",
+          "body": "testputmaxtags"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmaxtags",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                },
+                {
+                  "Key": "2",
+                  "Value": "2"
+                },
+                {
+                  "Key": "3",
+                  "Value": "3"
+                },
+                {
+                  "Key": "4",
+                  "Value": "4"
+                },
+                {
+                  "Key": "5",
+                  "Value": "5"
+                },
+                {
+                  "Key": "6",
+                  "Value": "6"
+                },
+                {
+                  "Key": "7",
+                  "Value": "7"
+                },
+                {
+                  "Key": "8",
+                  "Value": "8"
+                },
+                {
+                  "Key": "9",
+                  "Value": "9"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmaxtags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                },
+                {
+                  "Key": "2",
+                  "Value": "2"
+                },
+                {
+                  "Key": "3",
+                  "Value": "3"
+                },
+                {
+                  "Key": "4",
+                  "Value": "4"
+                },
+                {
+                  "Key": "5",
+                  "Value": "5"
+                },
+                {
+                  "Key": "6",
+                  "Value": "6"
+                },
+                {
+                  "Key": "7",
+                  "Value": "7"
+                },
+                {
+                  "Key": "8",
+                  "Value": "8"
+                },
+                {
+                  "Key": "9",
+                  "Value": "9"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0013",
+      "kind": "api",
+      "title": "A second PutObjectTagging replaces the previous tag set entirely",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12153",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputmodifytags",
+          "body": "testputmodifytags"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmodifytags",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key",
+                  "Value": "val"
+                },
+                {
+                  "Key": "key2",
+                  "Value": "val2"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmodifytags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": [
+                {
+                  "Key": "key",
+                  "Value": "val"
+                },
+                {
+                  "Key": "key2",
+                  "Value": "val2"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmodifytags",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key3",
+                  "Value": "val3"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputmodifytags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": [
+                {
+                  "Key": "key3",
+                  "Value": "val3"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0014",
+      "kind": "api",
+      "title": "PutObject with an x-amz-tagging header (including a valueless tag) stores tags readable via GetObjectTagging",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12281",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testtagobj1",
+            "Body": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "Tagging": "foo=bar&bar"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testtagobj1"
+          },
+          "expect": {
+            "body": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testtagobj1"
+          },
+          "expect": {
+            "response": {
+              "TagSet": [
+                {
+                  "Key": "bar",
+                  "Value": ""
+                },
+                {
+                  "Key": "foo",
+                  "Value": "bar"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0015",
+      "kind": "api",
+      "title": "Bucket policy allowing s3:PutObjectTagging to everyone lets another account write object tags",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12337",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "testputtagsacl",
+          "body": "testputtagsacl"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/testputtagsacl\"}]}"
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtagsacl",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                },
+                {
+                  "Key": "2",
+                  "Value": "2"
+                },
+                {
+                  "Key": "3",
+                  "Value": "3"
+                },
+                {
+                  "Key": "4",
+                  "Value": "4"
+                },
+                {
+                  "Key": "5",
+                  "Value": "5"
+                },
+                {
+                  "Key": "6",
+                  "Value": "6"
+                },
+                {
+                  "Key": "7",
+                  "Value": "7"
+                },
+                {
+                  "Key": "8",
+                  "Value": "8"
+                },
+                {
+                  "Key": "9",
+                  "Value": "9"
+                }
+              ]
+            }
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "testputtagsacl"
+          },
+          "expect": {
+            "response": {
+              "TagSet": [
+                {
+                  "Key": "0",
+                  "Value": "0"
+                },
+                {
+                  "Key": "1",
+                  "Value": "1"
+                },
+                {
+                  "Key": "2",
+                  "Value": "2"
+                },
+                {
+                  "Key": "3",
+                  "Value": "3"
+                },
+                {
+                  "Key": "4",
+                  "Value": "4"
+                },
+                {
+                  "Key": "5",
+                  "Value": "5"
+                },
+                {
+                  "Key": "6",
+                  "Value": "6"
+                },
+                {
+                  "Key": "7",
+                  "Value": "7"
+                },
+                {
+                  "Key": "8",
+                  "Value": "8"
+                },
+                {
+                  "Key": "9",
+                  "Value": "9"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0016",
+      "kind": "api",
+      "title": "Bucket tagging lifecycle: NoSuchTagSet before set, tag readable after put, NoSuchTagSet again after delete",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L7148",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchTagSet"
+          }
+        },
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "Hello",
+                  "Value": "World"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "TagSet": [
+                {
+                  "Key": "Hello",
+                  "Value": "World"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchTagSet"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0017",
+      "kind": "api",
+      "title": "Tagging supplied on CreateMultipartUpload is readable after complete and removable via DeleteObjectTagging",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "multipart",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12003",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "mymultipart",
+            "Tagging": "Hello=World&foo=bar"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "mymultipart",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": "A"
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "mymultipart",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "mymultipart"
+          },
+          "expect": {
+            "response": {
+              "TagSet": [
+                {
+                  "Key": "Hello",
+                  "Value": "World"
+                },
+                {
+                  "Key": "foo",
+                  "Value": "bar"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "mymultipart"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "mymultipart"
+          },
+          "expect": {
+            "response": {
+              "TagSet": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0018",
+      "kind": "api",
+      "title": "Object tagging: set at upload, update, special characters, 10-tag maximum, and delete",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/9.py#L14",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object.txt",
+            "Body": "Tagged object content",
+            "Tagging": "Environment=Production&Department=Engineering&Project=MSST"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object.txt"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 3,
+                "$contains": {
+                  "Key": "Environment",
+                  "Value": "Production"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object.txt",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "Environment",
+                  "Value": "Staging"
+                },
+                {
+                  "Key": "Department",
+                  "Value": "QA"
+                },
+                {
+                  "Key": "Version",
+                  "Value": "2.0"
+                },
+                {
+                  "Key": "Owner",
+                  "Value": "TestTeam"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object.txt"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 4,
+                "$contains": {
+                  "Key": "Environment",
+                  "Value": "Staging"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "special-tags.txt",
+            "Body": "Object with special tags"
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "special-tags.txt",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "Cost-Center",
+                  "Value": "12345"
+                },
+                {
+                  "Key": "Backup.Schedule",
+                  "Value": "daily"
+                },
+                {
+                  "Key": "Data:Type",
+                  "Value": "sensitive"
+                },
+                {
+                  "Key": "Retention_Days",
+                  "Value": "90"
+                },
+                {
+                  "Key": "Empty",
+                  "Value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "special-tags.txt"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "Cost-Center",
+                  "Value": "12345"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "special-tags.txt"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "Empty",
+                  "Value": ""
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "max-tags.txt",
+            "Body": "Object with maximum tags"
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "max-tags.txt",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "Tag0",
+                  "Value": "Value0"
+                },
+                {
+                  "Key": "Tag1",
+                  "Value": "Value1"
+                },
+                {
+                  "Key": "Tag2",
+                  "Value": "Value2"
+                },
+                {
+                  "Key": "Tag3",
+                  "Value": "Value3"
+                },
+                {
+                  "Key": "Tag4",
+                  "Value": "Value4"
+                },
+                {
+                  "Key": "Tag5",
+                  "Value": "Value5"
+                },
+                {
+                  "Key": "Tag6",
+                  "Value": "Value6"
+                },
+                {
+                  "Key": "Tag7",
+                  "Value": "Value7"
+                },
+                {
+                  "Key": "Tag8",
+                  "Value": "Value8"
+                },
+                {
+                  "Key": "Tag9",
+                  "Value": "Value9"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "max-tags.txt"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 10
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object.txt"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object.txt"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0019",
+      "kind": "api",
+      "title": "Tags supplied at CreateMultipartUpload are present on the completed object",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "multipart",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/9.py#L14",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "mp": {
+          "kind": "pattern",
+          "pattern": "M",
+          "size": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-with-tags.bin",
+            "Tagging": "UploadType=Multipart&Size=Large"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-with-tags.bin",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "mp"
+            }
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-with-tags.bin",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "multipart-with-tags.bin"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "UploadType",
+                  "Value": "Multipart"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0020",
+      "kind": "api",
+      "title": "DeleteObjectTagging on a missing key returns NoSuchKey",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L299",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "non-existing-object"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0021",
+      "kind": "api",
+      "title": "DeleteObjectTagging removes all tags",
+      "description": "AWS behavior after deletion: 200 with an empty TagSet. The source test also tolerated a NoSuchTagSet/NoSuchTagSetError error from some implementations; the AWS path is asserted.",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L250",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "tagged-object",
+          "body": {
+            "$data": "body"
+          }
+        }
+      ],
+      "data": {
+        "body": {
+          "kind": "prng",
+          "seed": "tagging-0021/body",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key1",
+                  "Value": "value1"
+                },
+                {
+                  "Key": "key2",
+                  "Value": "value2"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0022",
+      "kind": "api",
+      "title": "DeleteObjectTagging succeeds on a tagged object",
+      "description": "The source test accepted HTTP 200 or 204; alternative statuses are not expressible, so generic success (2xx) is asserted (AWS returns 204).",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L584",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "tagged-object",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "Hello",
+                  "Value": "World"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0023",
+      "kind": "api",
+      "title": "GetObjectTagging for a key nested under an existing file-like key returns NoSuchKey",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L554",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "not-a-dir",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "not-a-dir/bad-obj"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0024",
+      "kind": "api",
+      "title": "GetObjectTagging on a missing key returns NoSuchKey",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L149",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "non-existing-object"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0025",
+      "kind": "api",
+      "title": "GetObjectTagging returns exactly the three tags that were set",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L211",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "tagged-object",
+          "body": {
+            "$data": "body"
+          }
+        }
+      ],
+      "data": {
+        "body": {
+          "kind": "prng",
+          "seed": "tagging-0025/body",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "environment",
+                  "Value": "testing"
+                },
+                {
+                  "Key": "application",
+                  "Value": "s3-tests"
+                },
+                {
+                  "Key": "version",
+                  "Value": "1.0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 3,
+                "$contains": {
+                  "Key": "environment",
+                  "Value": "testing"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "application",
+                  "Value": "s3-tests"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "version",
+                  "Value": "1.0"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0026",
+      "kind": "api",
+      "title": "GetObjectTagging on an untagged object returns an empty TagSet",
+      "description": "AWS behavior: 200 with an empty TagSet. The source test also tolerated a NoSuchTagSet/NoSuchTagSetError error from some implementations; that alternative is not expressible and the AWS path is asserted.",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L173",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "untagged-object",
+          "body": {
+            "$data": "body"
+          }
+        }
+      ],
+      "data": {
+        "body": {
+          "kind": "prng",
+          "seed": "tagging-0026/body",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "untagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0027",
+      "kind": "api",
+      "title": "Tags can be set, updated and deleted repeatedly on one object",
+      "description": "After deletion the source test tolerated NoSuchTagSet/NoSuchTagSetError from some implementations; the AWS behavior (200 with empty TagSet) is asserted.",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L364",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "tagged-object",
+          "body": {
+            "$data": "body"
+          }
+        }
+      ],
+      "data": {
+        "body": {
+          "kind": "prng",
+          "seed": "tagging-0027/body",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "stage",
+                  "Value": "dev"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "stage",
+                  "Value": "prod"
+                },
+                {
+                  "Key": "region",
+                  "Value": "us-east-1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "stage",
+                  "Value": "prod"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "region",
+                  "Value": "us-east-1"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0028",
+      "kind": "api",
+      "title": "Tag values may contain slashes, at-signs and spaces",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L323",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "tagged-object",
+          "body": {
+            "$data": "body"
+          }
+        }
+      ],
+      "data": {
+        "body": {
+          "kind": "prng",
+          "seed": "tagging-0028/body",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "path",
+                  "Value": "/usr/local/bin"
+                },
+                {
+                  "Key": "email",
+                  "Value": "test@example.com"
+                },
+                {
+                  "Key": "description",
+                  "Value": "Test object with spaces and symbols"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "path",
+                  "Value": "/usr/local/bin"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "email",
+                  "Value": "test@example.com"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "description",
+                  "Value": "Test object with spaces and symbols"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0029",
+      "kind": "api",
+      "title": "Duplicate tag keys in one TagSet are rejected",
+      "description": "The source test accepted any of InvalidTag/DuplicateTagKeys/InvalidArgument; alternative codes are not expressible, so only the 400 status is asserted (AWS returns InvalidTag).",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L479",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key-1",
+                  "Value": "value-1"
+                },
+                {
+                  "Key": "key-2",
+                  "Value": "value-2"
+                },
+                {
+                  "Key": "same-key",
+                  "Value": "value-3"
+                },
+                {
+                  "Key": "same-key",
+                  "Value": "value-4"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0030",
+      "kind": "api",
+      "title": "Tag key over 128 chars or tag value over 256 chars is rejected",
+      "description": "The source test accepted any of InvalidTagKey/InvalidTag/InvalidArgument (key) and InvalidTagValue/InvalidTag/InvalidArgument (value); alternative codes are not expressible, so only the 400 status is asserted (AWS returns InvalidTag).",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L424",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "Value": "value"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key",
+                  "Value": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0031",
+      "kind": "api",
+      "title": "PutObjectTagging on a missing key returns NoSuchKey",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L69",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "non-existing-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key1",
+                  "Value": "value1"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0032",
+      "kind": "api",
+      "title": "PutObjectTagging replaces the entire existing tag set",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L99",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "tagged-object",
+          "body": {
+            "$data": "body"
+          }
+        }
+      ],
+      "data": {
+        "body": {
+          "kind": "prng",
+          "seed": "tagging-0032/body",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "old-key",
+                  "Value": "old-value"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "new-key",
+                  "Value": "new-value"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 1,
+                "$contains": {
+                  "Key": "new-key",
+                  "Value": "new-value"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0033",
+      "kind": "api",
+      "title": "PutObjectTagging sets tags retrievable via GetObjectTagging",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L28",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "tagged-object",
+          "body": {
+            "$data": "body"
+          }
+        }
+      ],
+      "data": {
+        "body": {
+          "kind": "prng",
+          "seed": "tagging-0033/body",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key1",
+                  "Value": "value1"
+                },
+                {
+                  "Key": "key2",
+                  "Value": "value2"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "key1",
+                  "Value": "value1"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "key2",
+                  "Value": "value2"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0034",
+      "kind": "api",
+      "title": "More than 10 tags on an object is rejected",
+      "description": "The source test accepted any of BadRequest/InvalidTag/InvalidArgument; alternative codes are not expressible, so only the 400 status is asserted (AWS returns BadRequest).",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L519",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key-0",
+                  "Value": "value-0"
+                },
+                {
+                  "Key": "key-1",
+                  "Value": "value-1"
+                },
+                {
+                  "Key": "key-2",
+                  "Value": "value-2"
+                },
+                {
+                  "Key": "key-3",
+                  "Value": "value-3"
+                },
+                {
+                  "Key": "key-4",
+                  "Value": "value-4"
+                },
+                {
+                  "Key": "key-5",
+                  "Value": "value-5"
+                },
+                {
+                  "Key": "key-6",
+                  "Value": "value-6"
+                },
+                {
+                  "Key": "key-7",
+                  "Value": "value-7"
+                },
+                {
+                  "Key": "key-8",
+                  "Value": "value-8"
+                },
+                {
+                  "Key": "key-9",
+                  "Value": "value-9"
+                },
+                {
+                  "Key": "key-10",
+                  "Value": "value-10"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0035",
+      "kind": "api",
+      "title": "DeleteBucketTagging removes all bucket tags",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L290",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key1",
+                  "Value": "val1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 1
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchTagSet"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0036",
+      "kind": "api",
+      "title": "GetBucketTagging on a bucket with no tags returns NoSuchTagSet",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L263",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchTagSet"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0037",
+      "kind": "api",
+      "title": "GetBucketTagging on a non-existent bucket returns NoSuchBucket",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L235",
+      "steps": [
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "msst-nonexistent-tag-get-bucket"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0038",
+      "kind": "api",
+      "title": "PutBucketTagging with duplicate tag keys returns InvalidTag",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L104",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key",
+                  "Value": "value"
+                },
+                {
+                  "Key": "key",
+                  "Value": "value-1"
+                },
+                {
+                  "Key": "key-1",
+                  "Value": "value-2"
+                },
+                {
+                  "Key": "key-2",
+                  "Value": "value-3"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidTag"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0039",
+      "kind": "api",
+      "title": "PutBucketTagging rejects a 200-char tag key and a 300-char tag value with InvalidTag",
+      "description": "Tag keys are limited to 128 characters and tag values to 256 characters.",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L56",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "Value": "val"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidTag"
+          }
+        },
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key",
+                  "Value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidTag"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0040",
+      "kind": "api",
+      "title": "PutBucketTagging on a non-existent bucket returns NoSuchBucket",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L28",
+      "steps": [
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "msst-nonexistent-tag-put-bucket",
+            "Tagging": {
+              "TagSet": []
+            }
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0041",
+      "kind": "api",
+      "title": "PutBucketTagging with two valid tags succeeds and GetBucketTagging returns exactly those tags",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L174",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key1",
+                  "Value": "val1"
+                },
+                {
+                  "Key": "key2",
+                  "Value": "val2"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 2,
+                "$contains": {
+                  "Key": "key1",
+                  "Value": "val1"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "key2",
+                  "Value": "val2"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0042",
+      "kind": "api",
+      "title": "PutBucketTagging with a valid tag succeeds",
+      "description": "The original test accepts HTTP 200 or 204; that disjunction is expressed as the step simply succeeding (2xx).",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L209",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key",
+                  "Value": "val"
+                }
+              ]
+            }
+          },
+          "expect": {}
+        }
+      ]
+    },
+    {
+      "id": "tagging-0043",
+      "kind": "api",
+      "title": "PutBucketTagging with 51 tags is rejected with a 400 error",
+      "description": "Buckets allow at most 50 tags. The original test accepts several error codes (InvalidTag, BadRequest, InvalidArgument, MalformedXML), so only the 400 status is asserted.",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L141",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key-0",
+                  "Value": "value-0"
+                },
+                {
+                  "Key": "key-1",
+                  "Value": "value-1"
+                },
+                {
+                  "Key": "key-2",
+                  "Value": "value-2"
+                },
+                {
+                  "Key": "key-3",
+                  "Value": "value-3"
+                },
+                {
+                  "Key": "key-4",
+                  "Value": "value-4"
+                },
+                {
+                  "Key": "key-5",
+                  "Value": "value-5"
+                },
+                {
+                  "Key": "key-6",
+                  "Value": "value-6"
+                },
+                {
+                  "Key": "key-7",
+                  "Value": "value-7"
+                },
+                {
+                  "Key": "key-8",
+                  "Value": "value-8"
+                },
+                {
+                  "Key": "key-9",
+                  "Value": "value-9"
+                },
+                {
+                  "Key": "key-10",
+                  "Value": "value-10"
+                },
+                {
+                  "Key": "key-11",
+                  "Value": "value-11"
+                },
+                {
+                  "Key": "key-12",
+                  "Value": "value-12"
+                },
+                {
+                  "Key": "key-13",
+                  "Value": "value-13"
+                },
+                {
+                  "Key": "key-14",
+                  "Value": "value-14"
+                },
+                {
+                  "Key": "key-15",
+                  "Value": "value-15"
+                },
+                {
+                  "Key": "key-16",
+                  "Value": "value-16"
+                },
+                {
+                  "Key": "key-17",
+                  "Value": "value-17"
+                },
+                {
+                  "Key": "key-18",
+                  "Value": "value-18"
+                },
+                {
+                  "Key": "key-19",
+                  "Value": "value-19"
+                },
+                {
+                  "Key": "key-20",
+                  "Value": "value-20"
+                },
+                {
+                  "Key": "key-21",
+                  "Value": "value-21"
+                },
+                {
+                  "Key": "key-22",
+                  "Value": "value-22"
+                },
+                {
+                  "Key": "key-23",
+                  "Value": "value-23"
+                },
+                {
+                  "Key": "key-24",
+                  "Value": "value-24"
+                },
+                {
+                  "Key": "key-25",
+                  "Value": "value-25"
+                },
+                {
+                  "Key": "key-26",
+                  "Value": "value-26"
+                },
+                {
+                  "Key": "key-27",
+                  "Value": "value-27"
+                },
+                {
+                  "Key": "key-28",
+                  "Value": "value-28"
+                },
+                {
+                  "Key": "key-29",
+                  "Value": "value-29"
+                },
+                {
+                  "Key": "key-30",
+                  "Value": "value-30"
+                },
+                {
+                  "Key": "key-31",
+                  "Value": "value-31"
+                },
+                {
+                  "Key": "key-32",
+                  "Value": "value-32"
+                },
+                {
+                  "Key": "key-33",
+                  "Value": "value-33"
+                },
+                {
+                  "Key": "key-34",
+                  "Value": "value-34"
+                },
+                {
+                  "Key": "key-35",
+                  "Value": "value-35"
+                },
+                {
+                  "Key": "key-36",
+                  "Value": "value-36"
+                },
+                {
+                  "Key": "key-37",
+                  "Value": "value-37"
+                },
+                {
+                  "Key": "key-38",
+                  "Value": "value-38"
+                },
+                {
+                  "Key": "key-39",
+                  "Value": "value-39"
+                },
+                {
+                  "Key": "key-40",
+                  "Value": "value-40"
+                },
+                {
+                  "Key": "key-41",
+                  "Value": "value-41"
+                },
+                {
+                  "Key": "key-42",
+                  "Value": "value-42"
+                },
+                {
+                  "Key": "key-43",
+                  "Value": "value-43"
+                },
+                {
+                  "Key": "key-44",
+                  "Value": "value-44"
+                },
+                {
+                  "Key": "key-45",
+                  "Value": "value-45"
+                },
+                {
+                  "Key": "key-46",
+                  "Value": "value-46"
+                },
+                {
+                  "Key": "key-47",
+                  "Value": "value-47"
+                },
+                {
+                  "Key": "key-48",
+                  "Value": "value-48"
+                },
+                {
+                  "Key": "key-49",
+                  "Value": "value-49"
+                },
+                {
+                  "Key": "key-50",
+                  "Value": "value-50"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0044",
+      "kind": "api",
+      "title": "PutBucketTagging replaces the entire existing tag set",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L330",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key1",
+                  "Value": "val1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "PutBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Tagging": {
+              "TagSet": [
+                {
+                  "Key": "key2",
+                  "Value": "val2"
+                },
+                {
+                  "Key": "key3",
+                  "Value": "val3"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 2,
+                "$contains": {
+                  "Key": "key2",
+                  "Value": "val2"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetBucketTagging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "key3",
+                  "Value": "val3"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tagging-0045",
+      "kind": "api",
+      "title": "PutObject with Tagging sets tags readable via GetObjectTagging",
+      "description": "Two GetObjectTagging steps assert membership of each tag independently, mirroring the original's unordered dict comparison.",
+      "tags": [
+        "tier-3",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_edge_cases.py#L352",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "body": {
+          "kind": "prng",
+          "seed": "tagging-0045/body",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object",
+            "Body": {
+              "$data": "body"
+            },
+            "Tagging": "key1=value1&key2=value2"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "key1",
+                  "Value": "value1"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tagged-object"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "key2",
+                  "Value": "value2"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
