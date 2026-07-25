@@ -8,11 +8,15 @@ schema cannot express: the placeholder grammar, the generated-data algorithm, ma
 semantics and runner outcome semantics.
 
 ```
-schema/vector.schema.json   the schema
-vectors/<area>.json         one file per feature area, each { "area", "vectors": [...] }
-scripts/validate.js         schema + lint validation        (node scripts/validate.js)
-scripts/datagen.js          reference data generator        (node scripts/datagen.js --self-test)
-docs/conversion-report.md   provenance: what was converted, excluded and merged
+├── schema
+│   └── vector.schema.json    the schema
+├── vectors
+│   └── <area>.json           one file per feature area, each { "area", "vectors": [...] }
+├── scripts
+│   ├── datagen.js            reference data generator        (node datagen.js --self-test)
+│   └── validate.js           schema + lint validation        (node validate.js)
+└── docs
+    └──conversion-report.md   provenance: what was converted, excluded and merged
 ```
 
 ## Vector basics
