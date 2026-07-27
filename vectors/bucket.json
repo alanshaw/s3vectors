@@ -394,28 +394,6 @@
       ]
     },
     {
-      "id": "bucket-0016",
-      "kind": "api",
-      "title": "CreateBucket with a 63-character name succeeds",
-      "tags": [
-        "tier-2",
-        "bucket",
-        "source:ceph-s3-tests"
-      ],
-      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3754",
-      "steps": [
-        {
-          "operation": "CreateBucket",
-          "params": {
-            "Bucket": "s3v-ceph-bucket-naming-good-long-63-aaaaaaaaaaaaaaaaaaaaaaaaaaa"
-          },
-          "expect": {
-            "status": 200
-          }
-        }
-      ]
-    },
-    {
       "id": "bucket-0017",
       "kind": "api",
       "title": "DeleteBucket on a non-empty bucket returns BucketNotEmpty",
@@ -423,7 +401,8 @@
         "tier-2",
         "bucket",
         "errors",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1537",
       "prerequisites": [
@@ -460,7 +439,8 @@
         "tier-2",
         "bucket",
         "errors",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1527",
       "steps": [
@@ -483,7 +463,8 @@
       "tags": [
         "tier-1",
         "bucket",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3345",
       "prerequisites": [
@@ -512,7 +493,8 @@
         "tier-1",
         "bucket",
         "errors",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3352",
       "steps": [
@@ -560,7 +542,8 @@
         "bucket",
         "acl",
         "errors",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3893",
       "prerequisites": [
@@ -1521,65 +1504,6 @@
       ]
     },
     {
-      "id": "bucket-0042",
-      "kind": "api",
-      "title": "DeleteBucket on a non-existent bucket returns NoSuchBucket",
-      "tags": [
-        "tier-2",
-        "bucket",
-        "errors",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L145",
-      "steps": [
-        {
-          "operation": "DeleteBucket",
-          "params": {
-            "Bucket": "non-existing-bucket-12345"
-          },
-          "expect": {
-            "error": "NoSuchBucket"
-          }
-        }
-      ]
-    },
-    {
-      "id": "bucket-0043",
-      "kind": "api",
-      "title": "DeleteBucket on a non-empty bucket returns BucketNotEmpty",
-      "tags": [
-        "tier-2",
-        "bucket",
-        "errors",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L165",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "data"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "DeleteBucket",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "error": "BucketNotEmpty"
-          }
-        }
-      ]
-    },
-    {
       "id": "bucket-0044",
       "kind": "api",
       "title": "DeleteBucket removes the bucket",
@@ -1656,54 +1580,6 @@
       "steps": [
         {
           "operation": "GetBucketLocation",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          }
-        }
-      ]
-    },
-    {
-      "id": "bucket-0047",
-      "kind": "api",
-      "title": "HeadBucket on a non-existent bucket returns 404",
-      "tags": [
-        "tier-1",
-        "bucket",
-        "errors",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L95",
-      "steps": [
-        {
-          "operation": "HeadBucket",
-          "params": {
-            "Bucket": "non-existing-bucket-12345"
-          },
-          "expect": {
-            "status": 404
-          }
-        }
-      ]
-    },
-    {
-      "id": "bucket-0048",
-      "kind": "api",
-      "title": "HeadBucket on an existing bucket succeeds",
-      "tags": [
-        "tier-1",
-        "bucket",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L73",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "HeadBucket",
           "params": {
             "Bucket": "${res.b1.name}"
           }
@@ -2026,36 +1902,6 @@
           "operation": "DeleteBucket",
           "params": {
             "Bucket": "${res.b1.name}-q1"
-          }
-        }
-      ]
-    },
-    {
-      "id": "bucket-0055",
-      "kind": "api",
-      "title": "CreateBucket on an existing bucket name returns a 409 conflict",
-      "description": "Original test accepted BucketAlreadyExists or BucketAlreadyOwnedByYou; both are HTTP 409, so only the status is asserted. Note AWS us-east-1 historically returns 200 when re-creating a bucket you own.",
-      "tags": [
-        "tier-2",
-        "bucket",
-        "errors",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_create_bucket_advanced.py#L75",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "CreateBucket",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 409
           }
         }
       ]

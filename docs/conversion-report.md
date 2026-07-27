@@ -1,52 +1,52 @@
 # Conversion report
 
-Generated 2026-07-24 from the batch outputs in `.conversion/`.
+Generated 2026-07-25 from the batch outputs in `.conversion/`.
 Every vector was produced by a converter agent and checked by an independent adversarial
 verifier against the original test source; per-exclusion detail is in
 `.conversion/{ceph,msst}/merged-excluded.json`.
 
 ## Corpus
 
-**1336 vectors** in 23 files.
+**1191 vectors** in 23 files.
 
 | Tier | Vectors |
 |---|---|
-| tier-1 | 729 |
-| tier-2 | 54 |
-| tier-3 | 553 |
+| tier-1 | 628 |
+| tier-2 | 48 |
+| tier-3 | 515 |
 
 | Provenance | Vectors |
 |---|---|
-| source:msst-s3 | 755 |
-| source:ceph-s3-tests | 543 |
+| source:msst-s3 | 679 |
+| source:ceph-s3-tests | 514 |
 | source:aws-sigv4-suite | 31 |
-| source:storage-test | 7 |
+| source:storage-test | 5 |
 
 | Area file | Vectors |
 |---|---|
-| vectors/acl.json | 84 |
+| vectors/acl.json | 81 |
 | vectors/anon-access.json | 12 |
-| vectors/bucket.json | 55 |
+| vectors/bucket.json | 49 |
 | vectors/bucket-logging.json | 11 |
-| vectors/checksums.json | 51 |
-| vectors/conditional.json | 59 |
-| vectors/copy.json | 65 |
-| vectors/cors.json | 22 |
+| vectors/checksums.json | 44 |
+| vectors/conditional.json | 57 |
+| vectors/copy.json | 48 |
+| vectors/cors.json | 21 |
 | vectors/encoding.json | 22 |
 | vectors/errors.json | 8 |
 | vectors/lifecycle-config.json | 29 |
-| vectors/listing.json | 122 |
+| vectors/listing.json | 111 |
 | vectors/misc.json | 11 |
-| vectors/multipart.json | 192 |
-| vectors/object-crud.json | 198 |
-| vectors/object-lock.json | 78 |
-| vectors/policy.json | 56 |
+| vectors/multipart.json | 167 |
+| vectors/object-crud.json | 159 |
+| vectors/object-lock.json | 68 |
+| vectors/policy.json | 53 |
 | vectors/presigned.json | 7 |
 | vectors/signing.json | 31 |
-| vectors/sse.json | 54 |
-| vectors/tagging.json | 45 |
-| vectors/versioning.json | 97 |
-| vectors/wire-headers.json | 27 |
+| vectors/sse.json | 44 |
+| vectors/tagging.json | 44 |
+| vectors/versioning.json | 93 |
+| vectors/wire-headers.json | 21 |
 
 ## Sources
 
@@ -100,6 +100,28 @@ Exclusions by category:
 | time-based | 7 |
 | iam-sts | 1 |
 
+## Deduplication
+
+- **Exact duplicates**: 7 removed (structural hash after canonicalizing handles,
+  dataset names and prng seeds) — log: `.conversion/dedup-exact.json`.
+- **Semantic near-duplicates**: 188 candidate groups (vectors sharing prerequisite
+  shape + operation sequence) reviewed per area by independent agents; **138 removed**
+  (same behavior, assertions a subset of a kept vector; keeper absorbed the removed
+  vector's provenance tags) — log: `.conversion/dedup-semantic.json`.
+- **Contradictions (kept, needs adjudication)** — pairs asserting incompatible outcomes
+  for the same request; both sides retained so runners/reviewers can decide which
+  matches their target:
+  1. acl-0042 vs acl-0058 — GetBucketOwnershipControls on a fresh bucket: 404
+     OwnershipControlsNotFoundError (ceph, tagged quirk:not-aws) vs 200 with default
+     BucketOwnerEnforced (AWS behavior).
+  2. bucket-0022 vs bucket-0039 — owner re-creates their own bucket: BucketAlreadyExists
+     vs BucketAlreadyOwnedByYou (both 409; AWS returns BucketAlreadyOwnedByYou outside
+     us-east-1).
+  3. multipart-0010 vs multipart-0107/0108 — UploadPartCopy with past-the-end
+     CopySourceRange: InvalidRange vs InvalidArgument.
+  4. sse-0028 vs sse-0045 — SSE-C read with a wrong (but valid) customer key: 400 vs
+     403 AccessDenied.
+
 ## Conventions applied during conversion
 
 - Vectors carry a `source` permalink to the originating test (github, pinned commit).
@@ -114,7 +136,7 @@ Exclusions by category:
 
 ## Verification
 
-- Schema + lint: `node scripts/validate.js` — 1336 vectors pass.
+- Schema + lint: `node scripts/validate.js` — 1191 vectors pass.
 - Dataset digests: `node scripts/validate.js --digests` — all derived values computable.
 - Every batch passed an adversarial verify agent comparing vectors against the Python
   source (verify totals across runs: ~1,300 vectors accepted, ~70 fixed in place,

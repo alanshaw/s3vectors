@@ -2715,45 +2715,6 @@
       ]
     },
     {
-      "id": "policy-0044",
-      "kind": "api",
-      "title": "PutBucketPolicy accepts statements carrying Sid identifiers",
-      "tags": [
-        "tier-3",
-        "policy",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy_advanced.py#L207",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutBucketPolicy",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicReadGetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"},{\"Sid\":\"DenyUnencryptedObjectUploads\",\"Effect\":\"Deny\",\"Principal\":\"*\",\"Action\":\"s3:PutObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
-          }
-        },
-        {
-          "operation": "GetBucketPolicy",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "Policy": {
-                "$matches": "\"Statement\""
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "policy-0045",
       "kind": "api",
       "title": "DeleteBucketPolicy removes the policy; subsequent GetBucketPolicy returns NoSuchBucketPolicy",
@@ -2922,45 +2883,6 @@
       ]
     },
     {
-      "id": "policy-0050",
-      "kind": "api",
-      "title": "PutBucketPolicy allowing public read succeeds and is retrievable via GetBucketPolicy",
-      "tags": [
-        "tier-3",
-        "policy",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_policy.py#L214",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutBucketPolicy",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicReadGetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\"}]}"
-          }
-        },
-        {
-          "operation": "GetBucketPolicy",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "Policy": {
-                "$matches": "\"Statement\""
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "policy-0051",
       "kind": "api",
       "title": "PutBucketPolicy with a Deny statement succeeds and is retrievable",
@@ -3113,37 +3035,6 @@
                 "$matches": "s3:GetObject"
               }
             }
-          }
-        }
-      ]
-    },
-    {
-      "id": "policy-0055",
-      "kind": "api",
-      "title": "PutBucketPolicy rejects a malformed JSON policy",
-      "tags": [
-        "tier-3",
-        "policy",
-        "errors",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/policies/test_bucket_policies.py#L232",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutBucketPolicy",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Policy": "{\"invalid\": json}"
-          },
-          "expect": {
-            "status": 400,
-            "error": "MalformedPolicy"
           }
         }
       ]

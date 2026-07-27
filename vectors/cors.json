@@ -1168,69 +1168,6 @@
       ]
     },
     {
-      "id": "cors-0006",
-      "kind": "api",
-      "title": "PutBucketCors accepts a valid configuration and GetBucketCors returns one rule",
-      "tags": [
-        "tier-3",
-        "cors",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/cors/test_cors_validation.py#L23",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutBucketCors",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "CORSConfiguration": {
-              "CORSRules": [
-                {
-                  "AllowedOrigins": [
-                    "https://example.com",
-                    "https://*.example.com"
-                  ],
-                  "AllowedMethods": [
-                    "GET",
-                    "PUT",
-                    "POST",
-                    "DELETE",
-                    "HEAD"
-                  ],
-                  "AllowedHeaders": [
-                    "*"
-                  ],
-                  "ExposeHeaders": [
-                    "ETag",
-                    "x-amz-request-id"
-                  ],
-                  "MaxAgeSeconds": 3600
-                }
-              ]
-            }
-          }
-        },
-        {
-          "operation": "GetBucketCors",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "CORSRules": {
-                "$length": 1
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "cors-0007",
       "kind": "api",
       "title": "CORS rule limit: 100 rules accepted, 101 rules rejected",

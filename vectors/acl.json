@@ -280,7 +280,8 @@
       "tags": [
         "tier-3",
         "acl",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L4503",
       "prerequisites": [
@@ -7184,69 +7185,6 @@
       ]
     },
     {
-      "id": "acl-0066",
-      "kind": "api",
-      "title": "GetBucketAcl on a new bucket returns Owner with ID and at least one grant",
-      "tags": [
-        "tier-3",
-        "acl",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_acl.py#L227",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetBucketAcl",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "Owner": {
-                "ID": {
-                  "$exists": true
-                }
-              },
-              "Grants": {
-                "$contains": {}
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "acl-0067",
-      "kind": "api",
-      "title": "PutBucketAcl accepts canned ACL private",
-      "tags": [
-        "tier-3",
-        "acl",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_acl.py#L186",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutBucketAcl",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "ACL": "private"
-          }
-        }
-      ]
-    },
-    {
       "id": "acl-0068",
       "kind": "api",
       "title": "PutBucketAcl accepts canned ACL public-read",
@@ -7508,35 +7446,6 @@
           "expect": {
             "status": 404,
             "error": "NoSuchBucket"
-          }
-        }
-      ]
-    },
-    {
-      "id": "acl-0076",
-      "kind": "api",
-      "title": "PutBucketAcl canned ACL private returns HTTP 200",
-      "tags": [
-        "tier-3",
-        "acl",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_acl.py#L289",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutBucketAcl",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "ACL": "private"
-          },
-          "expect": {
-            "status": 200
           }
         }
       ]

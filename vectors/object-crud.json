@@ -44,88 +44,6 @@
       ]
     },
     {
-      "id": "object-crud-0002",
-      "kind": "api",
-      "title": "Put and get a JSON object",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:storage-test"
-      ],
-      "source": "https://github.com/olizilla/storage-test/blob/1754e86ef101b1b162323b92c58f3018c419995a/tests.json#L31",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "data.json",
-            "Body": "{\"status\":\"ok\",\"values\":[1,2,3]}",
-            "ContentType": "application/json"
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "data.json"
-          },
-          "expect": {
-            "response": {
-              "ContentType": "application/json"
-            },
-            "body": "{\"status\":\"ok\",\"values\":[1,2,3]}"
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0003",
-      "kind": "api",
-      "title": "Put and get an HTML object",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:storage-test"
-      ],
-      "source": "https://github.com/olizilla/storage-test/blob/1754e86ef101b1b162323b92c58f3018c419995a/tests.json#L55",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "index.html",
-            "Body": "<!DOCTYPE html><html><body><h1>Compliance Test</h1></body></html>",
-            "ContentType": "text/html"
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "index.html"
-          },
-          "expect": {
-            "response": {
-              "ContentType": "text/html"
-            },
-            "body": "<!DOCTYPE html><html><body><h1>Compliance Test</h1></body></html>"
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0004",
       "kind": "api",
       "title": "Put and get an empty object",
@@ -264,37 +182,6 @@
       ]
     },
     {
-      "id": "object-crud-0007",
-      "kind": "api",
-      "title": "GetObject on a missing key returns NoSuchKey",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "errors",
-        "source:storage-test"
-      ],
-      "source": "https://github.com/olizilla/storage-test/blob/1754e86ef101b1b162323b92c58f3018c419995a/tests.json#L176",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "missing-ghost-file.bin"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0008",
       "kind": "api",
       "title": "GetObject response-* query overrides set the corresponding response headers",
@@ -302,7 +189,8 @@
       "tags": [
         "tier-1",
         "object-crud",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3445",
       "prerequisites": [
@@ -4294,7 +4182,9 @@
         "tier-1",
         "object-crud",
         "errors",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:storage-test",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1618",
       "prerequisites": [
@@ -4484,7 +4374,8 @@
       "tags": [
         "tier-1",
         "object-crud",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1810",
       "prerequisites": [
@@ -4524,7 +4415,8 @@
       "tags": [
         "tier-1",
         "object-crud",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1803",
       "prerequisites": [
@@ -4558,7 +4450,8 @@
       "tags": [
         "tier-1",
         "object-crud",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1819",
       "prerequisites": [
@@ -4598,7 +4491,8 @@
       "tags": [
         "tier-1",
         "object-crud",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1934",
       "prerequisites": [
@@ -4781,7 +4675,8 @@
       "tags": [
         "tier-1",
         "object-crud",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3595",
       "prerequisites": [
@@ -4944,7 +4839,8 @@
         "tier-1",
         "object-crud",
         "errors",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L7626",
       "prerequisites": [
@@ -4982,7 +4878,8 @@
       "tags": [
         "tier-1",
         "object-crud",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L7564",
       "prerequisites": [
@@ -5023,7 +4920,8 @@
       "tags": [
         "tier-1",
         "object-crud",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L7612",
       "prerequisites": [
@@ -5064,7 +4962,8 @@
       "tags": [
         "tier-1",
         "object-crud",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L7597",
       "prerequisites": [
@@ -5797,101 +5696,6 @@
       ]
     },
     {
-      "id": "object-crud-0051",
-      "kind": "api",
-      "title": "PutObject/GetObject round-trip preserves a 6144-byte body length",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/41.py#L14",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "data": {
-        "body": {
-          "kind": "pattern",
-          "pattern": "X",
-          "size": 6144
-        }
-      },
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "object-6144b.bin",
-            "Body": {
-              "$data": "body"
-            }
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "object-6144b.bin"
-          },
-          "expect": {
-            "body": {
-              "$size": 6144
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0052",
-      "kind": "api",
-      "title": "User metadata set on PutObject is returned by HeadObject",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "metadata",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/76.py#L14",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "metadata-test.txt",
-            "Body": "Content",
-            "Metadata": {
-              "meta-key-0": "meta-value-0"
-            }
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "metadata-test.txt"
-          },
-          "expect": {
-            "response": {
-              "Metadata": {
-                "meta-key-0": {
-                  "$exists": true
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0053",
       "kind": "api",
       "title": "PutObject with 10 user metadata entries, all returned by HeadObject",
@@ -6326,55 +6130,6 @@
           "expect": {
             "body": {
               "$md5": "${data.bin.md5}"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0059",
-      "kind": "api",
-      "title": "1 MiB sequential-byte upload round-trips intact",
-      "description": "Original streamed the upload from a file-like object computing MD5 on the fly; the generated bytes are position % 256, i.e. the 0..255 pattern repeated, sent as a normal PUT.",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_data_integrity.py#L17",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "data": {
-        "stream": {
-          "kind": "pattern",
-          "patternBase64": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==",
-          "size": 1048576
-        }
-      },
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "streaming-integrity",
-            "Body": {
-              "$data": "stream"
-            }
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "streaming-integrity"
-          },
-          "expect": {
-            "body": {
-              "$md5": "${data.stream.md5}"
             }
           }
         }
@@ -9395,44 +9150,6 @@
       ]
     },
     {
-      "id": "object-crud-0093",
-      "kind": "api",
-      "title": "Ranged GetObject returns 206 Partial Content with only the requested bytes",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L298",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Range": "bytes=0-9"
-          },
-          "expect": {
-            "status": 206,
-            "body": "0123456789"
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0094",
       "kind": "api",
       "title": "GetObject on an empty directory-marker key (trailing slash) returns zero-length body",
@@ -9505,50 +9222,6 @@
       ]
     },
     {
-      "id": "object-crud-0096",
-      "kind": "api",
-      "title": "GetObject applies multiple response header overrides together",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L334",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "test content for multiple overrides"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "ResponseCacheControl": "no-cache",
-            "ResponseContentType": "application/octet-stream",
-            "ResponseContentDisposition": "attachment; filename=\"download.bin\""
-          },
-          "expect": {
-            "response": {
-              "CacheControl": "no-cache",
-              "ContentType": "application/octet-stream",
-              "ContentDisposition": "attachment; filename=\"download.bin\""
-            },
-            "body": "test content for multiple overrides"
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0097",
       "kind": "api",
       "title": "GetObject on a missing directory-marker key (trailing slash) returns NoSuchKey",
@@ -9575,207 +9248,6 @@
           "expect": {
             "status": 404,
             "error": "NoSuchKey"
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0098",
-      "kind": "api",
-      "title": "GetObject with ResponseCacheControl overrides Cache-Control in the response",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L29",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "test content"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "ResponseCacheControl": "max-age=90"
-          },
-          "expect": {
-            "response": {
-              "CacheControl": "max-age=90"
-            },
-            "body": "test content"
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0099",
-      "kind": "api",
-      "title": "GetObject with ResponseContentDisposition overrides Content-Disposition in the response",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L60",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-file.txt",
-          "body": "test content"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-file.txt",
-            "ResponseContentDisposition": "attachment; filename=\"downloaded.txt\""
-          },
-          "expect": {
-            "response": {
-              "ContentDisposition": "attachment; filename=\"downloaded.txt\""
-            },
-            "body": "test content"
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0100",
-      "kind": "api",
-      "title": "GetObject with ResponseContentEncoding overrides Content-Encoding in the response",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L91",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "test content"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "ResponseContentEncoding": "gzip"
-          },
-          "expect": {
-            "response": {
-              "ContentEncoding": "gzip"
-            },
-            "body": "test content"
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0101",
-      "kind": "api",
-      "title": "GetObject with ResponseContentLanguage overrides Content-Language in the response",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L122",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "test content"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "ResponseContentLanguage": "en-US"
-          },
-          "expect": {
-            "response": {
-              "ContentLanguage": "en-US"
-            },
-            "body": "test content"
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0102",
-      "kind": "api",
-      "title": "GetObject with ResponseContentType overrides the stored Content-Type in the response",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L153",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object.txt",
-          "body": "test content",
-          "contentType": "text/plain"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object.txt",
-            "ResponseContentType": "application/json"
-          },
-          "expect": {
-            "response": {
-              "ContentType": "application/json"
-            },
-            "body": "test content"
           }
         }
       ]
@@ -10101,60 +9573,6 @@
       ]
     },
     {
-      "id": "object-crud-0111",
-      "kind": "api",
-      "title": "GetObjectAttributes response includes every requested standard attribute plus LastModified",
-      "tags": [
-        "tier-3",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_attributes.py#L315",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "test data"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObjectAttributes",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "ObjectAttributes": [
-              "ETag",
-              "ObjectSize",
-              "StorageClass"
-            ]
-          },
-          "expect": {
-            "response": {
-              "ETag": {
-                "$exists": true
-              },
-              "ObjectSize": {
-                "$exists": true
-              },
-              "StorageClass": {
-                "$exists": true
-              },
-              "LastModified": {
-                "$exists": true
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0112",
       "kind": "api",
       "title": "GetObject ContentLength matches the actual body size",
@@ -10289,132 +9707,6 @@
       ]
     },
     {
-      "id": "object-crud-0115",
-      "kind": "api",
-      "title": "GetObject on a non-existing key returns NoSuchKey",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "errors",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_edge_cases.py#L29",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "non-existing-key"
-          },
-          "expect": {
-            "error": "NoSuchKey"
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0116",
-      "kind": "api",
-      "title": "GetObject on an existing object returns HTTP 200",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_edge_cases.py#L338",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "status-object",
-          "body": {
-            "$data": "body"
-          }
-        }
-      ],
-      "data": {
-        "body": {
-          "kind": "prng",
-          "seed": "object-crud-0116/body",
-          "size": 50
-        }
-      },
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "status-object"
-          },
-          "expect": {
-            "status": 200
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0117",
-      "kind": "api",
-      "title": "GetObject ETag matches the ETag returned by PutObject",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_edge_cases.py#L197",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "data": {
-        "body": {
-          "kind": "prng",
-          "seed": "object-crud-0117/body",
-          "size": 128
-        }
-      },
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "etag-object",
-            "Body": {
-              "$data": "body"
-            }
-          },
-          "capture": {
-            "putEtag": "ETag"
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "etag-object"
-          },
-          "expect": {
-            "response": {
-              "ETag": "${cap.putEtag}"
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0118",
       "kind": "api",
       "title": "GetObject response includes a LastModified timestamp",
@@ -10458,53 +9750,6 @@
               "LastModified": {
                 "$exists": true
               }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0119",
-      "kind": "api",
-      "title": "GetObject returns the exact bytes that were uploaded",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_edge_cases.py#L52",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "body"
-          }
-        }
-      ],
-      "data": {
-        "body": {
-          "kind": "prng",
-          "seed": "object-crud-0119/body",
-          "size": 1024
-        }
-      },
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object"
-          },
-          "expect": {
-            "body": {
-              "$data": "body"
             }
           }
         }
@@ -10812,64 +10057,6 @@
       ]
     },
     {
-      "id": "object-crud-0125",
-      "kind": "api",
-      "title": "Ranged GetObject bytes=0-9 returns the first 10 bytes with ContentRange",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_range.py#L29",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
-          }
-        }
-      ],
-      "data": {
-        "obj": {
-          "kind": "prng",
-          "seed": "object-crud-0125/obj",
-          "size": 100
-        },
-        "first10": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 0,
-          "length": 10
-        }
-      },
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Range": "bytes=0-9"
-          },
-          "expect": {
-            "response": {
-              "ContentLength": 10,
-              "ContentRange": "bytes 0-9/100"
-            },
-            "body": {
-              "$data": "first10"
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0126",
       "kind": "api",
       "title": "Range extending past the object end is trimmed to object size",
@@ -10915,271 +10102,6 @@
             },
             "body": {
               "$data": "obj"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0127",
-      "kind": "api",
-      "title": "Range bytes=0- returns the full object",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_range.py#L162",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
-          }
-        }
-      ],
-      "data": {
-        "obj": {
-          "kind": "prng",
-          "seed": "object-crud-0127/obj",
-          "size": 100
-        }
-      },
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Range": "bytes=0-"
-          },
-          "expect": {
-            "body": {
-              "$data": "obj"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0128",
-      "kind": "api",
-      "title": "Suffix range bytes=-1 returns the last byte",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_range.py#L305",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
-          }
-        }
-      ],
-      "data": {
-        "obj": {
-          "kind": "prng",
-          "seed": "object-crud-0128/obj",
-          "size": 100
-        },
-        "lastByte": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 99,
-          "length": 1
-        }
-      },
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Range": "bytes=-1"
-          },
-          "expect": {
-            "body": {
-              "$data": "lastByte"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0129",
-      "kind": "api",
-      "title": "Ranged GetObject bytes=50-59 returns the middle bytes with ContentRange",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_range.py#L63",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
-          }
-        }
-      ],
-      "data": {
-        "obj": {
-          "kind": "prng",
-          "seed": "object-crud-0129/obj",
-          "size": 100
-        },
-        "mid10": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 50,
-          "length": 10
-        }
-      },
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Range": "bytes=50-59"
-          },
-          "expect": {
-            "response": {
-              "ContentRange": "bytes 50-59/100"
-            },
-            "body": {
-              "$data": "mid10"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0130",
-      "kind": "api",
-      "title": "Range entirely past the object end is not satisfiable (HTTP 416)",
-      "description": "Source test accepted error code InvalidRange, RequestedRangeNotSatisfiable, or '416' — all HTTP 416 failures. This vector asserts the AWS-canonical InvalidRange with status 416.",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "errors",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_range.py#L227",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
-          }
-        }
-      ],
-      "data": {
-        "obj": {
-          "kind": "prng",
-          "seed": "object-crud-0130/obj",
-          "size": 100
-        }
-      },
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Range": "bytes=100-110"
-          },
-          "expect": {
-            "status": 416,
-            "error": "InvalidRange"
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0131",
-      "kind": "api",
-      "title": "Open-ended range GetObject bytes=50- returns from offset to end",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_range.py#L129",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
-          }
-        }
-      ],
-      "data": {
-        "obj": {
-          "kind": "prng",
-          "seed": "object-crud-0131/obj",
-          "size": 100
-        },
-        "tail50": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 50,
-          "length": 50
-        }
-      },
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Range": "bytes=50-"
-          },
-          "expect": {
-            "response": {
-              "ContentRange": "bytes 50-99/100"
-            },
-            "body": {
-              "$data": "tail50"
             }
           }
         }
@@ -11259,63 +10181,6 @@
             },
             "body": {
               "$data": "byte99"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0133",
-      "kind": "api",
-      "title": "Suffix range GetObject bytes=-10 returns the last 10 bytes",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_range.py#L96",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
-          }
-        }
-      ],
-      "data": {
-        "obj": {
-          "kind": "prng",
-          "seed": "object-crud-0133/obj",
-          "size": 100
-        },
-        "last10": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 90,
-          "length": 10
-        }
-      },
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Range": "bytes=-10"
-          },
-          "expect": {
-            "response": {
-              "ContentRange": "bytes 90-99/100"
-            },
-            "body": {
-              "$data": "last10"
             }
           }
         }
@@ -11560,57 +10425,6 @@
               "ContentEncoding": "gzip",
               "ContentLanguage": "en-US",
               "ContentDisposition": "attachment; filename=\"test.txt\""
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0139",
-      "kind": "api",
-      "title": "HeadObject ETag matches the ETag returned by PutObject",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_head_object_edge_cases.py#L351",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "data": {
-        "obj": {
-          "kind": "prng",
-          "seed": "object-crud-0139/obj",
-          "size": 128
-        }
-      },
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Body": {
-              "$data": "obj"
-            }
-          },
-          "capture": {
-            "putEtag": "ETag"
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object"
-          },
-          "expect": {
-            "response": {
-              "ETag": "${cap.putEtag}"
             }
           }
         }
@@ -12306,56 +11120,6 @@
       ]
     },
     {
-      "id": "object-crud-0149",
-      "kind": "api",
-      "title": "User metadata (x-amz-meta-*) round-trips through PutObject and HeadObject",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "headers",
-        "metadata",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_header_handling.py#L16",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "custom-amz-headers",
-            "Body": "test",
-            "Metadata": {
-              "user-id": "12345",
-              "application": "test-suite",
-              "custom-field": "custom-value"
-            }
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "custom-amz-headers"
-          },
-          "expect": {
-            "response": {
-              "Metadata": {
-                "user-id": "12345",
-                "application": "test-suite",
-                "custom-field": "custom-value"
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0150",
       "kind": "api",
       "title": "Mixed-case metadata keys are handled case-insensitively and returned lowercased",
@@ -12463,49 +11227,6 @@
       ]
     },
     {
-      "id": "object-crud-0152",
-      "kind": "api",
-      "title": "GetObject response-* parameters override the returned Content-Type",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "headers",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_header_handling.py#L16",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        },
-        {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "response-headers",
-          "body": "test content"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "response-headers",
-            "ResponseContentType": "application/octet-stream",
-            "ResponseContentDisposition": "attachment; filename=\"download.bin\"",
-            "ResponseCacheControl": "no-cache"
-          },
-          "expect": {
-            "status": 200,
-            "response": {
-              "ContentType": "application/octet-stream"
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0153",
       "kind": "api",
       "title": "ETag is quoted hex and consistent between PutObject and HeadObject; LastModified is returned",
@@ -12554,43 +11275,6 @@
                 "$exists": true
               }
             }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0154",
-      "kind": "api",
-      "title": "Small object body round-trips byte-for-byte",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_header_handling.py#L16",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "transfer-encoding",
-            "Body": "chunk1chunk2chunk3"
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "transfer-encoding"
-          },
-          "expect": {
-            "body": "chunk1chunk2chunk3"
           }
         }
       ]
@@ -13727,43 +12411,6 @@
       ]
     },
     {
-      "id": "object-crud-0173",
-      "kind": "api",
-      "title": "Single-byte object round-trips intact",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_size_limits.py#L15",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "single-byte",
-            "Body": "X"
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "single-byte"
-          },
-          "expect": {
-            "body": "X"
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0174",
       "kind": "api",
       "title": "Small object sizes 1 B to 1 KiB report correct ContentLength",
@@ -14468,72 +13115,6 @@
       ]
     },
     {
-      "id": "object-crud-0177",
-      "kind": "api",
-      "title": "PutObject with an Expires header succeeds and the object is readable via HeadObject",
-      "description": "The original test treats preservation of Expires as implementation-specific and only asserts the operations succeed.",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_additional.py#L357",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "expires-object",
-            "Body": "expires data",
-            "Expires": "2030-12-31T23:59:59Z"
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "expires-object"
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0178",
-      "kind": "api",
-      "title": "PutObject returns HTTP 200",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_additional.py#L423",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "status-object",
-            "Body": "status test"
-          },
-          "expect": {
-            "status": 200
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0179",
       "kind": "api",
       "title": "PutObject preserves WebsiteRedirectLocation, visible via HeadObject",
@@ -14747,153 +13328,6 @@
       ]
     },
     {
-      "id": "object-crud-0183",
-      "kind": "api",
-      "title": "PutObject overwrites an existing object, changing ETag and content",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_edge_cases.py#L277",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "overwrite-object",
-            "Body": "original data"
-          },
-          "capture": {
-            "etag1": "ETag"
-          }
-        },
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "overwrite-object",
-            "Body": "new data that overwrites"
-          },
-          "expect": {
-            "response": {
-              "ETag": {
-                "$matches": "^(?!${cap.etag1}$)"
-              }
-            }
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "overwrite-object"
-          },
-          "expect": {
-            "body": "new data that overwrites"
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0184",
-      "kind": "api",
-      "title": "PutObject returns a non-empty ETag",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_edge_cases.py#L396",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "data": {
-        "body": {
-          "kind": "prng",
-          "seed": "object-crud-0184/body",
-          "size": 256
-        }
-      },
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "etag-object",
-            "Body": {
-              "$data": "body"
-            }
-          },
-          "expect": {
-            "response": {
-              "ETag": {
-                "$matches": "."
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0185",
-      "kind": "api",
-      "title": "PutObject stores Cache-Control retrievable via HeadObject",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_edge_cases.py#L154",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "data": {
-        "body": {
-          "kind": "prng",
-          "seed": "object-crud-0185/body",
-          "size": 100
-        }
-      },
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "cached-object",
-            "Body": {
-              "$data": "body"
-            },
-            "CacheControl": "max-age=3600, public"
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "cached-object"
-          },
-          "expect": {
-            "response": {
-              "CacheControl": "max-age=3600, public"
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0186",
       "kind": "api",
       "title": "PutObject stores Content-Disposition retrievable via HeadObject",
@@ -14937,55 +13371,6 @@
           "expect": {
             "response": {
               "ContentDisposition": "attachment; filename=\"download.bin\""
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0187",
-      "kind": "api",
-      "title": "PutObject stores Content-Encoding retrievable via HeadObject",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_edge_cases.py#L185",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "data": {
-        "body": {
-          "kind": "prng",
-          "seed": "object-crud-0187/body",
-          "size": 200
-        }
-      },
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "encoded-object",
-            "Body": {
-              "$data": "body"
-            },
-            "ContentEncoding": "gzip"
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "encoded-object"
-          },
-          "expect": {
-            "response": {
-              "ContentEncoding": "gzip"
             }
           }
         }
@@ -15133,63 +13518,6 @@
       ]
     },
     {
-      "id": "object-crud-0189",
-      "kind": "api",
-      "title": "PutObject stores custom user metadata retrievable via HeadObject",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_edge_cases.py#L78",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "data": {
-        "body": {
-          "kind": "prng",
-          "seed": "object-crud-0189/body",
-          "size": 256
-        }
-      },
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "object-with-metadata",
-            "Body": {
-              "$data": "body"
-            },
-            "Metadata": {
-              "author": "test-user",
-              "version": "1.0",
-              "environment": "testing"
-            }
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "object-with-metadata"
-          },
-          "expect": {
-            "response": {
-              "Metadata": {
-                "author": "test-user",
-                "version": "1.0",
-                "environment": "testing"
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "object-crud-0190",
       "kind": "api",
       "title": "PutObject with StorageClass STANDARD stores the object",
@@ -15285,40 +13613,6 @@
           "expect": {
             "body": {
               "$size": 0
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0192",
-      "kind": "api",
-      "title": "PutObject response includes an ETag",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_sdk_capability_example.py#L105",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "checksum-test.txt",
-            "Body": "test data for checksum"
-          },
-          "expect": {
-            "response": {
-              "ETag": {
-                "$exists": true
-              }
             }
           }
         }
@@ -15552,50 +13846,6 @@
               "ContentType": "text/plain",
               "ContentEncoding": "gzip"
             }
-          }
-        }
-      ]
-    },
-    {
-      "id": "object-crud-0195",
-      "kind": "api",
-      "title": "Read-your-writes: GET immediately after PUT returns same bytes and ETag",
-      "tags": [
-        "tier-1",
-        "object-crud",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/production/3015.py#L33",
-      "prerequisites": [
-        {
-          "type": "bucket",
-          "handle": "b1"
-        }
-      ],
-      "steps": [
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "consistency/test-object.txt",
-            "Body": "test data for read-your-writes"
-          },
-          "capture": {
-            "etag": "ETag"
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "consistency/test-object.txt"
-          },
-          "expect": {
-            "status": 200,
-            "response": {
-              "ETag": "${cap.etag}"
-            },
-            "body": "test data for read-your-writes"
           }
         }
       ]
