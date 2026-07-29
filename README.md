@@ -12,12 +12,38 @@ semantics and runner outcome semantics.
 │   └── vector.schema.json    the schema
 ├── vectors
 │   └── <area>.json           one file per feature area, each { "area", "vectors": [...] }
+├── packages
+│   ├── js                    npm  @cloud-portable/s3vectors
+│   ├── python                PyPI cloud-portable-s3vectors
+│   ├── go                    github.com/cloud-portable/s3vectors/packages/go
+│   └── rust                  crates.io cloud-portable-s3vectors
 ├── scripts
 │   ├── datagen.js            reference data generator        (node datagen.js --self-test)
-│   └── validate.js           schema + lint validation        (node validate.js)
+│   ├── validate.js           schema + lint validation        (node validate.js)
+│   └── sync-packages.js      sync vectors into packages/     (--check for drift)
 └── docs
-    └──conversion-report.md   provenance: what was converted, excluded and merged
+    ├── conversion-report.md  provenance: what was converted, excluded and merged
+    └── releasing.md          lockstep release checklist for the packages
 ```
+
+## Language packages
+
+The corpus ships as installable packages so runner authors never touch this
+repo's layout: each package exposes the parsed vectors (per area or all at
+once) plus a port of the deterministic data generator — and deliberately
+nothing else (no assertions, no matcher engine, no HTTP). See each package's
+README for usage:
+
+| Language | Install | Package |
+|---|---|---|
+| JavaScript | `npm i @cloud-portable/s3vectors` | [packages/js](packages/js) |
+| Python | `pip install cloud-portable-s3vectors` | [packages/python](packages/python) |
+| Go | `go get github.com/cloud-portable/s3vectors/packages/go` | [packages/go](packages/go) |
+| Rust | `cargo add cloud-portable-s3vectors` | [packages/rust](packages/rust) |
+
+The package version identifies the corpus snapshot and is identical across all
+four. Vector JSON inside `packages/` is synchronized from `vectors/` by
+`node scripts/sync-packages.js` — never edit it by hand.
 
 ## Vector basics
 

@@ -1,0 +1,3259 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "copy",
+  "vectors": [
+    {
+      "id": "copy-0001",
+      "kind": "api",
+      "title": "CopyObject with non-matching x-amz-copy-source-if-match returns PreconditionFailed",
+      "tags": [
+        "tier-1",
+        "copy",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14041",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar",
+            "CopySource": "${res.b1.name}/foo",
+            "CopySourceIfMatch": "ABCORZ"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0002",
+      "kind": "api",
+      "title": "CopyObject with matching x-amz-copy-source-if-match succeeds",
+      "tags": [
+        "tier-1",
+        "copy",
+        "conditional",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14028",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar",
+            "CopySource": "${res.b1.name}/foo",
+            "CopySourceIfMatch": "${res.o1.etag}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0003",
+      "kind": "api",
+      "title": "CopyObject with non-matching x-amz-copy-source-if-none-match succeeds",
+      "tags": [
+        "tier-1",
+        "copy",
+        "conditional",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14066",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar",
+            "CopySource": "${res.b1.name}/foo",
+            "CopySourceIfNoneMatch": "ABCORZ"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0004",
+      "kind": "api",
+      "title": "CopyObject with matching x-amz-copy-source-if-none-match returns PreconditionFailed",
+      "tags": [
+        "tier-1",
+        "copy",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L14054",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar",
+            "CopySource": "${res.b1.name}/foo",
+            "CopySourceIfNoneMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0005",
+      "kind": "api",
+      "title": "Copy a 16 MiB object within a bucket",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5529",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "obj1",
+          "body": {
+            "$data": "zeros16m"
+          }
+        }
+      ],
+      "data": {
+        "zeros16m": {
+          "kind": "pattern",
+          "patternBase64": "AA==",
+          "size": 16777216
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj2",
+            "CopySource": "${res.b1.name}/obj1"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj2"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 16777216
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0006",
+      "kind": "api",
+      "title": "Copy from a non-existent source bucket returns 404",
+      "tags": [
+        "tier-1",
+        "copy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5721",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo",
+            "CopySource": "${res.b1.name}-fake/foo123bar"
+          },
+          "expect": {
+            "status": 404
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0007",
+      "kind": "api",
+      "title": "CopyObject applies a canned public-read ACL to the destination",
+      "tags": [
+        "tier-1",
+        "copy",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5659",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": "foo"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo",
+            "CopySource": "${res.b1.name}/foo123bar",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo"
+          },
+          "identity": "alt"
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar",
+            "CopySource": "${res.b1.name}/bar321foo",
+            "ACL": "public-read",
+            "Metadata": {
+              "abc": "def"
+            },
+            "MetadataDirective": "REPLACE"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar"
+          },
+          "identity": "alt"
+        }
+      ]
+    },
+    {
+      "id": "copy-0008",
+      "kind": "api",
+      "title": "Copy an object to a different bucket",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5603",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": "foo"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "bar321foo",
+            "CopySource": "${res.b1.name}/foo123bar"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "bar321foo"
+          },
+          "expect": {
+            "body": "foo"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0010",
+      "kind": "api",
+      "title": "Copy from another user's private object into own bucket is denied",
+      "tags": [
+        "tier-2",
+        "copy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5619",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": "foo"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-alt"
+          },
+          "identity": "alt"
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}-alt",
+            "Key": "bar321foo",
+            "CopySource": "${res.b1.name}/foo123bar"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0011",
+      "kind": "api",
+      "title": "Grantee with FULL_CONTROL on object and bucket can copy within the owner's bucket",
+      "tags": [
+        "tier-3",
+        "copy",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5636",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": "foo"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar"
+          },
+          "capture": {
+            "ownerId": "Owner.ID"
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar",
+            "AccessControlPolicy": {
+              "Grants": [
+                {
+                  "Grantee": {
+                    "ID": "${cap.ownerId}",
+                    "Type": "CanonicalUser"
+                  },
+                  "Permission": "FULL_CONTROL"
+                },
+                {
+                  "Grantee": {
+                    "ID": "${res.alt.canonicalId}",
+                    "Type": "CanonicalUser"
+                  },
+                  "Permission": "FULL_CONTROL"
+                }
+              ],
+              "Owner": {
+                "ID": "${cap.ownerId}"
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "AccessControlPolicy": {
+              "Grants": [
+                {
+                  "Grantee": {
+                    "ID": "${cap.ownerId}",
+                    "Type": "CanonicalUser"
+                  },
+                  "Permission": "FULL_CONTROL"
+                },
+                {
+                  "Grantee": {
+                    "ID": "${res.alt.canonicalId}",
+                    "Type": "CanonicalUser"
+                  },
+                  "Permission": "FULL_CONTROL"
+                }
+              ],
+              "Owner": {
+                "ID": "${cap.ownerId}"
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar"
+          },
+          "identity": "alt"
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo",
+            "CopySource": "${res.b1.name}/foo123bar"
+          },
+          "identity": "alt"
+        }
+      ]
+    },
+    {
+      "id": "copy-0012",
+      "kind": "api",
+      "title": "Copy with REPLACE directive overwrites metadata and content type (3-byte object)",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5700",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": {
+            "$base64": "AAAA"
+          },
+          "contentType": "audio/ogg",
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo",
+            "CopySource": "${res.b1.name}/foo123bar",
+            "Metadata": {
+              "key3": "value3",
+              "key2": "value2"
+            },
+            "MetadataDirective": "REPLACE",
+            "ContentType": "audio/mpeg"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo"
+          },
+          "expect": {
+            "response": {
+              "ContentType": "audio/mpeg",
+              "Metadata": {
+                "key3": "value3",
+                "key2": "value2",
+                "key1": {
+                  "$absent": true
+                }
+              },
+              "ContentLength": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0014",
+      "kind": "api",
+      "title": "Copy retains metadata and content type (3-byte object)",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5680",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": {
+            "$base64": "AAAA"
+          },
+          "contentType": "audio/ogg",
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo",
+            "CopySource": "${res.b1.name}/foo123bar"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo"
+          },
+          "expect": {
+            "response": {
+              "ContentType": "audio/ogg",
+              "Metadata": {
+                "key1": "value1",
+                "key2": "value2"
+              },
+              "ContentLength": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0017",
+      "kind": "api",
+      "title": "Copy an object onto itself without changes returns InvalidRequest",
+      "tags": [
+        "tier-1",
+        "copy",
+        "errors",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5576",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": "foo"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar",
+            "CopySource": "${res.b1.name}/foo123bar"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidRequest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0018",
+      "kind": "api",
+      "title": "Copy an object onto itself with the REPLACE metadata directive",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5590",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": "foo"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar",
+            "CopySource": "${res.b1.name}/foo123bar",
+            "Metadata": {
+              "foo": "bar"
+            },
+            "MetadataDirective": "REPLACE"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar"
+          },
+          "expect": {
+            "response": {
+              "Metadata": {
+                "foo": "bar"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0019",
+      "kind": "api",
+      "title": "Copy preserves the source object's Content-Type",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5558",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": "foo",
+          "contentType": "text/bla"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo",
+            "CopySource": "${res.b1.name}/foo123bar"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo"
+          },
+          "expect": {
+            "body": "foo",
+            "response": {
+              "ContentType": "text/bla"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0020",
+      "kind": "api",
+      "title": "Copy specific versions across versioned and non-versioned buckets",
+      "tags": [
+        "tier-1",
+        "copy",
+        "versioning",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5742",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2",
+          "versioning": "Enabled"
+        },
+        {
+          "type": "bucket",
+          "handle": "b3"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": {
+            "$base64": "AAAAAAA="
+          }
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo",
+            "CopySource": "${res.b1.name}/foo123bar?versionId=${res.o1.versionId}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo"
+          },
+          "capture": {
+            "vid2": "VersionId"
+          },
+          "expect": {
+            "body": {
+              "$base64": "AAAAAAA="
+            },
+            "response": {
+              "ContentLength": 5
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo2",
+            "CopySource": "${res.b1.name}/bar321foo?versionId=${cap.vid2}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo2"
+          },
+          "expect": {
+            "body": {
+              "$base64": "AAAAAAA="
+            },
+            "response": {
+              "ContentLength": 5
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "bar321foo3",
+            "CopySource": "${res.b1.name}/foo123bar?versionId=${res.o1.versionId}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "bar321foo3"
+          },
+          "expect": {
+            "body": {
+              "$base64": "AAAAAAA="
+            },
+            "response": {
+              "ContentLength": 5
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b3.name}",
+            "Key": "bar321foo4",
+            "CopySource": "${res.b1.name}/foo123bar?versionId=${res.o1.versionId}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b3.name}",
+            "Key": "bar321foo4"
+          },
+          "expect": {
+            "body": {
+              "$base64": "AAAAAAA="
+            },
+            "response": {
+              "ContentLength": 5
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar2",
+            "CopySource": "${res.b3.name}/bar321foo4"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar2"
+          },
+          "expect": {
+            "body": {
+              "$base64": "AAAAAAA="
+            },
+            "response": {
+              "ContentLength": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0021",
+      "kind": "api",
+      "title": "Copy a specific version of an object whose key needs URL encoding",
+      "tags": [
+        "tier-1",
+        "copy",
+        "versioning",
+        "encoding",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5807",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo?bar",
+          "body": ""
+        }
+      ],
+      "steps": [
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo?bar"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar&foo",
+            "CopySource": "${res.b1.name}/foo?bar?versionId=${res.o1.versionId}"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar&foo"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0022",
+      "kind": "api",
+      "title": "Copy versions of a multipart object across versioned and non-versioned buckets, retaining body, metadata and content type",
+      "tags": [
+        "tier-1",
+        "copy",
+        "versioning",
+        "multipart",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5912",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2",
+          "versioning": "Enabled"
+        },
+        {
+          "type": "bucket",
+          "handle": "b3"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0022/src",
+          "size": 31457280
+        },
+        "part1": {
+          "kind": "slice",
+          "of": "src",
+          "offset": 0,
+          "length": 5242880
+        },
+        "part2": {
+          "kind": "slice",
+          "of": "src",
+          "offset": 5242880,
+          "length": 5242880
+        },
+        "part3": {
+          "kind": "slice",
+          "of": "src",
+          "offset": 10485760,
+          "length": 5242880
+        },
+        "part4": {
+          "kind": "slice",
+          "of": "src",
+          "offset": 15728640,
+          "length": 5242880
+        },
+        "part5": {
+          "kind": "slice",
+          "of": "src",
+          "offset": 20971520,
+          "length": 5242880
+        },
+        "part6": {
+          "kind": "slice",
+          "of": "src",
+          "offset": 26214400,
+          "length": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "srcmultipart",
+            "Metadata": {
+              "foo": "bar"
+            },
+            "ContentType": "text/bla"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "srcmultipart",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "part1"
+            }
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "srcmultipart",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 2,
+            "Body": {
+              "$data": "part2"
+            }
+          },
+          "capture": {
+            "etag2": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "srcmultipart",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 3,
+            "Body": {
+              "$data": "part3"
+            }
+          },
+          "capture": {
+            "etag3": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "srcmultipart",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 4,
+            "Body": {
+              "$data": "part4"
+            }
+          },
+          "capture": {
+            "etag4": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "srcmultipart",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 5,
+            "Body": {
+              "$data": "part5"
+            }
+          },
+          "capture": {
+            "etag5": "ETag"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "srcmultipart",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 6,
+            "Body": {
+              "$data": "part6"
+            }
+          },
+          "capture": {
+            "etag6": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "srcmultipart",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                },
+                {
+                  "PartNumber": 2,
+                  "ETag": "${cap.etag2}"
+                },
+                {
+                  "PartNumber": 3,
+                  "ETag": "${cap.etag3}"
+                },
+                {
+                  "PartNumber": 4,
+                  "ETag": "${cap.etag4}"
+                },
+                {
+                  "PartNumber": 5,
+                  "ETag": "${cap.etag5}"
+                },
+                {
+                  "PartNumber": 6,
+                  "ETag": "${cap.etag6}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "srcmultipart"
+          },
+          "capture": {
+            "vid1": "VersionId"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dstmultipart",
+            "CopySource": "${res.b1.name}/srcmultipart?versionId=${cap.vid1}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dstmultipart"
+          },
+          "capture": {
+            "vid2": "VersionId"
+          },
+          "expect": {
+            "body": {
+              "$size": 31457280,
+              "$md5": "${data.src.md5}"
+            },
+            "response": {
+              "ContentLength": 31457280,
+              "Metadata": {
+                "foo": "bar"
+              },
+              "ContentType": "text/bla"
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dstmultipart2",
+            "CopySource": "${res.b1.name}/dstmultipart?versionId=${cap.vid2}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dstmultipart2"
+          },
+          "expect": {
+            "body": {
+              "$size": 31457280,
+              "$md5": "${data.src.md5}"
+            },
+            "response": {
+              "ContentLength": 31457280,
+              "Metadata": {
+                "foo": "bar"
+              },
+              "ContentType": "text/bla"
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "dstmultipart3",
+            "CopySource": "${res.b1.name}/srcmultipart?versionId=${cap.vid1}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "dstmultipart3"
+          },
+          "expect": {
+            "body": {
+              "$size": 31457280,
+              "$md5": "${data.src.md5}"
+            },
+            "response": {
+              "ContentLength": 31457280,
+              "Metadata": {
+                "foo": "bar"
+              },
+              "ContentType": "text/bla"
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b3.name}",
+            "Key": "dstmultipart4",
+            "CopySource": "${res.b1.name}/srcmultipart?versionId=${cap.vid1}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b3.name}",
+            "Key": "dstmultipart4"
+          },
+          "expect": {
+            "body": {
+              "$size": 31457280,
+              "$md5": "${data.src.md5}"
+            },
+            "response": {
+              "ContentLength": 31457280,
+              "Metadata": {
+                "foo": "bar"
+              },
+              "ContentType": "text/bla"
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b3.name}",
+            "Key": "dstmultipart5",
+            "CopySource": "${res.b3.name}/dstmultipart4"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b3.name}",
+            "Key": "dstmultipart5"
+          },
+          "expect": {
+            "body": {
+              "$size": 31457280,
+              "$md5": "${data.src.md5}"
+            },
+            "response": {
+              "ContentLength": 31457280,
+              "Metadata": {
+                "foo": "bar"
+              },
+              "ContentType": "text/bla"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0023",
+      "kind": "api",
+      "title": "Copy a zero-length object",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5514",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo123bar",
+          "body": "foo123bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo123bar",
+            "Body": ""
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo",
+            "CopySource": "${res.b1.name}/foo123bar"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "bar321foo"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0024",
+      "kind": "api",
+      "title": "Checksums are preserved across overwrite and server-side copy",
+      "description": "Reduced to the firm assertions of the source test: STANDARD upload ETag equals MD5, overwrite keeps content identical, and a server-side copy has identical content. Vendor-tolerant storage-class transition loops are omitted.",
+      "tags": [
+        "tier-1",
+        "copy",
+        "object-crud",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/8.py#L15",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "med": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 1048576
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tier-test-medium.bin",
+            "Body": {
+              "$data": "med"
+            },
+            "StorageClass": "STANDARD",
+            "Metadata": {
+              "original-md5": "${data.med.md5}",
+              "original-sha256": "${data.med.sha256}",
+              "size-category": "medium"
+            }
+          },
+          "expect": {
+            "response": {
+              "ETag": "${data.med.etag}"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tier-test-medium.bin"
+          },
+          "expect": {
+            "body": {
+              "$md5": "${data.med.md5}",
+              "$sha256": "${data.med.sha256}"
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tier-test-medium.bin",
+            "Body": {
+              "$data": "med"
+            },
+            "Metadata": {
+              "version": "2",
+              "original-md5": "${data.med.md5}"
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tier-test-medium.bin"
+          },
+          "expect": {
+            "body": {
+              "$md5": "${data.med.md5}"
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tier-test-medium.bin-copy",
+            "CopySource": "${res.b1.name}/tier-test-medium.bin"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "tier-test-medium.bin-copy"
+          },
+          "expect": {
+            "body": {
+              "$md5": "${data.med.md5}",
+              "$sha256": "${data.med.sha256}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0025",
+      "kind": "api",
+      "title": "CopyObject to a new key within the same bucket succeeds",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/59.py#L14",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "content-test.txt",
+          "body": "Original content"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "content-test.txt.copy",
+            "CopySource": "${res.b1.name}/content-test.txt"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0028",
+      "kind": "api",
+      "title": "CopySource with a leading slash is accepted",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L100",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "src-obj",
+          "body": {
+            "$data": "d"
+          }
+        }
+      ],
+      "data": {
+        "d": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 1234567
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "src-obj",
+            "CopySource": "/${res.b1.name}/src-obj"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "src-obj"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 1234567
+            },
+            "body": {
+              "$size": 1234567,
+              "$sha256": "${data.d.sha256}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0029",
+      "kind": "api",
+      "title": "CopyObject onto itself with an invalid MetadataDirective is rejected",
+      "description": "Original test accepts InvalidArgument or InvalidRequest; both are HTTP 400, so only the status is asserted.",
+      "tags": [
+        "tier-1",
+        "copy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L30",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "test data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "CopySource": "${res.b1.name}/my-obj",
+            "MetadataDirective": "invalid"
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0030",
+      "kind": "api",
+      "title": "CopySource without a bucket/key slash separator is rejected",
+      "description": "Original test accepts InvalidArgument, InvalidRequest, NoSuchKey or NoSuchBucket; AWS returns 400 InvalidArgument for a copy source lacking a slash, which is asserted here.",
+      "tags": [
+        "tier-1",
+        "copy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L138",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "src-obj",
+          "body": "test data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "${res.b1.name}src-obj"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "src-obj"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0031",
+      "kind": "api",
+      "title": "CopyObject with an invalid TaggingDirective is rejected",
+      "description": "Original test accepts InvalidArgument or InvalidRequest; both are HTTP 400, so only the status is asserted.",
+      "tags": [
+        "tier-1",
+        "copy",
+        "tagging",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L65",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "src-obj",
+          "body": "test data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "${res.b1.name}/src-obj",
+            "TaggingDirective": "invalid"
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0032",
+      "kind": "api",
+      "title": "CopyObject with MetadataDirective=COPY preserves metadata and Content-Type",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L209",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "src-obj",
+          "body": "test data",
+          "contentType": "text/plain",
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "${res.b1.name}/src-obj",
+            "MetadataDirective": "COPY"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj"
+          },
+          "expect": {
+            "response": {
+              "Metadata": {
+                "key1": "value1",
+                "key2": "value2"
+              },
+              "ContentType": "text/plain"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0033",
+      "kind": "api",
+      "title": "CopyObject with MetadataDirective=REPLACE applies new metadata and Content-Type",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L250",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "src-obj",
+          "body": "test data",
+          "contentType": "text/plain",
+          "metadata": {
+            "old": "metadata"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "${res.b1.name}/src-obj",
+            "MetadataDirective": "REPLACE",
+            "Metadata": {
+              "new": "metadata",
+              "another": "value"
+            },
+            "ContentType": "application/json"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj"
+          },
+          "expect": {
+            "response": {
+              "Metadata": {
+                "new": "metadata",
+                "another": "value",
+                "old": {
+                  "$absent": true
+                }
+              },
+              "ContentType": "application/json"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0034",
+      "kind": "api",
+      "title": "CopyObject of a non-existent directory-style key returns NoSuchKey",
+      "tags": [
+        "tier-1",
+        "copy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L182",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "${res.b1.name}/non-existing-dir/"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0035",
+      "kind": "api",
+      "title": "CopyObject with MetadataDirective=REPLACE updates content headers",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L376",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "src-obj",
+            "Body": "test data",
+            "ContentType": "text/plain",
+            "ContentEncoding": "gzip",
+            "ContentLanguage": "en",
+            "CacheControl": "no-cache"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "${res.b1.name}/src-obj",
+            "MetadataDirective": "REPLACE",
+            "ContentType": "application/json",
+            "ContentEncoding": "identity",
+            "ContentLanguage": "fr",
+            "CacheControl": "max-age=3600"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj"
+          },
+          "expect": {
+            "response": {
+              "ContentType": "application/json",
+              "ContentEncoding": "identity",
+              "ContentLanguage": "fr",
+              "CacheControl": "max-age=3600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0036",
+      "kind": "api",
+      "title": "CopyObject with spaces in the source key",
+      "tags": [
+        "tier-1",
+        "copy",
+        "encoding",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L424",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my obj with spaces",
+          "body": "test data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "${res.b1.name}/my obj with spaces"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0037",
+      "kind": "api",
+      "title": "CopyObject with TaggingDirective=COPY preserves source tags",
+      "tags": [
+        "tier-3",
+        "copy",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L293",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "src-obj",
+            "Body": "test data",
+            "Tagging": "tag1=value1&tag2=value2"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "${res.b1.name}/src-obj",
+            "TaggingDirective": "COPY"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 2,
+                "$contains": {
+                  "Key": "tag1",
+                  "Value": "value1"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "tag2",
+                  "Value": "value2"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0038",
+      "kind": "api",
+      "title": "CopyObject with TaggingDirective=REPLACE applies new tags",
+      "tags": [
+        "tier-3",
+        "copy",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_directives.py#L334",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "src-obj",
+            "Body": "test data",
+            "Tagging": "old=tag"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj",
+            "CopySource": "${res.b1.name}/src-obj",
+            "TaggingDirective": "REPLACE",
+            "Tagging": "new=tag&another=tag"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 2,
+                "$contains": {
+                  "Key": "new",
+                  "Value": "tag"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-obj"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "another",
+                  "Value": "tag"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0039",
+      "kind": "api",
+      "title": "CopyObject with a malformed x-amz-copy-source (no bucket/key separator) is rejected",
+      "description": "The original test accepted InvalidArgument or InvalidRequest; AWS returns InvalidArgument for a copy source without a bucket/key separator. Expressed as a raw-HTTP step so the malformed header bypasses SDK client-side validation.",
+      "tags": [
+        "tier-1",
+        "copy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_edge_cases.py#L172",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/dest-object",
+            "headers": {
+              "x-amz-copy-source": "invalid-format"
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0041",
+      "kind": "api",
+      "title": "CopyObject to a non-existing destination bucket returns NoSuchBucket",
+      "tags": [
+        "tier-1",
+        "copy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_edge_cases.py#L94",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": {
+            "$data": "src"
+          }
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0041/src",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "non-existing-bucket-12345",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0042",
+      "kind": "api",
+      "title": "CopyObject with a non-existing source key returns NoSuchKey",
+      "tags": [
+        "tier-1",
+        "copy",
+        "errors",
+        "source:msst-s3",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_edge_cases.py#L65",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/non-existing-source"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0043",
+      "kind": "api",
+      "title": "CopyObject preserves the source ContentType by default",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_edge_cases.py#L305",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-typed",
+          "body": {
+            "$data": "src"
+          },
+          "contentType": "application/json"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0043/src",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-typed",
+            "CopySource": "${res.b1.name}/source-typed"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-typed"
+          },
+          "expect": {
+            "response": {
+              "ContentType": "application/json"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0044",
+      "kind": "api",
+      "title": "CopyObject response includes a CopyObjectResult and the copy has an ETag",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_edge_cases.py#L383",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-etag",
+          "body": {
+            "$data": "src"
+          }
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0044/src",
+          "size": 128
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-etag",
+            "CopySource": "${res.b1.name}/source-etag"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "$exists": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-etag"
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0047",
+      "kind": "api",
+      "title": "CopyObject with default tagging directive copies the source tags",
+      "tags": [
+        "tier-3",
+        "copy",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_edge_cases.py#L200",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0047/src",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-tagged",
+            "Body": {
+              "$data": "src"
+            },
+            "Tagging": "source=true&env=test"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-tagged",
+            "CopySource": "${res.b1.name}/source-tagged"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-tagged"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "source",
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0048",
+      "kind": "api",
+      "title": "CopyObject with TaggingDirective REPLACE replaces the source tags",
+      "tags": [
+        "tier-3",
+        "copy",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_edge_cases.py#L251",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0048/src",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-tagged",
+            "Body": {
+              "$data": "src"
+            },
+            "Tagging": "source=true"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-tagged",
+            "CopySource": "${res.b1.name}/source-tagged",
+            "TaggingDirective": "REPLACE",
+            "Tagging": "copied=true&version=2"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-tagged"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 2,
+                "$contains": {
+                  "Key": "copied",
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0049",
+      "kind": "api",
+      "title": "CopyObject between buckets preserves ContentType and custom metadata",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_metadata.py#L402",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": {
+            "$data": "src"
+          },
+          "contentType": "text/plain",
+          "metadata": {
+            "origin": "source-bucket"
+          }
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0049/src",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "test-object",
+            "CopySource": "${res.b1.name}/test-object"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "test-object"
+          },
+          "expect": {
+            "response": {
+              "ContentType": "text/plain",
+              "Metadata": {
+                "origin": "source-bucket"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0051",
+      "kind": "api",
+      "title": "CopyObject preserves all content headers and custom metadata by default",
+      "description": "The original test set Expires to a dynamic now+10h timestamp; a fixed future HTTP-date is used instead (Expires is not asserted here).",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_metadata.py#L32",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0051/src",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-object",
+            "Body": {
+              "$data": "src"
+            },
+            "ContentType": "application/json",
+            "ContentEncoding": "base64",
+            "ContentDisposition": "attachment; filename=\"test.json\"",
+            "ContentLanguage": "en-US",
+            "CacheControl": "no-cache, no-store",
+            "Expires": "Sun, 01 Jan 2034 00:00:00 GMT",
+            "Metadata": {
+              "foo": "bar",
+              "baz": "quxx",
+              "test-key": "test-value"
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 100,
+              "ContentType": "application/json",
+              "ContentEncoding": "base64",
+              "ContentDisposition": "attachment; filename=\"test.json\"",
+              "ContentLanguage": "en-US",
+              "CacheControl": "no-cache, no-store",
+              "Metadata": {
+                "foo": "bar",
+                "baz": "quxx",
+                "test-key": "test-value"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0053",
+      "kind": "api",
+      "title": "CopyObject onto itself with REPLACE sets the new metadata map",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_metadata.py#L169",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": {
+            "$data": "src"
+          },
+          "metadata": {
+            "version": "1"
+          }
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0053/src",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "CopySource": "${res.b1.name}/test-object",
+            "MetadataDirective": "REPLACE",
+            "Metadata": {
+              "version": "2",
+              "updated": "true"
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object"
+          },
+          "expect": {
+            "response": {
+              "Metadata": {
+                "version": "2",
+                "updated": "true"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0054",
+      "kind": "api",
+      "title": "CopyObject preserves CacheControl and Expires headers",
+      "description": "The original test set Expires to a dynamic now+24h timestamp; a fixed future HTTP-date is used instead, and only the presence of Expires is asserted (as in the original).",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_metadata.py#L450",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0054/src",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-cached",
+            "Body": {
+              "$data": "src"
+            },
+            "CacheControl": "max-age=3600, public",
+            "Expires": "Sun, 01 Jan 2034 00:00:00 GMT"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-cached",
+            "CopySource": "${res.b1.name}/source-cached"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-cached"
+          },
+          "expect": {
+            "response": {
+              "CacheControl": "max-age=3600, public",
+              "Expires": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0055",
+      "kind": "api",
+      "title": "CopyObject preserves the CRC32 checksum of the source object",
+      "tags": [
+        "tier-3",
+        "copy",
+        "checksums",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_metadata.py#L339",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0055/src",
+          "size": 512
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-checksummed",
+            "Body": {
+              "$data": "src"
+            },
+            "ChecksumAlgorithm": "CRC32"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-checksummed",
+            "CopySource": "${res.b1.name}/source-checksummed"
+          }
+        },
+        {
+          "operation": "GetObjectAttributes",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-checksummed",
+            "ObjectAttributes": [
+              "Checksum"
+            ]
+          },
+          "expect": {
+            "response": {
+              "Checksum": {
+                "ChecksumCRC32": "${data.src.crc32B64}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0056",
+      "kind": "api",
+      "title": "CopyObject tagging directives: default copies tags, REPLACE substitutes them",
+      "tags": [
+        "tier-3",
+        "copy",
+        "tagging",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_object_metadata.py#L265",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "data": {
+        "src": {
+          "kind": "prng",
+          "seed": "copy-0056/src",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "source-tagged",
+            "Body": {
+              "$data": "src"
+            },
+            "Tagging": "source=true&version=1"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-copy-tags",
+            "CopySource": "${res.b1.name}/source-tagged"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-copy-tags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$contains": {
+                  "Key": "source",
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-replace-tags",
+            "CopySource": "${res.b1.name}/source-tagged",
+            "TaggingDirective": "REPLACE",
+            "Tagging": "copied=true&version=2"
+          }
+        },
+        {
+          "operation": "GetObjectTagging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-replace-tags"
+          },
+          "expect": {
+            "response": {
+              "TagSet": {
+                "$length": 2,
+                "$contains": {
+                  "Key": "copied",
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0063",
+      "kind": "api",
+      "title": "CopyObject with CopySourceIfMatch: matching ETag succeeds, wrong ETag fails",
+      "description": "Original test accepted any error for the wrong-ETag copy (bare except); the canonical S3 behavior of 412 PreconditionFailed is asserted here.",
+      "tags": [
+        "tier-1",
+        "copy",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_operations.py#L161",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": "original data",
+          "metadata": {
+            "original": "metadata"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "conditional-copy-match",
+            "CopySource": "${res.b1.name}/source-object",
+            "CopySourceIfMatch": "${res.o1.etag}"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "conditional-copy-no-match",
+            "CopySource": "${res.b1.name}/source-object",
+            "CopySourceIfMatch": "\"wrong-etag\""
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0064",
+      "kind": "api",
+      "title": "CopyObject of a 6 MiB object preserves its size",
+      "tags": [
+        "tier-1",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_copy_operations.py#L193",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "large-object",
+          "body": {
+            "$data": "big"
+          }
+        }
+      ],
+      "data": {
+        "big": {
+          "kind": "pattern",
+          "pattern": "X",
+          "size": 6291456
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "large-copy",
+            "CopySource": "${res.b1.name}/large-object"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Key": "large-copy"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 6291456
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "copy-0065",
+      "kind": "api",
+      "title": "Prefix rename via CopyObject + DeleteObject leaves old prefix empty and content intact",
+      "description": "Directory rename emulated as copy-to-new-prefix then delete-from-old. Object count reduced from the source's 1000 to a representative sample.",
+      "tags": [
+        "tier-1",
+        "copy",
+        "listing",
+        "object-crud",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/production/3017.py#L32",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "old-dir/file-0000.txt",
+          "body": "content-0"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "old-dir/file-0001.txt",
+          "body": "content-1"
+        },
+        {
+          "type": "object",
+          "handle": "o3",
+          "bucket": "b1",
+          "key": "old-dir/file-0002.txt",
+          "body": "content-2"
+        },
+        {
+          "type": "object",
+          "handle": "o4",
+          "bucket": "b1",
+          "key": "old-dir/file-0003.txt",
+          "body": "content-3"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "new-dir/file-0000.txt",
+            "CopySource": "${res.b1.name}/old-dir/file-0000.txt"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "old-dir/file-0000.txt"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "new-dir/file-0001.txt",
+            "CopySource": "${res.b1.name}/old-dir/file-0001.txt"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "old-dir/file-0001.txt"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "new-dir/file-0002.txt",
+            "CopySource": "${res.b1.name}/old-dir/file-0002.txt"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "old-dir/file-0002.txt"
+          }
+        },
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "new-dir/file-0003.txt",
+            "CopySource": "${res.b1.name}/old-dir/file-0003.txt"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "old-dir/file-0003.txt"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "old-dir/"
+          },
+          "expect": {
+            "status": 200,
+            "response": {
+              "KeyCount": 0
+            }
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "new-dir/"
+          },
+          "expect": {
+            "status": 200,
+            "response": {
+              "KeyCount": 4,
+              "Contents": [
+                {
+                  "Key": "new-dir/file-0000.txt"
+                },
+                {
+                  "Key": "new-dir/file-0001.txt"
+                },
+                {
+                  "Key": "new-dir/file-0002.txt"
+                },
+                {
+                  "Key": "new-dir/file-0003.txt"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "new-dir/file-0000.txt"
+          },
+          "expect": {
+            "status": 200,
+            "body": "content-0"
+          }
+        }
+      ]
+    }
+  ]
+}

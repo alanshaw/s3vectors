@@ -1,0 +1,3553 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "object-lock",
+  "vectors": [
+    {
+      "id": "object-lock-0001",
+      "kind": "api",
+      "title": "Multipart object created with object-lock retention resists delete until bypassed",
+      "tags": [
+        "tier-1",
+        "object-lock",
+        "multipart",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13708",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "ObjectLockMode": "GOVERNANCE",
+            "ObjectLockRetainUntilDate": "2030-01-01T00:00:00Z"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": "abc"
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                }
+              ]
+            }
+          },
+          "capture": {
+            "versionId": "VersionId"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${cap.versionId}"
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${cap.versionId}",
+            "BypassGovernanceRetention": true
+          },
+          "expect": {
+            "status": 204
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0002",
+      "kind": "api",
+      "title": "Deleting a version under GOVERNANCE retention fails without bypass and succeeds with it",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13690",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}"
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}",
+            "BypassGovernanceRetention": true
+          },
+          "expect": {
+            "status": 204
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0003",
+      "kind": "api",
+      "title": "GOVERNANCE retention still blocks version delete after creating and removing a delete marker",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13733",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "capture": {
+            "markerVersionId": "VersionId"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}"
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${cap.markerVersionId}"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}"
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}",
+            "BypassGovernanceRetention": true
+          },
+          "expect": {
+            "status": 204
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0004",
+      "kind": "api",
+      "title": "GetObjectLegalHold reflects legal hold status after setting ON then OFF",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13866",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "ON"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "expect": {
+            "response": {
+              "LegalHold": {
+                "Status": "ON"
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "OFF"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "expect": {
+            "response": {
+              "LegalHold": {
+                "Status": "OFF"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0005",
+      "kind": "api",
+      "title": "GetObjectLockConfiguration returns the stored default retention configuration",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13473",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Days": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "ObjectLockConfiguration": {
+                "ObjectLockEnabled": "Enabled",
+                "Rule": {
+                  "DefaultRetention": {
+                    "Mode": "GOVERNANCE",
+                    "Days": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0006",
+      "kind": "api",
+      "title": "GetObjectLockConfiguration on a bucket without object lock returns ObjectLockConfigurationNotFoundError",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13491",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "ObjectLockConfigurationNotFoundError"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0008",
+      "kind": "api",
+      "title": "GetObjectRetention on a bucket without object lock returns InvalidRequest",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13584",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidRequest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0009",
+      "kind": "api",
+      "title": "HeadObject exposes x-amz-object-lock-retain-until-date as an ISO 8601 timestamp",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13567",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}"
+          },
+          "expect": {
+            "headers": {
+              "x-amz-object-lock-retain-until-date": {
+                "$matches": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:?\\d{2})"
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}",
+            "BypassGovernanceRetention": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0010",
+      "kind": "api",
+      "title": "DeleteObjects reports AccessDenied for a retained version and deletes the unretained one",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13758",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "file2",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "file1",
+                  "VersionId": "${res.o1.versionId}"
+                },
+                {
+                  "Key": "file2",
+                  "VersionId": "${res.o2.versionId}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "file2",
+                  "VersionId": "${res.o2.versionId}"
+                }
+              ],
+              "Errors": [
+                {
+                  "Code": "AccessDenied",
+                  "Key": "file1",
+                  "VersionId": "${res.o1.versionId}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "file1",
+                  "VersionId": "${res.o1.versionId}"
+                }
+              ]
+            },
+            "BypassGovernanceRetention": true
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "file1",
+                  "VersionId": "${res.o1.versionId}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0011",
+      "kind": "api",
+      "title": "PutObjectLegalHold accepts Status ON and OFF",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13825",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "ON"
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "OFF"
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0012",
+      "kind": "api",
+      "title": "PutObjectLegalHold on a bucket without object lock returns InvalidRequest",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13838",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "ON"
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidRequest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0013",
+      "kind": "api",
+      "title": "PutObjectLegalHold with an invalid status returns MalformedXML",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13852",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "abc"
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "MalformedXML"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0014",
+      "kind": "api",
+      "title": "PutObjectLockConfiguration accepts GOVERNANCE/Days and COMPLIANCE/Years defaults and implies versioning enabled",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "versioning",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13280",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Days": 1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "COMPLIANCE",
+                  "Years": 1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetBucketVersioning",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Status": "Enabled"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0015",
+      "kind": "api",
+      "title": "PutObjectLockConfiguration fails on unversioned or suspended bucket but succeeds once versioning is enabled",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13328",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Days": 1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 409,
+            "error": "InvalidBucketState"
+          }
+        },
+        {
+          "operation": "PutBucketVersioning",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "VersioningConfiguration": {
+              "Status": "Suspended"
+            }
+          }
+        },
+        {
+          "operation": "GetBucketVersioning",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Status": "Suspended"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Days": 1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 409,
+            "error": "InvalidBucketState"
+          }
+        },
+        {
+          "operation": "PutBucketVersioning",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "VersioningConfiguration": {
+              "Status": "Enabled"
+            }
+          }
+        },
+        {
+          "operation": "GetBucketVersioning",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Status": "Enabled"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Days": 1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0016",
+      "kind": "api",
+      "title": "PutObjectLockConfiguration on a bucket without object lock returns InvalidBucketState",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13312",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Days": 1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 409,
+            "error": "InvalidBucketState"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0017",
+      "kind": "api",
+      "title": "PutObjectLockConfiguration with Days of 0 returns InvalidRetentionPeriod",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13378",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Days": 0
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidRetentionPeriod"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0018",
+      "kind": "api",
+      "title": "PutObjectLockConfiguration with an invalid or lowercase retention mode returns MalformedXML",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13414",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "abc",
+                  "Years": 1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "MalformedXML"
+          }
+        },
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "governance",
+                  "Years": 1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "MalformedXML"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0019",
+      "kind": "api",
+      "title": "PutObjectLockConfiguration with ObjectLockEnabled of Disabled returns MalformedXML",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13444",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Disabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Years": 1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "MalformedXML"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0020",
+      "kind": "api",
+      "title": "PutObjectLockConfiguration with negative Years returns InvalidRetentionPeriod",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13396",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Years": -1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidRetentionPeriod"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0021",
+      "kind": "api",
+      "title": "PutObjectLockConfiguration with both Days and Years returns MalformedXML",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13359",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Days": 1,
+                  "Years": 1
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "MalformedXML"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0022",
+      "kind": "api",
+      "title": "PutObjectRetention stores GOVERNANCE retention readable via GetObjectRetention",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13502",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2140-01-01T00:00:00Z"
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "GOVERNANCE",
+                "RetainUntilDate": "2140-01-01T00:00:00Z"
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}",
+            "BypassGovernanceRetention": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0023",
+      "kind": "api",
+      "title": "PutObjectRetention can extend an existing GOVERNANCE retention period",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13638",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-03T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "GOVERNANCE",
+                "RetainUntilDate": "2030-01-03T00:00:00Z"
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}",
+            "BypassGovernanceRetention": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0024",
+      "kind": "api",
+      "title": "PutObjectRetention on a bucket without object lock returns InvalidRequest",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13518",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidRequest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0025",
+      "kind": "api",
+      "title": "PutObjectRetention with lowercase or invalid mode returns MalformedXML",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13532",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "governance",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "MalformedXML"
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "abc",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "MalformedXML"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0026",
+      "kind": "api",
+      "title": "Explicit PutObjectRetention overrides the bucket default retention",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13613",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "GOVERNANCE",
+                  "Days": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Body": "abc"
+          },
+          "capture": {
+            "versionId": "VersionId"
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "GOVERNANCE",
+                "RetainUntilDate": "2030-01-01T00:00:00Z"
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${cap.versionId}",
+            "BypassGovernanceRetention": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0027",
+      "kind": "api",
+      "title": "Shortening a GOVERNANCE retention period without bypass returns AccessDenied",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13655",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-03T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}",
+            "BypassGovernanceRetention": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0028",
+      "kind": "api",
+      "title": "Shortening a GOVERNANCE retention period succeeds with BypassGovernanceRetention",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13673",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-03T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            },
+            "BypassGovernanceRetention": true
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "GOVERNANCE",
+                "RetainUntilDate": "2030-01-01T00:00:00Z"
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}",
+            "BypassGovernanceRetention": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0029",
+      "kind": "api",
+      "title": "PutObjectRetention targeting a specific version stores retention readable for that version",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "versioning",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13597",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o2.versionId}",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o2.versionId}"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "GOVERNANCE",
+                "RetainUntilDate": "2030-01-01T00:00:00Z"
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o2.versionId}",
+            "BypassGovernanceRetention": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0030",
+      "kind": "api",
+      "title": "Suspending versioning on an object-lock bucket returns InvalidBucketState",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13462",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketVersioning",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "VersioningConfiguration": {
+              "Status": "Suspended"
+            }
+          },
+          "expect": {
+            "status": 409,
+            "error": "InvalidBucketState"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0031",
+      "kind": "api",
+      "title": "PutObjectRetention changing GOVERNANCE to COMPLIANCE without bypass returns AccessDenied",
+      "description": "The source test uses a retain-until date 10 seconds in the future; a fixed future date is used here since GOVERNANCE retention remains bypassable for cleanup.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13993",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Body": "abc",
+            "ObjectLockMode": "GOVERNANCE",
+            "ObjectLockRetainUntilDate": "2030-01-01T00:00:00Z"
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "COMPLIANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0032",
+      "kind": "api",
+      "title": "DeleteObject on a multipart-uploaded version created with legal hold ON returns AccessDenied",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "multipart",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13909",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "ObjectLockLegalHoldStatus": "ON"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": "abc"
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "UploadId": "${cap.uploadId}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                }
+              ]
+            }
+          },
+          "capture": {
+            "versionId": "VersionId"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${cap.versionId}"
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "OFF"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0033",
+      "kind": "api",
+      "title": "DeleteObject on a version with legal hold OFF succeeds with 204",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "versioning",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13931",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "OFF"
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}"
+          },
+          "expect": {
+            "status": 204
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0034",
+      "kind": "api",
+      "title": "DeleteObject on a version with legal hold ON returns AccessDenied",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13895",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "ON"
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${res.o1.versionId}"
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "OFF"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0035",
+      "kind": "api",
+      "title": "GetObjectLegalHold on a bucket without object lock returns InvalidRequest",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13882",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidRequest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0036",
+      "kind": "api",
+      "title": "HeadObject reports object lock mode, retain-until date and legal hold status",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13943",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "file1",
+          "body": "abc"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "ON"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "capture": {
+            "versionId": "VersionId"
+          },
+          "expect": {
+            "response": {
+              "ObjectLockMode": "GOVERNANCE",
+              "ObjectLockRetainUntilDate": "2030-01-01T00:00:00Z",
+              "ObjectLockLegalHoldStatus": "ON"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "OFF"
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${cap.versionId}",
+            "BypassGovernanceRetention": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0037",
+      "kind": "api",
+      "title": "PutObject with object lock parameters; HeadObject reports them back",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L13963",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "Body": "abc",
+            "ObjectLockMode": "GOVERNANCE",
+            "ObjectLockRetainUntilDate": "2030-01-01T00:00:00Z",
+            "ObjectLockLegalHoldStatus": "ON"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1"
+          },
+          "capture": {
+            "versionId": "VersionId"
+          },
+          "expect": {
+            "response": {
+              "ObjectLockMode": "GOVERNANCE",
+              "ObjectLockRetainUntilDate": "2030-01-01T00:00:00Z",
+              "ObjectLockLegalHoldStatus": "ON"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "LegalHold": {
+              "Status": "OFF"
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file1",
+            "VersionId": "${cap.versionId}",
+            "BypassGovernanceRetention": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0039",
+      "kind": "api",
+      "title": "GetObjectLegalHold on a non-existent bucket returns NoSuchBucket",
+      "description": "Source test also tolerated InvalidRequest/NoSuchKey (MinIO); the primary expected AWS code NoSuchBucket is asserted.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_legal_hold.py#L245",
+      "steps": [
+        {
+          "operation": "GetObjectLegalHold",
+          "params": {
+            "Bucket": "msst-nonexistent-bucket-legal-hold-get",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0040",
+      "kind": "api",
+      "title": "GetObjectLegalHold on a missing key in a lock-enabled bucket returns NoSuchKey",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_legal_hold.py#L273",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0042",
+      "kind": "api",
+      "title": "GetObjectLegalHold on an object with no legal hold set returns NoSuchObjectLockConfiguration",
+      "description": "Source test also tolerated InvalidRequest; the primary expected AWS code NoSuchObjectLockConfiguration is asserted.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_legal_hold.py#L333",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "error": "NoSuchObjectLockConfiguration"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0043",
+      "kind": "api",
+      "title": "PutObjectLegalHold with no legal-hold body returns MalformedXML",
+      "description": "Source test also tolerated InvalidArgument/InvalidRequest; the primary expected AWS code MalformedXML is asserted.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_legal_hold.py#L88",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "error": "MalformedXML"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0044",
+      "kind": "api",
+      "title": "PutObjectLegalHold on a non-existent bucket returns NoSuchBucket",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_legal_hold.py#L28",
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "msst-nonexistent-bucket-legal-hold-put",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0045",
+      "kind": "api",
+      "title": "PutObjectLegalHold on a missing key in a lock-enabled bucket returns NoSuchKey",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_legal_hold.py#L52",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "LegalHold": {
+              "Status": "ON"
+            }
+          },
+          "expect": {
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0046",
+      "kind": "api",
+      "title": "Legal hold set to ON is readable via GetObjectLegalHold",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_legal_hold.py#L195",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "test data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "LegalHold": {
+              "Status": "ON"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "response": {
+              "LegalHold": {
+                "Status": "ON"
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObjectLegalHold",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "LegalHold": {
+              "Status": "OFF"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0048",
+      "kind": "api",
+      "title": "GetObjectLockConfiguration on a non-existent bucket returns NoSuchBucket",
+      "description": "Source test also tolerated ObjectLockConfigurationNotFound(Error) (MinIO); the primary expected AWS code NoSuchBucket is asserted.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_lock_configuration.py#L348",
+      "steps": [
+        {
+          "operation": "GetObjectLockConfiguration",
+          "params": {
+            "Bucket": "msst-nonexistent-bucket-lock-config-get"
+          },
+          "expect": {
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0049",
+      "kind": "api",
+      "title": "Object lock configuration with COMPLIANCE default retention round-trips",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_lock_configuration.py#L400",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "COMPLIANCE",
+                  "Days": 20
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "GetObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "ObjectLockConfiguration": {
+                "ObjectLockEnabled": "Enabled",
+                "Rule": {
+                  "DefaultRetention": {
+                    "Mode": "COMPLIANCE",
+                    "Days": 20
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0051",
+      "kind": "api",
+      "title": "Default retention specifying both Days and Years returns MalformedXML",
+      "description": "Source test also tolerated InvalidArgument/InvalidRequest; the primary expected AWS code MalformedXML is asserted. Bucket is created without object lock, matching the source test.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_lock_configuration.py#L210",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "COMPLIANCE",
+                  "Days": 12,
+                  "Years": 24
+                }
+              }
+            }
+          },
+          "expect": {
+            "error": "MalformedXML"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0052",
+      "kind": "api",
+      "title": "PutObjectLockConfiguration with no configuration body returns MalformedXML",
+      "description": "Source test also tolerated InvalidArgument/InvalidRequest; the primary expected AWS code MalformedXML is asserted.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_lock_configuration.py#L59",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "error": "MalformedXML"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0053",
+      "kind": "api",
+      "title": "Negative default retention Days or Years returns InvalidArgument",
+      "description": "Source test also tolerated InvalidRequest; the primary expected AWS code InvalidArgument is asserted. Bucket is created without object lock, matching the source test.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_lock_configuration.py#L249",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "COMPLIANCE",
+                  "Days": -3
+                }
+              }
+            }
+          },
+          "expect": {
+            "error": "InvalidArgument"
+          }
+        },
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled",
+              "Rule": {
+                "DefaultRetention": {
+                  "Mode": "COMPLIANCE",
+                  "Years": -5
+                }
+              }
+            }
+          },
+          "expect": {
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0054",
+      "kind": "api",
+      "title": "PutObjectLockConfiguration on a non-existent bucket returns NoSuchBucket",
+      "description": "Source test also tolerated InvalidBucketState (MinIO); the primary expected AWS code NoSuchBucket is asserted.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_lock_configuration.py#L30",
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "msst-nonexistent-bucket-lock-config-put",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled"
+            }
+          },
+          "expect": {
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0055",
+      "kind": "api",
+      "title": "Minimal object lock configuration round-trips on a lock-enabled bucket",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_lock_configuration.py#L307",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ObjectLockConfiguration": {
+              "ObjectLockEnabled": "Enabled"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "ObjectLockConfiguration": {
+                "ObjectLockEnabled": "Enabled"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0057",
+      "kind": "api",
+      "title": "GetObjectRetention on missing bucket returns NoSuchBucket",
+      "description": "Source test also accepted NoSuchKey/InvalidRequest; AWS returns NoSuchBucket.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L612",
+      "steps": [
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "msst-nonexistent-retention-get-7q2x",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0058",
+      "kind": "api",
+      "title": "GetObjectRetention on missing key returns NoSuchKey",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L640",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0059",
+      "kind": "api",
+      "title": "GetObjectRetention returns the mode and retain-until date that were set",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L737",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "test data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "GOVERNANCE",
+                "RetainUntilDate": {
+                  "$exists": true
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0060",
+      "kind": "api",
+      "title": "GetObjectRetention with no retention set returns NoSuchObjectLockConfiguration",
+      "description": "Source test also accepted InvalidRequest; AWS returns NoSuchObjectLockConfiguration.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L700",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchObjectLockConfiguration"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0061",
+      "kind": "api",
+      "title": "PutObjectRetention with past RetainUntilDate returns InvalidArgument",
+      "description": "The source test never creates the key, matching its request exactly. It also accepted InvalidRequest and MalformedXML; AWS returns InvalidArgument (the retain until date must be in the future).",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L138",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "COMPLIANCE",
+              "RetainUntilDate": "2000-01-01T00:00:00Z"
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0062",
+      "kind": "api",
+      "title": "PutObjectRetention on missing bucket returns NoSuchBucket",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L32",
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "msst-nonexistent-retention-put-7q2x",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0063",
+      "kind": "api",
+      "title": "PutObjectRetention on missing key returns NoSuchKey",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L59",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "COMPLIANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0064",
+      "kind": "api",
+      "title": "COMPLIANCE retention cannot be overwritten with GOVERNANCE",
+      "description": "Source test also accepted vendor codes ObjectLocked/InvalidRequest; AWS returns AccessDenied. Leaves a COMPLIANCE-locked object: runner cleanup is blocked until the retention date passes.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L232",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "COMPLIANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0065",
+      "kind": "api",
+      "title": "COMPLIANCE retention can be extended to a later date",
+      "description": "Leaves a COMPLIANCE-locked object: runner cleanup is blocked until the retention date passes.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L292",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "COMPLIANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "COMPLIANCE",
+              "RetainUntilDate": "2032-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "COMPLIANCE",
+                "RetainUntilDate": {
+                  "$exists": true
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0066",
+      "kind": "api",
+      "title": "GOVERNANCE retention can be extended to a later date",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L355",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2032-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "GOVERNANCE"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0067",
+      "kind": "api",
+      "title": "GOVERNANCE retention overwritten with BypassGovernanceRetention",
+      "description": "Source test skipped when bypass permission was unavailable; the runner's main identity is assumed to hold s3:BypassGovernanceRetention. Leaves a COMPLIANCE-locked object: runner cleanup is blocked until the retention date passes.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L488",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "COMPLIANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            },
+            "BypassGovernanceRetention": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0068",
+      "kind": "api",
+      "title": "GOVERNANCE to COMPLIANCE change without bypass is denied",
+      "description": "Source test also accepted vendor codes ObjectLocked/InvalidRequest; AWS returns AccessDenied.",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_retention.py#L422",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Retention": {
+              "Mode": "COMPLIANCE",
+              "RetainUntilDate": "2030-01-01T00:00:00Z"
+            }
+          },
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0071",
+      "kind": "api",
+      "title": "PutObject with ObjectLockLegalHoldStatus ON sets a legal hold, visible via HeadObject",
+      "description": "The original test used a plain bucket and skipped when object lock was unavailable; here an object-lock-enabled bucket prerequisite is used so the behavior is actually exercised. Runner cleanup must remove the legal hold before deleting the object.",
+      "tags": [
+        "tier-1",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_additional.py#L118",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "legal-hold-object",
+            "Body": "legal hold data",
+            "ObjectLockLegalHoldStatus": "ON"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "legal-hold-object"
+          },
+          "expect": {
+            "response": {
+              "ObjectLockLegalHoldStatus": "ON"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0072",
+      "kind": "api",
+      "title": "PutObject with GOVERNANCE ObjectLockMode and a future RetainUntilDate sets retention, visible via HeadObject",
+      "description": "The original test used a plain bucket, a retain-until date of now+30 days, and skipped when object lock was unavailable; here an object-lock-enabled bucket prerequisite and a fixed far-future date are used. Runner cleanup must delete with governance bypass.",
+      "tags": [
+        "tier-1",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_additional.py#L163",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "retention-object",
+            "Body": "retention data",
+            "ObjectLockMode": "GOVERNANCE",
+            "ObjectLockRetainUntilDate": "2030-01-01T00:00:00Z"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "retention-object"
+          },
+          "expect": {
+            "response": {
+              "ObjectLockMode": "GOVERNANCE"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0073",
+      "kind": "api",
+      "title": "CreateBucket with ObjectLockEnabledForBucket enables object lock",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "bucket",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_create_bucket_advanced.py#L324",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-lock",
+            "ObjectLockEnabledForBucket": true
+          }
+        },
+        {
+          "operation": "HeadBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-lock"
+          }
+        },
+        {
+          "operation": "GetObjectLockConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}-lock"
+          },
+          "expect": {
+            "response": {
+              "ObjectLockConfiguration": {
+                "ObjectLockEnabled": "Enabled"
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-lock"
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0075",
+      "kind": "api",
+      "title": "PutObject with GOVERNANCE retention, read back via GetObjectRetention",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/locking/test_object_locking.py#L63",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "governance-retention-test",
+            "Body": "governance retention test data",
+            "ObjectLockMode": "GOVERNANCE",
+            "ObjectLockRetainUntilDate": "2999-01-01T00:00:00Z"
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "governance-retention-test"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "GOVERNANCE",
+                "RetainUntilDate": {
+                  "$matches": "^2999-01-01"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0076",
+      "kind": "api",
+      "title": "PutObject with COMPLIANCE retention, read back via GetObjectRetention",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/locking/test_object_locking.py#L123",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "compliance-retention-test",
+            "Body": "compliance retention test data",
+            "ObjectLockMode": "COMPLIANCE",
+            "ObjectLockRetainUntilDate": "2999-01-01T00:00:00Z"
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "compliance-retention-test"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "COMPLIANCE",
+                "RetainUntilDate": {
+                  "$matches": "^2999-01-01"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-lock-0078",
+      "kind": "api",
+      "title": "Extend a GOVERNANCE retention period with PutObjectRetention",
+      "tags": [
+        "tier-3",
+        "object-lock",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/locking/test_object_locking.py#L324",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "objectLock": true
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "extend-retention-test",
+            "Body": "extend test",
+            "ObjectLockMode": "GOVERNANCE",
+            "ObjectLockRetainUntilDate": "2500-01-01T00:00:00Z"
+          }
+        },
+        {
+          "operation": "PutObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "extend-retention-test",
+            "Retention": {
+              "Mode": "GOVERNANCE",
+              "RetainUntilDate": "2999-01-01T00:00:00Z"
+            }
+          }
+        },
+        {
+          "operation": "GetObjectRetention",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "extend-retention-test"
+          },
+          "expect": {
+            "response": {
+              "Retention": {
+                "Mode": "GOVERNANCE",
+                "RetainUntilDate": {
+                  "$matches": "^2999-01-01"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

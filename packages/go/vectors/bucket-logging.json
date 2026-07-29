@@ -1,0 +1,1019 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "bucket-logging",
+  "vectors": [
+    {
+      "id": "bucket-logging-0001",
+      "kind": "api",
+      "title": "Only the bucket owner may set or remove bucket logging, even with a permissive bucket policy",
+      "description": "The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format). The source-bucket policy is written exactly as in the source test (no Resource element).",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "errors",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L16645",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"s3:PutBucketLogging\"]}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "identity": "alt",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "identity": "alt",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {}
+          },
+          "expect": {
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-logging-0002",
+      "kind": "api",
+      "title": "PutBucketLogging round-trips minimal, simple-prefix and partitioned-prefix configurations",
+      "description": "Converted from ceph s3-tests test_put_bucket_logging. The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format). The TargetGrants portion of the source test is omitted for the same reason. The ceph-extension fields (ObjectRollTime, LoggingType, RecordsBatchSize) are omitted.",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L15528",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 200,
+            "response": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/",
+                "TargetObjectKeyFormat": {
+                  "SimplePrefix": {
+                    "$exists": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/",
+                "TargetObjectKeyFormat": {
+                  "SimplePrefix": {}
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 200,
+            "response": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/",
+                "TargetObjectKeyFormat": {
+                  "SimplePrefix": {
+                    "$exists": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/",
+                "TargetObjectKeyFormat": {
+                  "PartitionedPrefix": {
+                    "PartitionDateSource": "DeliveryTime"
+                  }
+                }
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 200,
+            "response": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/",
+                "TargetObjectKeyFormat": {
+                  "PartitionedPrefix": {
+                    "PartitionDateSource": "DeliveryTime"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-logging-0003",
+      "kind": "api",
+      "title": "PutBucketLogging with a missing source or target bucket returns NoSuchBucket / NoSuchKey",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L16526",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}kaboom",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "NoSuchBucket"
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}kaboom",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-logging-0004",
+      "kind": "api",
+      "title": "PutBucketLogging targeting a bucket that itself has logging enabled returns InvalidArgument",
+      "description": "The log-bucket policies use a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format).",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L16526",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "bucket",
+          "handle": "b3"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b3.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b3.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b3.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b3.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b3.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-logging-0005",
+      "kind": "api",
+      "title": "PutBucketLogging with an invalid PartitionDateSource returns MalformedXML",
+      "description": "The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format).",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L16526",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/",
+                "TargetObjectKeyFormat": {
+                  "PartitionedPrefix": {
+                    "PartitionDateSource": "kaboom"
+                  }
+                }
+              }
+            }
+          },
+          "expect": {
+            "error": "MalformedXML"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-logging-0006",
+      "kind": "api",
+      "title": "PutBucketLogging with the source bucket as its own target returns InvalidArgument",
+      "description": "The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format).",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L16526",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b1.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b1.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-logging-0007",
+      "kind": "api",
+      "title": "PutBucketLogging targeting a bucket with default encryption returns InvalidArgument",
+      "description": "The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format).",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L16526",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketEncryption",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "ServerSideEncryptionConfiguration": {
+              "Rules": [
+                {
+                  "ApplyServerSideEncryptionByDefault": {
+                    "SSEAlgorithm": "AES256"
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-logging-0008",
+      "kind": "api",
+      "title": "PutBucketLogging targeting a requester-pays bucket returns InvalidArgument",
+      "description": "The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format).",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L16526",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketRequestPayment",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "RequestPaymentConfiguration": {
+              "Payer": "Requester"
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-logging-0009",
+      "kind": "api",
+      "title": "PutBucketLogging is denied unless the target bucket policy grants the logging service principal correctly",
+      "description": "Each stage sets a log-bucket policy with exactly one invalid element (principal, action, resource, source ARN, or source account) and asserts PutBucketLogging returns AccessDenied. Where the source test uses the main user id for a valid aws:SourceAccount, a wildcard StringLike condition is used instead (the main account id is not expressible in the vector format); the tenant-qualified invalid-account variant is omitted for the same reason.",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "errors",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L16692",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.comkaboom\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:GetObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/kaboom\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::kaboom\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringEquals\":{\"aws:SourceAccount\":\"kaboom\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-logging-0010",
+      "kind": "api",
+      "title": "Wildcard source account and source-bucket ARN in the log bucket policy allow logging from any source",
+      "description": "A second identity creates its own source bucket. With per-bucket statements both owners can enable logging; after removing the second statement the alt owner is denied; with wildcard aws:SourceAccount and aws:SourceArn both succeed again. The main-account statement uses a wildcard aws:SourceAccount throughout (the main account id is not expressible in the vector format); the alt statement uses the alt credential's canonical id.",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "policy",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L16885",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "identity": "alt",
+          "params": {
+            "Bucket": "${res.b1.name}-alt-src"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}},{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}-alt-src\"},\"StringLike\":{\"aws:SourceAccount\":\"${res.alt.canonicalId}\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "identity": "alt",
+          "params": {
+            "Bucket": "${res.b1.name}-alt-src",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "identity": "alt",
+          "params": {
+            "Bucket": "${res.b1.name}-alt-src",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "error": "AccessDenied"
+          }
+        },
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::*\"},\"StringLike\":{\"aws:SourceAccount\":\"*\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "identity": "alt",
+          "params": {
+            "Bucket": "${res.b1.name}-alt-src",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-logging-0011",
+      "kind": "api",
+      "title": "Disable bucket logging with an empty BucketLoggingStatus",
+      "description": "Grant the S3 logging service PutObject on the target bucket via bucket policy, enable logging on the source bucket, then disable it by putting an empty BucketLoggingStatus; GetBucketLogging must succeed and no longer return LoggingEnabled. The source test's policy also carries an aws:SourceAccount condition on the caller's account id, which is not expressible in the vector format and is omitted here.",
+      "tags": [
+        "tier-3",
+        "bucket-logging",
+        "policy",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L17236",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketPolicy",
+          "params": {
+            "Bucket": "${res.b2.name}",
+            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3ServerAccessLogsPolicy\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"logging.s3.amazonaws.com\"},\"Action\":[\"s3:PutObject\"],\"Resource\":\"arn:aws:s3:::${res.b2.name}/log/\",\"Condition\":{\"ArnLike\":{\"aws:SourceArn\":\"arn:aws:s3:::${res.b1.name}\"}}}]}"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {
+              "LoggingEnabled": {
+                "TargetBucket": "${res.b2.name}",
+                "TargetPrefix": "log/"
+              }
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "BucketLoggingStatus": {}
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "GetBucketLogging",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 200,
+            "response": {
+              "LoggingEnabled": {
+                "$absent": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

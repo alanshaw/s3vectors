@@ -1,0 +1,1910 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "bucket",
+  "vectors": [
+    {
+      "id": "bucket-0001",
+      "kind": "api",
+      "title": "DeleteBucket succeeds once, then repeating it returns NoSuchBucket",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1607",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0002",
+      "kind": "api",
+      "title": "CreateBucket on a name owned by another user returns BucketAlreadyExists",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3867",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "credential",
+          "handle": "alt"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "identity": "alt",
+          "expect": {
+            "status": 409,
+            "error": "BucketAlreadyExists"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0003",
+      "kind": "api",
+      "title": "CreateBucket with an IP-address-formatted name returns InvalidBucketName",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3778",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "192.168.5.123"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0004",
+      "kind": "api",
+      "title": "CreateBucket with a one-character name returns InvalidBucketName",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3682",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "a"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0005",
+      "kind": "api",
+      "title": "CreateBucket with a two-character name returns InvalidBucketName",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3685",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "aa"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0006",
+      "kind": "api",
+      "title": "CreateBucket with a name starting with underscore returns InvalidBucketName",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3660",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "_s3v-ceph-bucket-bad-start"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0007",
+      "kind": "api",
+      "title": "Raw CreateBucket with a name ending in a dash returns InvalidBucketName",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "wire-headers",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3801",
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/foo-"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0008",
+      "kind": "api",
+      "title": "Raw CreateBucket with dash-dot in the name returns InvalidBucketName",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "wire-headers",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3831",
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/foo-.bar"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0009",
+      "kind": "api",
+      "title": "Raw CreateBucket with dot-dash in the name returns InvalidBucketName",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "wire-headers",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3821",
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/foo.-bar"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0010",
+      "kind": "api",
+      "title": "Raw CreateBucket with consecutive dots in the name returns InvalidBucketName",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "wire-headers",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3811",
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/foo..bar"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0011",
+      "kind": "api",
+      "title": "CreateBucket with a maximum-length 63-character DNS name succeeds",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3792",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "s3v-ceph-bucket-naming-dns-long-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0012",
+      "kind": "api",
+      "title": "Raw CreateBucket with an underscore in the name returns InvalidBucketName",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "wire-headers",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3784",
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/foo_bar"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0013",
+      "kind": "api",
+      "title": "CreateBucket with a 60-character name succeeds",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3737",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "s3v-ceph-bucket-naming-good-long-60-aaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0014",
+      "kind": "api",
+      "title": "CreateBucket with a 61-character name succeeds",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3743",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "s3v-ceph-bucket-naming-good-long-61-aaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0015",
+      "kind": "api",
+      "title": "CreateBucket with a 62-character name succeeds",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3749",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "s3v-ceph-bucket-naming-good-long-62-aaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0017",
+      "kind": "api",
+      "title": "DeleteBucket on a non-empty bucket returns BucketNotEmpty",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1537",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "foo"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 409,
+            "error": "BucketNotEmpty"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0018",
+      "kind": "api",
+      "title": "DeleteBucket on a nonexistent bucket returns NoSuchBucket",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1527",
+      "steps": [
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "s3v-ceph-no-such-bucket-delete"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0019",
+      "kind": "api",
+      "title": "HeadBucket on an existing bucket returns 200",
+      "tags": [
+        "tier-1",
+        "bucket",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3345",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "HeadBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0020",
+      "kind": "api",
+      "title": "HeadBucket on a nonexistent bucket returns 404",
+      "tags": [
+        "tier-1",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3352",
+      "steps": [
+        {
+          "operation": "HeadBucket",
+          "params": {
+            "Bucket": "s3v-ceph-no-such-bucket-head"
+          },
+          "expect": {
+            "status": 404
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0021",
+      "kind": "api",
+      "title": "ListObjects on a nonexistent bucket returns NoSuchBucket",
+      "tags": [
+        "tier-3",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1506",
+      "steps": [
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "s3v-ceph-no-such-bucket-list"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0022",
+      "kind": "api",
+      "title": "Recreating an existing bucket with a new ACL returns BucketAlreadyExists",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3893",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          },
+          "expect": {
+            "status": 409,
+            "error": "BucketAlreadyExists"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0023",
+      "kind": "api",
+      "title": "Recreating a bucket created with public-read ACL returns BucketAlreadyExists",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3882",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "s3v-ceph-bucket-recreate-overwrite-acl",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "s3v-ceph-bucket-recreate-overwrite-acl"
+          },
+          "expect": {
+            "status": 409,
+            "error": "BucketAlreadyExists"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0024",
+      "kind": "api",
+      "title": "ListBuckets includes every created bucket",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5341",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "bucket",
+          "handle": "b3"
+        },
+        {
+          "type": "bucket",
+          "handle": "b4"
+        },
+        {
+          "type": "bucket",
+          "handle": "b5"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$contains": {
+                  "Name": "${res.b1.name}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$contains": {
+                  "Name": "${res.b2.name}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$contains": {
+                  "Name": "${res.b3.name}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$contains": {
+                  "Name": "${res.b4.name}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$contains": {
+                  "Name": "${res.b5.name}"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0025",
+      "kind": "api",
+      "title": "ListObjectsV2 on a nonexistent bucket returns NoSuchBucket",
+      "tags": [
+        "tier-1",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1517",
+      "steps": [
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "s3v-ceph-no-such-bucket-listv2"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0026",
+      "kind": "api",
+      "title": "Put, get and delete bucket ownership controls; get after delete returns 404",
+      "tags": [
+        "tier-3",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20369",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketOwnershipControls",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "OwnershipControls": {
+              "Rules": [
+                {
+                  "ObjectOwnership": "BucketOwnerEnforced"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetBucketOwnershipControls",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "OwnershipControls": {
+                "Rules": [
+                  {
+                    "ObjectOwnership": "BucketOwnerEnforced"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteBucketOwnershipControls",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "GetBucketOwnershipControls",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404,
+            "error": "OwnershipControlsNotFoundError"
+          }
+        },
+        {
+          "operation": "DeleteBucketOwnershipControls",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0027",
+      "kind": "api",
+      "title": "CreateBucket succeeds for a name containing a hyphen",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5454",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "s3vectors-naming-good-aaa-111"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0028",
+      "kind": "api",
+      "title": "CreateBucket succeeds for a name containing a period",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5451",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "s3vectors-naming-good-aaa.111"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0029",
+      "kind": "api",
+      "title": "CreateBucket succeeds for a name starting with a lowercase letter",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5437",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "as3vectors-naming-good-starts-alpha-foo"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0030",
+      "kind": "api",
+      "title": "CreateBucket succeeds for a name starting with a digit",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5448",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "0s3vectors-naming-good-starts-digit-foo"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0031",
+      "kind": "api",
+      "title": "Re-creating an existing bucket does not remove its objects",
+      "tags": [
+        "tier-3",
+        "bucket",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5457",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "mykey1",
+          "body": "mykey1"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "mykey2",
+          "body": "mykey2"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Key": "mykey1"
+                },
+                {
+                  "Key": "mykey2"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Key": "mykey1"
+                },
+                {
+                  "Key": "mykey2"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0032",
+      "kind": "api",
+      "title": "Anonymous ListBuckets succeeds and returns an empty bucket list",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "anon-access",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5379",
+      "steps": [
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "identity": "anonymous",
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$length": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0033",
+      "kind": "api",
+      "title": "ListBuckets with an unknown access key is rejected with 403",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5389",
+      "steps": [
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "identity": "invalid",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0034",
+      "kind": "api",
+      "title": "Create and list a bucket with a 61-character name",
+      "description": "The source builds a 61-character bucket name and verifies the bucket is usable (an object listing succeeds and is empty).",
+      "tags": [
+        "tier-3",
+        "bucket",
+        "quirk:not-aws",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3761",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "long-bucket-name-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        },
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "long-bucket-name-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "expect": {
+            "response": {
+              "Contents": {
+                "$absent": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0035",
+      "kind": "api",
+      "title": "Created bucket appears in ListBuckets and HeadBucket returns 404 after deletion",
+      "description": "Bucket creation is covered by the prerequisite; the final not-in-list assertion of the source test is expressed as HeadBucket returning 404 after DeleteBucket.",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/1.py#L12",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "HeadBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$contains": {
+                  "Name": "${res.b1.name}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "HeadBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0036",
+      "kind": "api",
+      "title": "Request payment configuration defaults to BucketOwner and can be set to Requester",
+      "tags": [
+        "tier-3",
+        "bucket",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/20.py#L13",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetBucketRequestPayment",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Payer": "BucketOwner"
+            }
+          }
+        },
+        {
+          "operation": "PutBucketRequestPayment",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "RequestPaymentConfiguration": {
+              "Payer": "Requester"
+            }
+          }
+        },
+        {
+          "operation": "GetBucketRequestPayment",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Payer": "Requester"
+            }
+          }
+        },
+        {
+          "operation": "PutBucketRequestPayment",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "RequestPaymentConfiguration": {
+              "Payer": "BucketOwner"
+            }
+          }
+        },
+        {
+          "operation": "GetBucketRequestPayment",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Payer": "BucketOwner"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0037",
+      "kind": "api",
+      "title": "Transfer acceleration status can be enabled, suspended and re-enabled",
+      "tags": [
+        "tier-3",
+        "bucket",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/23.py#L14",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAccelerateConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "AccelerateConfiguration": {
+              "Status": "Enabled"
+            }
+          }
+        },
+        {
+          "operation": "GetBucketAccelerateConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Status": "Enabled"
+            }
+          }
+        },
+        {
+          "operation": "PutBucketAccelerateConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "AccelerateConfiguration": {
+              "Status": "Suspended"
+            }
+          }
+        },
+        {
+          "operation": "GetBucketAccelerateConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Status": "Suspended"
+            }
+          }
+        },
+        {
+          "operation": "PutBucketAccelerateConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "AccelerateConfiguration": {
+              "Status": "Enabled"
+            }
+          }
+        },
+        {
+          "operation": "GetBucketAccelerateConfiguration",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Status": "Enabled"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0038",
+      "kind": "api",
+      "title": "CreateBucket rejects invalid bucket names",
+      "description": "Server-side bucket-naming rules: uppercase, underscores, leading/trailing hyphens, consecutive dots, dot-hyphen sequences, IP-address form, xn-- prefix, reserved -s3alias/--ol-s3 affixes and length limits (3-63). Original test accepted any rejection error; AWS returns InvalidBucketName. Name cases that common SDKs reject client-side (empty, space, slash, punctuation) were dropped, as were the tolerant valid-name and reserved-prefix branches that pass on either outcome; the duplicate-name check is covered by the CreateBucket-on-existing-bucket vector.",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_naming.py#L14",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "ABmsstbucket"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "my_bucket_msst"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "my-bucket-msst-"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "-my-bucket-msst"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "my..bucket-msst"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "my.-bucket-msst"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "my-.bucket-msst"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "192.168.1.1"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "xn--bucket-msst"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "bucket-s3alias"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "bucket--ol-s3"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "aa"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidBucketName"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0039",
+      "kind": "api",
+      "title": "CreateBucket on an existing bucket you own returns BucketAlreadyOwnedByYou",
+      "description": "Original test also accepted BucketAlreadyExists. Note that AWS us-east-1 has legacy behavior returning 200 for re-creating a bucket you own.",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L49",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "error": "BucketAlreadyOwnedByYou"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0040",
+      "kind": "api",
+      "title": "CreateBucket succeeds and the bucket is accessible via HeadBucket",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L29",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "msst-edge1-create-success-7kq2"
+          }
+        },
+        {
+          "operation": "HeadBucket",
+          "params": {
+            "Bucket": "msst-edge1-create-success-7kq2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0041",
+      "kind": "api",
+      "title": "Full bucket lifecycle: create, put and read an object, delete object, delete bucket",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "object-crud",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L285",
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "msst-edge1-bucket-lifecycle-4t8n"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "msst-edge1-bucket-lifecycle-4t8n",
+            "Key": "test-object",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "msst-edge1-bucket-lifecycle-4t8n",
+            "Key": "test-object"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "msst-edge1-bucket-lifecycle-4t8n",
+            "Key": "test-object"
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "msst-edge1-bucket-lifecycle-4t8n"
+          }
+        },
+        {
+          "operation": "HeadBucket",
+          "params": {
+            "Bucket": "msst-edge1-bucket-lifecycle-4t8n"
+          },
+          "expect": {
+            "status": 404
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0044",
+      "kind": "api",
+      "title": "DeleteBucket removes the bucket",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L115",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "HeadBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "status": 404
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0045",
+      "kind": "api",
+      "title": "GetBucketLocation on a non-existent bucket returns NoSuchBucket",
+      "tags": [
+        "tier-3",
+        "bucket",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L263",
+      "steps": [
+        {
+          "operation": "GetBucketLocation",
+          "params": {
+            "Bucket": "non-existing-bucket-12345"
+          },
+          "expect": {
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0046",
+      "kind": "api",
+      "title": "GetBucketLocation succeeds on an existing bucket",
+      "description": "Original test only asserted the LocationConstraint key was present in the boto3 response shape (it is null for us-east-1), so this vector asserts the call succeeds.",
+      "tags": [
+        "tier-3",
+        "bucket",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L239",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetBucketLocation",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0049",
+      "kind": "api",
+      "title": "ListBuckets returns a Buckets list",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L220",
+      "steps": [
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0050",
+      "kind": "api",
+      "title": "ListBuckets includes created buckets",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_bucket_operations.py#L192",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$contains": {
+                  "Name": "${res.b1.name}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "ListBuckets",
+          "params": {},
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$contains": {
+                  "Name": "${res.b2.name}"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0051",
+      "kind": "api",
+      "title": "Empty bucket lists zero keys and can be deleted",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_empty_operations.py#L15",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "KeyCount": 0
+            }
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0052",
+      "kind": "api",
+      "title": "ListBuckets rejects a negative max-buckets value",
+      "description": "Raw HTTP so the out-of-range value reaches the server rather than being caught client-side. AWS's valid MaxBuckets range is 1-10000 and a negative value is rejected with InvalidArgument. The original also probed an over-large value (2000000) but its primary branch accepted success (some implementations cap silently) and only tolerated rejection as an alternative; that undecidable success-or-error case is omitted.",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_list_buckets_advanced.py#L97",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "GET",
+            "path": "/",
+            "query": {
+              "max-buckets": "-3"
+            }
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0053",
+      "kind": "api",
+      "title": "ListBuckets MaxBuckets truncates the listing and ContinuationToken resumes it",
+      "description": "Six runner-provisioned buckets guarantee the account holds more than MaxBuckets=3 buckets, so the first page must be truncated. The original tolerated implementations without pagination support.",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_list_buckets_advanced.py#L147",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "bucket",
+          "handle": "b2"
+        },
+        {
+          "type": "bucket",
+          "handle": "b3"
+        },
+        {
+          "type": "bucket",
+          "handle": "b4"
+        },
+        {
+          "type": "bucket",
+          "handle": "b5"
+        },
+        {
+          "type": "bucket",
+          "handle": "b6"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "ListBuckets",
+          "params": {
+            "MaxBuckets": 3
+          },
+          "capture": {
+            "token": "ContinuationToken"
+          },
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$length": 3
+              },
+              "ContinuationToken": {
+                "$exists": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "ListBuckets",
+          "params": {
+            "ContinuationToken": "${cap.token}"
+          },
+          "expect": {
+            "response": {
+              "Buckets": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bucket-0054",
+      "kind": "api",
+      "title": "ListBuckets with Prefix returns only buckets whose names match the prefix",
+      "description": "Buckets are created in steps as suffixes of the runner-provisioned bucket name so the prefix is unique to this vector. The original tolerated implementations that ignore Prefix (MinIO); this vector asserts the AWS filtering behavior.",
+      "tags": [
+        "tier-2",
+        "bucket",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_list_buckets_advanced.py#L27",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-p0"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-p1"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-p2"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-q0"
+          }
+        },
+        {
+          "operation": "CreateBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-q1"
+          }
+        },
+        {
+          "operation": "ListBuckets",
+          "params": {
+            "Prefix": "${res.b1.name}-p"
+          },
+          "expect": {
+            "response": {
+              "Buckets": [
+                {
+                  "Name": "${res.b1.name}-p0"
+                },
+                {
+                  "Name": "${res.b1.name}-p1"
+                },
+                {
+                  "Name": "${res.b1.name}-p2"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-p0"
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-p1"
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-p2"
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-q0"
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}-q1"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,717 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "wire-headers",
+  "vectors": [
+    {
+      "id": "wire-headers-0001",
+      "kind": "api",
+      "title": "CreateBucket with an empty Authorization header returns AccessDenied",
+      "tags": [
+        "tier-2",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L369",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}-x",
+            "headers": {
+              "authorization": ""
+            }
+          },
+          "sign": false,
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0002",
+      "kind": "api",
+      "title": "CreateBucket without an Authorization header returns AccessDenied",
+      "tags": [
+        "tier-2",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L379",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}-x"
+          },
+          "sign": false,
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0003",
+      "kind": "api",
+      "title": "CreateBucket with an empty Content-Length header returns 400",
+      "tags": [
+        "tier-2",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L345",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}-x",
+            "headers": {
+              "content-length": ""
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0004",
+      "kind": "api",
+      "title": "CreateBucket with a negative Content-Length header returns 400",
+      "tags": [
+        "tier-2",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L353",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}-x",
+            "headers": {
+              "content-length": "-1"
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0005",
+      "kind": "api",
+      "title": "CreateBucket with an empty Expect header succeeds",
+      "tags": [
+        "tier-2",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L337",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}-x",
+            "headers": {
+              "expect": ""
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0007",
+      "kind": "api",
+      "title": "PutBucketAcl with an invalid canned ACL value in x-amz-acl returns 400",
+      "tags": [
+        "tier-3",
+        "wire-headers",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L314",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}",
+            "query": {
+              "acl": ""
+            },
+            "headers": {
+              "x-amz-acl": "public-ready"
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0008",
+      "kind": "api",
+      "title": "PutObject with an empty Authorization header returns 403",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L258",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "authorization": ""
+            },
+            "body": "bar"
+          },
+          "sign": false,
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0009",
+      "kind": "api",
+      "title": "PutObject without an Authorization header returns 403",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L285",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "body": "bar"
+          },
+          "sign": false,
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0010",
+      "kind": "api",
+      "title": "PutObject with an empty Content-Length header returns 400",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L205",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "content-length": ""
+            },
+            "body": "bar"
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0011",
+      "kind": "api",
+      "title": "PutObject with a negative Content-Length header returns 400",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L212",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "content-length": "-1"
+            }
+          },
+          "expect": {
+            "status": 400
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0012",
+      "kind": "api",
+      "title": "PutObject with an empty Content-Type succeeds",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L240",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "bar",
+            "ContentType": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0013",
+      "kind": "api",
+      "title": "PutObject with an ordinary Content-Type header succeeds",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L234",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "content-type": "text/plain"
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0015",
+      "kind": "api",
+      "title": "PutObject with an empty Expect header succeeds",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L191",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "expect": ""
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0017",
+      "kind": "api",
+      "title": "PutObject without an Expect header succeeds",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L197",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0018",
+      "kind": "api",
+      "title": "PutObject with a well-formed but non-matching Content-MD5 returns BadDigest",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L165",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "content-md5": "rL0Y20xC+Fzt72VPzMSk2A=="
+            },
+            "body": "bar"
+          },
+          "expect": {
+            "status": 400,
+            "error": "BadDigest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0019",
+      "kind": "api",
+      "title": "PutObject with an empty Content-MD5 header returns InvalidDigest",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L172",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "content-md5": ""
+            },
+            "body": "bar"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidDigest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0020",
+      "kind": "api",
+      "title": "PutObject with a Content-MD5 that decodes to the wrong length returns InvalidDigest",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L158",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "content-md5": "YWJyYWNhZGFicmE="
+            },
+            "body": "bar"
+          },
+          "expect": {
+            "status": 400,
+            "error": "InvalidDigest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0022",
+      "kind": "api",
+      "title": "CreateBucket with malformed SigV2-style Authorization header 'AWS HAHAHA' returns InvalidArgument",
+      "description": "The request is sent byte-literal (unsigned) with a two-token 'AWS HAHAHA' Authorization header; the server must reject the malformed header with 400 InvalidArgument before evaluating anything else, so the target bucket is never created.",
+      "tags": [
+        "tier-2",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L502",
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/s3v-ceph-wire-bad-auth-invalid-v2",
+            "headers": {
+              "authorization": "AWS HAHAHA",
+              "content-length": "0"
+            }
+          },
+          "sign": false,
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0023",
+      "kind": "api",
+      "title": "CreateBucket with an empty User-Agent header succeeds",
+      "description": "Source test used a SigV2 client, but User-Agent is not part of either signature scheme, so the behavior under test (server accepts an empty User-Agent) is signing-independent; the runner signs SigV4.",
+      "tags": [
+        "tier-2",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L512",
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/s3v-ceph-wire-ua-empty",
+            "headers": {
+              "user-agent": "",
+              "content-length": "0"
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0025",
+      "kind": "api",
+      "title": "PutObject with malformed SigV2-style Authorization header 'AWS HAHAHA' returns InvalidArgument",
+      "description": "The request is sent byte-literal (unsigned) with a two-token 'AWS HAHAHA' Authorization header; the server must reject the malformed header with 400 InvalidArgument.",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L421",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "authorization": "AWS HAHAHA",
+              "content-length": "3"
+            },
+            "body": "bar"
+          },
+          "sign": false,
+          "expect": {
+            "status": 400,
+            "error": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wire-headers-0026",
+      "kind": "api",
+      "title": "PutObject with an empty User-Agent header succeeds",
+      "description": "Source test used a SigV2 client, but User-Agent is not part of either signature scheme, so the behavior under test (server accepts an empty User-Agent) is signing-independent; the runner signs SigV4. The source performs two puts to the same key with the empty User-Agent, first with an empty body, then with body 'bar'.",
+      "tags": [
+        "tier-1",
+        "wire-headers",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L430",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "user-agent": "",
+              "content-length": "0"
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "http": {
+            "method": "PUT",
+            "path": "/${res.b1.name}/foo",
+            "headers": {
+              "user-agent": "",
+              "content-length": "3"
+            },
+            "body": "bar"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    }
+  ]
+}
