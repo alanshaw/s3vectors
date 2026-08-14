@@ -64,26 +64,35 @@ function dataRefs (node, out = []) {
   return out
 }
 
+// Unwrap a prerequisite keyed union -> { type, body } (type without the $).
+function prereqParts (p) {
+  for (const type of ['bucket', 'object', 'credential']) {
+    if (p[`$${type}`]) return { type, body: p[`$${type}`] }
+  }
+  return { type: undefined, body: {} }
+}
+
 function lintApiVector (file, v, opts) {
-  const prereqs = v.prerequisites || []
+  const prereqs = (v.prerequisites || []).map(prereqParts)
   const data = v.data || {}
-  const resTypes = new Map(prereqs.map(p => [p.handle, p.type]))
+  const resTypes = new Map(prereqs.map(p => [p.body.handle, p.type]))
 
   if (resTypes.size !== prereqs.length) fail(file, v.id, 'duplicate prerequisite handles')
 
   for (const p of prereqs) {
-    if (p.type === 'object' && resTypes.get(p.bucket) !== 'bucket') {
-      fail(file, v.id, `object prerequisite '${p.handle}' references '${p.bucket}' which is not a bucket handle`)
+    if (p.type === 'object' && resTypes.get(p.body.bucket) !== 'bucket') {
+      fail(file, v.id, `$object prerequisite '${p.body.handle}' references '${p.body.bucket}' which is not a $bucket handle`)
     }
   }
 
   // data specs: slice targets and bounds (sizes are known without generating)
   for (const [name, spec] of Object.entries(data)) {
-    if (spec.kind !== 'slice') continue
-    const parent = data[spec.of]
-    if (!parent) fail(file, v.id, `slice '${name}' references unknown dataset '${spec.of}'`)
-    else if (parent.kind === 'slice') fail(file, v.id, `slice '${name}' references slice '${spec.of}' (chained slices not allowed)`)
-    else if (spec.offset + spec.length > parent.size) fail(file, v.id, `slice '${name}' exceeds bounds of '${spec.of}'`)
+    if (!spec.$slice) continue
+    const s = spec.$slice
+    const parent = data[s.of]
+    if (!parent) fail(file, v.id, `slice '${name}' references unknown dataset '${s.of}'`)
+    else if (parent.$slice) fail(file, v.id, `slice '${name}' references slice '${s.of}' (chained slices not allowed)`)
+    else if (s.offset + s.length > (parent.$prng ?? parent.$pattern).size) fail(file, v.id, `slice '${name}' exceeds bounds of '${s.of}'`)
   }
 
   // $data content-descriptor references
@@ -91,25 +100,26 @@ function lintApiVector (file, v, opts) {
     if (!data[ref]) fail(file, v.id, `{"$data": "${ref}"} references undeclared dataset`)
   }
 
-  const credHandles = prereqs.filter(p => p.type === 'credential').map(p => p.handle)
+  const credHandles = prereqs.filter(p => p.type === 'credential').map(p => p.body.handle)
   const captured = new Set()
   const usedData = new Set()
 
   v.steps.forEach((step, i) => {
     const where = `step ${i + 1}`
-    const isHttp = 'http' in step
+    const isHttp = '$http' in step
+    const body = step.$operation ?? step.$http ?? {}
 
-    if (step.identity && !RESERVED_IDENTITIES.has(step.identity) && !credHandles.includes(step.identity)) {
-      fail(file, v.id, `${where}: identity '${step.identity}' is not main/anonymous/invalid or a credential handle`)
+    if (body.identity && !RESERVED_IDENTITIES.has(body.identity) && !credHandles.includes(body.identity)) {
+      fail(file, v.id, `${where}: identity '${body.identity}' is not main/anonymous/invalid or a credential handle`)
     }
-    if (isHttp && step.expect && step.expect.response) {
-      fail(file, v.id, `${where}: expect.response is only valid on operation steps`)
+    if (isHttp && body.expect && body.expect.response) {
+      fail(file, v.id, `${where}: expect.response is only valid on $operation steps`)
     }
-    if (isHttp && step.capture) {
-      for (const [name, cp] of Object.entries(step.capture)) {
+    if (isHttp && body.capture) {
+      for (const [name, cp] of Object.entries(body.capture)) {
         const head = cp.split(/[.[]/)[0]
         if (head !== 'status' && head !== 'headers') {
-          fail(file, v.id, `${where}: capture '${name}' path must start with 'status' or 'headers' on http steps`)
+          fail(file, v.id, `${where}: capture '${name}' path must start with 'status' or 'headers' on $http steps`)
         }
       }
     }
@@ -142,7 +152,7 @@ function lintApiVector (file, v, opts) {
       }
     })
 
-    for (const name of Object.keys(step.capture || {})) captured.add(name)
+    for (const name of Object.keys(body.capture || {})) captured.add(name)
   })
 
   if (opts.digests) {

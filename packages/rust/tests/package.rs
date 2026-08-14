@@ -26,16 +26,16 @@ fn b64_of_hex(h: &str) -> String {
 fn check_specs() -> BTreeMap<String, DataSpec> {
     serde_json::from_str(
         r#"{
-        "t40":   {"kind": "prng", "seed": "test", "size": 40},
-        "t32":   {"kind": "prng", "seed": "test", "size": 32},
-        "t10":   {"kind": "prng", "seed": "test", "size": 10},
-        "aaa":   {"kind": "pattern", "pattern": "A", "size": 5},
-        "abc":   {"kind": "pattern", "pattern": "abc", "size": 8},
-        "bin":   {"kind": "pattern", "patternBase64": "3q2+7w==", "size": 6},
-        "sl":    {"kind": "slice", "of": "t40", "offset": 30, "length": 6},
-        "chain": {"kind": "slice", "of": "sl", "offset": 0, "length": 1},
-        "over":  {"kind": "slice", "of": "t10", "offset": 8, "length": 8},
-        "check": {"kind": "pattern", "pattern": "123456789", "size": 9}
+        "t40":   {"$prng": {"seed": "test", "size": 40}},
+        "t32":   {"$prng": {"seed": "test", "size": 32}},
+        "t10":   {"$prng": {"seed": "test", "size": 10}},
+        "aaa":   {"$pattern": {"pattern": "A", "size": 5}},
+        "abc":   {"$pattern": {"pattern": "abc", "size": 8}},
+        "bin":   {"$pattern": {"patternBase64": "3q2+7w==", "size": 6}},
+        "sl":    {"$slice": {"of": "t40", "offset": 30, "length": 6}},
+        "chain": {"$slice": {"of": "sl", "offset": 0, "length": 1}},
+        "over":  {"$slice": {"of": "t10", "offset": 8, "length": 8}},
+        "check": {"$pattern": {"pattern": "123456789", "size": 9}}
     }"#,
     )
     .unwrap()
@@ -149,10 +149,10 @@ fn vector_shape_smoke() {
                 Vector::Api(api) => {
                     assert!(!api.steps.is_empty(), "{}: steps", api.id);
                     for s in &api.steps {
-                        // untagged decode guarantees exactly one variant matched
+                        // externally-tagged decode guarantees exactly one variant
                         match s {
-                            Step::Operation(op) => assert!(!op.operation.is_empty()),
-                            Step::Http(h) => assert!(!h.http.method.is_empty()),
+                            Step::Operation(op) => assert!(!op.name.is_empty()),
+                            Step::Http(h) => assert!(!h.method.is_empty()),
                         }
                     }
                 }

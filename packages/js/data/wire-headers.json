@@ -15,23 +15,24 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L369",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}-x",
             "headers": {
               "authorization": ""
+            },
+            "sign": false,
+            "expect": {
+              "status": 403,
+              "error": "AccessDenied"
             }
-          },
-          "sign": false,
-          "expect": {
-            "status": 403,
-            "error": "AccessDenied"
           }
         }
       ]
@@ -49,20 +50,21 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L379",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
-            "path": "/${res.b1.name}-x"
-          },
-          "sign": false,
-          "expect": {
-            "status": 403,
-            "error": "AccessDenied"
+            "path": "/${res.b1.name}-x",
+            "sign": false,
+            "expect": {
+              "status": 403,
+              "error": "AccessDenied"
+            }
           }
         }
       ]
@@ -80,21 +82,22 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L345",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}-x",
             "headers": {
               "content-length": ""
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         }
       ]
@@ -112,21 +115,22 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L353",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}-x",
             "headers": {
               "content-length": "-1"
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         }
       ]
@@ -143,21 +147,22 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L337",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}-x",
             "headers": {
               "expect": ""
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         }
       ]
@@ -176,13 +181,14 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L314",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}",
             "query": {
@@ -190,10 +196,10 @@
             },
             "headers": {
               "x-amz-acl": "public-ready"
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         }
       ]
@@ -211,23 +217,24 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L258",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "authorization": ""
             },
-            "body": "bar"
-          },
-          "sign": false,
-          "expect": {
-            "status": 403
+            "body": "bar",
+            "sign": false,
+            "expect": {
+              "status": 403
+            }
           }
         }
       ]
@@ -245,20 +252,21 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L285",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
-            "body": "bar"
-          },
-          "sign": false,
-          "expect": {
-            "status": 403
+            "body": "bar",
+            "sign": false,
+            "expect": {
+              "status": 403
+            }
           }
         }
       ]
@@ -276,22 +284,23 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L205",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "content-length": ""
             },
-            "body": "bar"
-          },
-          "expect": {
-            "status": 400
+            "body": "bar",
+            "expect": {
+              "status": 400
+            }
           }
         }
       ]
@@ -309,21 +318,22 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L212",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "content-length": "-1"
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         }
       ]
@@ -340,18 +350,21 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L240",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "bar",
-            "ContentType": ""
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "bar",
+              "ContentType": ""
+            }
           }
         }
       ]
@@ -368,29 +381,32 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L234",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "content-type": "text/plain"
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "bar"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "bar"
+            }
           }
         }
       ]
@@ -407,29 +423,32 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L191",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "expect": ""
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "bar"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "bar"
+            }
           }
         }
       ]
@@ -446,26 +465,29 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L197",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
-            "path": "/${res.b1.name}/foo"
-          },
-          "expect": {
-            "status": 200
+            "path": "/${res.b1.name}/foo",
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "bar"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "bar"
+            }
           }
         }
       ]
@@ -483,23 +505,24 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L165",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "content-md5": "rL0Y20xC+Fzt72VPzMSk2A=="
             },
-            "body": "bar"
-          },
-          "expect": {
-            "status": 400,
-            "error": "BadDigest"
+            "body": "bar",
+            "expect": {
+              "status": 400,
+              "error": "BadDigest"
+            }
           }
         }
       ]
@@ -517,23 +540,24 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L172",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "content-md5": ""
             },
-            "body": "bar"
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidDigest"
+            "body": "bar",
+            "expect": {
+              "status": 400,
+              "error": "InvalidDigest"
+            }
           }
         }
       ]
@@ -551,23 +575,24 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L158",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "content-md5": "YWJyYWNhZGFicmE="
             },
-            "body": "bar"
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidDigest"
+            "body": "bar",
+            "expect": {
+              "status": 400,
+              "error": "InvalidDigest"
+            }
           }
         }
       ]
@@ -586,18 +611,18 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L502",
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/s3v-ceph-wire-bad-auth-invalid-v2",
             "headers": {
               "authorization": "AWS HAHAHA",
               "content-length": "0"
+            },
+            "sign": false,
+            "expect": {
+              "status": 400,
+              "error": "InvalidArgument"
             }
-          },
-          "sign": false,
-          "expect": {
-            "status": 400,
-            "error": "InvalidArgument"
           }
         }
       ]
@@ -615,16 +640,16 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L512",
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/s3v-ceph-wire-ua-empty",
             "headers": {
               "user-agent": "",
               "content-length": "0"
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         }
       ]
@@ -643,25 +668,26 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L421",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "authorization": "AWS HAHAHA",
               "content-length": "3"
             },
-            "body": "bar"
-          },
-          "sign": false,
-          "expect": {
-            "status": 400,
-            "error": "InvalidArgument"
+            "body": "bar",
+            "sign": false,
+            "expect": {
+              "status": 400,
+              "error": "InvalidArgument"
+            }
           }
         }
       ]
@@ -679,36 +705,37 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L430",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "user-agent": "",
               "content-length": "0"
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}/foo",
             "headers": {
               "user-agent": "",
               "content-length": "3"
             },
-            "body": "bar"
-          },
-          "expect": {
-            "status": 200
+            "body": "bar",
+            "expect": {
+              "status": 200
+            }
           }
         }
       ]

@@ -95,8 +95,34 @@ func TestVectorShapeSmoke(t *testing.T) {
 				}
 				for j := range v.Steps {
 					s := &v.Steps[j]
-					if (s.Operation != "") == s.IsHTTP() {
-						t.Errorf("%s step %d: must have exactly one of operation/http", v.ID, j+1)
+					if (s.Operation != nil) == (s.HTTP != nil) {
+						t.Errorf("%s step %d: must have exactly one of $operation/$http", v.ID, j+1)
+					}
+					if s.Operation != nil && s.Operation.Name == "" {
+						t.Errorf("%s step %d: $operation missing name", v.ID, j+1)
+					}
+				}
+				for j := range v.Prerequisites {
+					p := &v.Prerequisites[j]
+					set := 0
+					for _, present := range []bool{p.Bucket != nil, p.Object != nil, p.Credential != nil} {
+						if present {
+							set++
+						}
+					}
+					if set != 1 || p.Handle() == "" {
+						t.Errorf("%s prerequisite %d: must have exactly one union key with a handle", v.ID, j+1)
+					}
+				}
+				for name, d := range v.Data {
+					set := 0
+					for _, present := range []bool{d.Prng != nil, d.Pattern != nil, d.Slice != nil} {
+						if present {
+							set++
+						}
+					}
+					if set != 1 {
+						t.Errorf("%s data %s: must have exactly one union key", v.ID, name)
 					}
 				}
 			} else if v.Expect == nil || v.Expect.Authorization == "" {

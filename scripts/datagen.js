@@ -37,27 +37,28 @@ function pattern (patternBytes, size) {
 function generate (specs, name) {
   const spec = specs[name]
   if (!spec) throw new Error(`unknown dataset: ${name}`)
-  switch (spec.kind) {
-    case 'prng':
-      return prng(spec.seed, spec.size)
-    case 'pattern':
-      return pattern(
-        spec.pattern !== undefined ? Buffer.from(spec.pattern, 'utf8') : Buffer.from(spec.patternBase64, 'base64'),
-        spec.size
-      )
-    case 'slice': {
-      const parent = specs[spec.of]
-      if (!parent) throw new Error(`slice '${name}' references unknown dataset '${spec.of}'`)
-      if (parent.kind === 'slice') throw new Error(`slice '${name}' references slice '${spec.of}' (chained slices are not allowed)`)
-      const base = generate(specs, spec.of)
-      if (spec.offset + spec.length > base.length) {
-        throw new Error(`slice '${name}' [${spec.offset}, ${spec.offset + spec.length}) exceeds '${spec.of}' size ${base.length}`)
-      }
-      return base.subarray(spec.offset, spec.offset + spec.length)
-    }
-    default:
-      throw new Error(`unknown data kind: ${spec.kind}`)
+  if (spec.$prng) {
+    return prng(spec.$prng.seed, spec.$prng.size)
   }
+  if (spec.$pattern) {
+    const d = spec.$pattern
+    return pattern(
+      d.pattern !== undefined ? Buffer.from(d.pattern, 'utf8') : Buffer.from(d.patternBase64, 'base64'),
+      d.size
+    )
+  }
+  if (spec.$slice) {
+    const d = spec.$slice
+    const parent = specs[d.of]
+    if (!parent) throw new Error(`slice '${name}' references unknown dataset '${d.of}'`)
+    if (parent.$slice) throw new Error(`slice '${name}' references slice '${d.of}' (chained slices are not allowed)`)
+    const base = generate(specs, d.of)
+    if (d.offset + d.length > base.length) {
+      throw new Error(`slice '${name}' [${d.offset}, ${d.offset + d.length}) exceeds '${d.of}' size ${base.length}`)
+    }
+    return base.subarray(d.offset, d.offset + d.length)
+  }
+  throw new Error(`unknown data kind: ${JSON.stringify(Object.keys(spec))}`)
 }
 
 // --- checksums ---------------------------------------------------------------
@@ -144,13 +145,13 @@ function selfTest () {
 
   // prng blocks cross-checked against `printf 'test\0...' | shasum -a 256`
   const specs = {
-    t40: { kind: 'prng', seed: 'test', size: 40 },
-    t32: { kind: 'prng', seed: 'test', size: 32 },
-    t10: { kind: 'prng', seed: 'test', size: 10 },
-    aaa: { kind: 'pattern', pattern: 'A', size: 5 },
-    abc: { kind: 'pattern', pattern: 'abc', size: 8 },
-    bin: { kind: 'pattern', patternBase64: '3q2+7w==', size: 6 },
-    sl: { kind: 'slice', of: 't40', offset: 30, length: 6 }
+    t40: { $prng: { seed: 'test', size: 40 } },
+    t32: { $prng: { seed: 'test', size: 32 } },
+    t10: { $prng: { seed: 'test', size: 10 } },
+    aaa: { $pattern: { pattern: 'A', size: 5 } },
+    abc: { $pattern: { pattern: 'abc', size: 8 } },
+    bin: { $pattern: { patternBase64: '3q2+7w==', size: 6 } },
+    sl: { $slice: { of: 't40', offset: 30, length: 6 } }
   }
   const block0 = 'b8cc3d1fcf7818feab07f224263256110eeb3b576a94ef8e7e439b48fc77998b'
   const block1 = '64a3a04c326aae7efd121f8468df1ac90ead2ece1e952353903cbcb6ae47618d'

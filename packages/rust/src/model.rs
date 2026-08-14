@@ -147,12 +147,15 @@ pub struct SigningExpect {
     pub signed_request: Option<String>,
 }
 
-/// A condition the runner must establish before step 1.
+/// A condition the runner must establish before step 1: a keyed union of
+/// `{"$bucket": {...}}`, `{"$object": {...}}` or `{"$credential": {...}}`.
 #[derive(Debug, Deserialize)]
-#[serde(untagged)]
 pub enum Prerequisite {
+    #[serde(rename = "$bucket")]
     Bucket(BucketPrerequisite),
+    #[serde(rename = "$object")]
     Object(ObjectPrerequisite),
+    #[serde(rename = "$credential")]
     Credential(CredentialPrerequisite),
 }
 
@@ -167,27 +170,8 @@ impl Prerequisite {
 }
 
 #[derive(Debug, Deserialize)]
-pub enum BucketType {
-    #[serde(rename = "bucket")]
-    Bucket,
-}
-
-#[derive(Debug, Deserialize)]
-pub enum ObjectType {
-    #[serde(rename = "object")]
-    Object,
-}
-
-#[derive(Debug, Deserialize)]
-pub enum CredentialType {
-    #[serde(rename = "credential")]
-    Credential,
-}
-
-#[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
 pub struct BucketPrerequisite {
-    pub r#type: BucketType,
     pub handle: String,
     #[serde(default)]
     pub versioning: Option<String>,
@@ -198,9 +182,8 @@ pub struct BucketPrerequisite {
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
 pub struct ObjectPrerequisite {
-    pub r#type: ObjectType,
     pub handle: String,
-    /// Handle of a bucket prerequisite in the same vector.
+    /// Handle of a `$bucket` prerequisite in the same vector.
     pub bucket: String,
     pub key: String,
     /// Content descriptor.
@@ -215,16 +198,18 @@ pub struct ObjectPrerequisite {
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct CredentialPrerequisite {
-    pub r#type: CredentialType,
     pub handle: String,
 }
 
-/// A deterministic dataset declaration.
+/// A deterministic dataset declaration: a keyed union of `{"$prng": {...}}`,
+/// `{"$pattern": {...}}` or `{"$slice": {...}}`.
 #[derive(Debug, Clone, Deserialize)]
-#[serde(untagged)]
 pub enum DataSpec {
+    #[serde(rename = "$prng")]
     Prng(PrngData),
+    #[serde(rename = "$pattern")]
     Pattern(PatternData),
+    #[serde(rename = "$slice")]
     Slice(SliceData),
 }
 
@@ -239,47 +224,10 @@ impl DataSpec {
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub enum PrngKind {
-    #[serde(rename = "prng")]
-    Prng,
-}
-
-#[derive(Debug, Deserialize)]
-pub enum PatternKind {
-    #[serde(rename = "pattern")]
-    Pattern,
-}
-
-#[derive(Debug, Deserialize)]
-pub enum SliceKind {
-    #[serde(rename = "slice")]
-    Slice,
-}
-
-// The single-variant kind enums make Clone derivation awkward; implement
-// manually where needed.
-impl Clone for PrngKind {
-    fn clone(&self) -> Self {
-        PrngKind::Prng
-    }
-}
-impl Clone for PatternKind {
-    fn clone(&self) -> Self {
-        PatternKind::Pattern
-    }
-}
-impl Clone for SliceKind {
-    fn clone(&self) -> Self {
-        SliceKind::Slice
-    }
-}
-
 /// SHA-256 counter mode: `block(i) = SHA256(UTF8(seed) || BE64(i))`.
 #[derive(Debug, Clone, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct PrngData {
-    pub kind: PrngKind,
     pub seed: String,
     pub size: u64,
 }
@@ -289,7 +237,6 @@ pub struct PrngData {
 #[derive(Debug, Clone, Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
 pub struct PatternData {
-    pub kind: PatternKind,
     #[serde(default)]
     pub pattern: Option<String>,
     #[serde(default)]
@@ -297,11 +244,10 @@ pub struct PatternData {
     pub size: u64,
 }
 
-/// Byte range `[offset, offset+length)` of a prng/pattern dataset.
+/// Byte range `[offset, offset+length)` of a `$prng`/`$pattern` dataset.
 #[derive(Debug, Clone, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SliceData {
-    pub kind: SliceKind,
     pub of: String,
     pub offset: u64,
     pub length: u64,
@@ -322,11 +268,13 @@ pub enum ContentDescriptor {
     },
 }
 
-/// One request/response step, structurally discriminated.
+/// One request/response step: a keyed union of `{"$operation": {...}}` or
+/// `{"$http": {...}}` (serde's externally-tagged enum representation).
 #[derive(Debug, Deserialize)]
-#[serde(untagged)]
 pub enum Step {
+    #[serde(rename = "$operation")]
     Operation(OperationStep),
+    #[serde(rename = "$http")]
     Http(HttpStep),
 }
 
@@ -344,7 +292,7 @@ impl Step {
 #[serde(deny_unknown_fields)]
 pub struct OperationStep {
     /// Exact AWS S3 API operation name.
-    pub operation: String,
+    pub name: String,
     /// Values may contain `${...}` placeholders or content descriptors.
     #[serde(default)]
     pub params: Option<BTreeMap<String, Value>>,
@@ -363,7 +311,15 @@ pub struct OperationStep {
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct HttpStep {
-    pub http: HttpRequest,
+    pub method: String,
+    pub path: String,
+    #[serde(default)]
+    pub query: Option<BTreeMap<String, OneOrMany>>,
+    #[serde(default)]
+    pub headers: Option<BTreeMap<String, OneOrMany>>,
+    /// Content descriptor.
+    #[serde(default)]
+    pub body: Option<ContentDescriptor>,
     /// Default `true`: runner SigV4-signs with the step identity.
     /// `false`: send byte-literal.
     #[serde(default)]
@@ -380,20 +336,6 @@ pub struct HttpStep {
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
 pub struct Presign {
     pub expires_in: u64,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct HttpRequest {
-    pub method: String,
-    pub path: String,
-    #[serde(default)]
-    pub query: Option<BTreeMap<String, OneOrMany>>,
-    #[serde(default)]
-    pub headers: Option<BTreeMap<String, OneOrMany>>,
-    /// Content descriptor.
-    #[serde(default)]
-    pub body: Option<ContentDescriptor>,
 }
 
 /// A JSON string or array of strings (repeated header/query values).

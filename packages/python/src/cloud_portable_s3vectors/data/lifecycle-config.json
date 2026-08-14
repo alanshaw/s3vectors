@@ -15,88 +15,103 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L8462",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchLifecycleConfiguration"
-          }
-        },
-        {
-          "operation": "DeleteBucketLifecycle",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 204
-          }
-        },
-        {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "test1/",
-                  "Expiration": {
-                    "Days": 31
-                  },
-                  "Prefix": "test1/",
-                  "Status": "Enabled"
-                },
-                {
-                  "ID": "test2/",
-                  "Expiration": {
-                    "Days": 120
-                  },
-                  "Prefix": "test2/",
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "GetBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchLifecycleConfiguration"
             }
           }
         },
         {
-          "operation": "GetBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}"
+          "$operation": {
+            "name": "DeleteBucketLifecycle",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 204
+            }
           }
         },
         {
-          "operation": "DeleteBucketLifecycle",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "test1/",
+                    "Expiration": {
+                      "Days": 31
+                    },
+                    "Prefix": "test1/",
+                    "Status": "Enabled"
+                  },
+                  {
+                    "ID": "test2/",
+                    "Expiration": {
+                      "Days": 120
+                    },
+                    "Prefix": "test2/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            }
           }
         },
         {
-          "operation": "GetBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchLifecycleConfiguration"
+          "$operation": {
+            "name": "GetBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            }
           }
         },
         {
-          "operation": "DeleteBucketLifecycle",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "DeleteBucketLifecycle",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 204
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchLifecycleConfiguration"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteBucketLifecycle",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 204
+            }
           }
         }
       ]
@@ -114,44 +129,49 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9111",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "days0/foo",
-          "body": "days0/foo"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "days0/foo",
+            "body": "days0/foo"
+          }
         },
         {
-          "type": "object",
-          "handle": "o2",
-          "bucket": "b1",
-          "key": "days0/bar",
-          "body": "days0/bar"
+          "$object": {
+            "handle": "o2",
+            "bucket": "b1",
+            "key": "days0/bar",
+            "body": "days0/bar"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "Expiration": {
-                    "Days": 0
-                  },
-                  "ID": "rule1",
-                  "Prefix": "days0/",
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "Expiration": {
+                      "Days": 0
+                    },
+                    "ID": "rule1",
+                    "Prefix": "days0/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "error": "InvalidArgument"
             }
-          },
-          "expect": {
-            "error": "InvalidArgument"
           }
         }
       ]
@@ -169,80 +189,89 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9248",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "Filter": {
-                    "And": {
-                      "Tags": [
-                        {
-                          "Key": "key1",
-                          "Value": "tag1"
-                        },
-                        {
-                          "Key": "key5",
-                          "Value": "tag6"
-                        }
-                      ]
-                    }
-                  },
-                  "Status": "Enabled",
-                  "Expiration": {
-                    "Days": 1
-                  },
-                  "ID": "rule1"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "Filter": {
+                      "And": {
+                        "Tags": [
+                          {
+                            "Key": "key1",
+                            "Value": "tag1"
+                          },
+                          {
+                            "Key": "key5",
+                            "Value": "tag6"
+                          }
+                        ]
+                      }
+                    },
+                    "Status": "Enabled",
+                    "Expiration": {
+                      "Days": 1
+                    },
+                    "ID": "rule1"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj_key1",
-            "Body": "obj_key1_body"
-          }
-        },
-        {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj_key1",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key1",
-                  "Value": "tag1"
-                },
-                {
-                  "Key": "key5",
-                  "Value": "tag5"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj_key1",
+              "Body": "obj_key1_body"
             }
           }
         },
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj_key1"
-          },
-          "expect": {
-            "status": 200,
-            "headers": {
-              "x-amz-expiration": {
-                "$absent": true
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj_key1",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key1",
+                    "Value": "tag1"
+                  },
+                  {
+                    "Key": "key5",
+                    "Value": "tag5"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj_key1"
+            },
+            "expect": {
+              "status": 200,
+              "headers": {
+                "x-amz-expiration": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -261,54 +290,61 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9174",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "Days": 1
-                  },
-                  "Prefix": "days1/",
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "Days": 1
+                    },
+                    "Prefix": "days1/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "days1/foo",
-            "Body": "bar"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "days1/foo",
+              "Body": "bar"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "days1/foo"
-          },
-          "expect": {
-            "status": 200,
-            "headers": {
-              "x-amz-expiration": {
-                "$matches": "expiry-date=\".+\", rule-id=\"rule1\""
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "days1/foo"
+            },
+            "expect": {
+              "status": 200,
+              "headers": {
+                "x-amz-expiration": {
+                  "$matches": "expiry-date=\".+\", rule-id=\"rule1\""
+                }
               }
             }
           }
@@ -327,44 +363,49 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9162",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "Days": 1
-                  },
-                  "Prefix": "days1/",
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "Days": 1
+                    },
+                    "Prefix": "days1/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "days1/foo",
-            "Body": "bar"
-          },
-          "expect": {
-            "status": 200,
-            "headers": {
-              "x-amz-expiration": {
-                "$matches": "expiry-date=\".+\", rule-id=\"rule1\""
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "days1/foo",
+              "Body": "bar"
+            },
+            "expect": {
+              "status": 200,
+              "headers": {
+                "x-amz-expiration": {
+                  "$matches": "expiry-date=\".+\", rule-id=\"rule1\""
+                }
               }
             }
           }
@@ -384,110 +425,123 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9192",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "Filter": {
-                    "Tag": {
-                      "Key": "key1",
-                      "Value": "tag1"
-                    }
-                  },
-                  "Status": "Enabled",
-                  "Expiration": {
-                    "Days": 1
-                  },
-                  "ID": "rule1"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj_key1",
-            "Body": "obj_key1_body"
-          }
-        },
-        {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj_key1",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key1",
-                  "Value": "tag1"
-                },
-                {
-                  "Key": "key5",
-                  "Value": "tag5"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj_key1"
-          },
-          "expect": {
-            "status": 200,
-            "headers": {
-              "x-amz-expiration": {
-                "$matches": "expiry-date=\".+\", rule-id=\"rule1\""
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "Filter": {
+                      "Tag": {
+                        "Key": "key1",
+                        "Value": "tag1"
+                      }
+                    },
+                    "Status": "Enabled",
+                    "Expiration": {
+                      "Days": 1
+                    },
+                    "ID": "rule1"
+                  }
+                ]
               }
             }
           }
         },
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "Filter": {
-                    "Tag": {
-                      "Key": "key2",
-                      "Value": "tag1"
-                    }
-                  },
-                  "Status": "Enabled",
-                  "Expiration": {
-                    "Days": 1
-                  },
-                  "ID": "rule1"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj_key1",
+              "Body": "obj_key1_body"
             }
           }
         },
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj_key1"
-          },
-          "expect": {
-            "status": 200,
-            "headers": {
-              "x-amz-expiration": {
-                "$absent": true
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj_key1",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key1",
+                    "Value": "tag1"
+                  },
+                  {
+                    "Key": "key5",
+                    "Value": "tag5"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj_key1"
+            },
+            "expect": {
+              "status": 200,
+              "headers": {
+                "x-amz-expiration": {
+                  "$matches": "expiry-date=\".+\", rule-id=\"rule1\""
+                }
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "Filter": {
+                      "Tag": {
+                        "Key": "key2",
+                        "Value": "tag1"
+                      }
+                    },
+                    "Status": "Enabled",
+                    "Expiration": {
+                      "Days": 1
+                    },
+                    "ID": "rule1"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj_key1"
+            },
+            "expect": {
+              "status": 200,
+              "headers": {
+                "x-amz-expiration": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -506,62 +560,67 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L8451",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "test1/",
-                  "Expiration": {
-                    "Days": 31
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "test1/",
+                    "Expiration": {
+                      "Days": 31
+                    },
+                    "Prefix": "test1/",
+                    "Status": "Enabled"
                   },
-                  "Prefix": "test1/",
-                  "Status": "Enabled"
-                },
-                {
-                  "ID": "test2/",
-                  "Expiration": {
-                    "Days": 120
-                  },
-                  "Prefix": "test2/",
-                  "Status": "Enabled"
-                }
-              ]
+                  {
+                    "ID": "test2/",
+                    "Expiration": {
+                      "Days": 120
+                    },
+                    "Prefix": "test2/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "Rules": [
-                {
-                  "ID": "test1/",
-                  "Expiration": {
-                    "Days": 31
+          "$operation": {
+            "name": "GetBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "Rules": [
+                  {
+                    "ID": "test1/",
+                    "Expiration": {
+                      "Days": 31
+                    },
+                    "Prefix": "test1/",
+                    "Status": "Enabled"
                   },
-                  "Prefix": "test1/",
-                  "Status": "Enabled"
-                },
-                {
-                  "ID": "test2/",
-                  "Expiration": {
-                    "Days": 120
-                  },
-                  "Prefix": "test2/",
-                  "Status": "Enabled"
-                }
-              ]
+                  {
+                    "ID": "test2/",
+                    "Expiration": {
+                      "Days": 120
+                    },
+                    "Prefix": "test2/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
             }
           }
         }
@@ -579,64 +638,69 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L8494",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "Expiration": {
-                    "Days": 31
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "Expiration": {
+                      "Days": 31
+                    },
+                    "Prefix": "test1/",
+                    "Status": "Enabled"
                   },
-                  "Prefix": "test1/",
-                  "Status": "Enabled"
-                },
-                {
-                  "Expiration": {
-                    "Days": 120
-                  },
-                  "Prefix": "test2/",
-                  "Status": "Enabled"
-                }
-              ]
+                  {
+                    "Expiration": {
+                      "Days": 120
+                    },
+                    "Prefix": "test2/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "Rules": [
-                {
-                  "Expiration": {
-                    "Days": 31
+          "$operation": {
+            "name": "GetBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "Rules": [
+                  {
+                    "Expiration": {
+                      "Days": 31
+                    },
+                    "Prefix": "test1/",
+                    "Status": "Enabled",
+                    "ID": {
+                      "$exists": true
+                    }
                   },
-                  "Prefix": "test1/",
-                  "Status": "Enabled",
-                  "ID": {
-                    "$exists": true
+                  {
+                    "Expiration": {
+                      "Days": 120
+                    },
+                    "Prefix": "test2/",
+                    "Status": "Enabled",
+                    "ID": {
+                      "$exists": true
+                    }
                   }
-                },
-                {
-                  "Expiration": {
-                    "Days": 120
-                  },
-                  "Prefix": "test2/",
-                  "Status": "Enabled",
-                  "ID": {
-                    "$exists": true
-                  }
-                }
-              ]
+                ]
+              }
             }
           }
         }
@@ -655,31 +719,34 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9012",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                  "Expiration": {
-                    "Days": 2
-                  },
-                  "Prefix": "test1/",
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "Expiration": {
+                      "Days": 2
+                    },
+                    "Prefix": "test1/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "InvalidArgument"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidArgument"
           }
         }
       ]
@@ -697,75 +764,82 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9037",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "Days": 2
-                  },
-                  "Prefix": "test1/",
-                  "Status": "enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "Days": 2
+                    },
+                    "Prefix": "test1/",
+                    "Status": "enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "MalformedXML"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "MalformedXML"
           }
         },
         {
-          "operation": "PutBucketLifecycle",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "Days": 2
-                  },
-                  "Prefix": "test1/",
-                  "Status": "disabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycle",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "Days": 2
+                    },
+                    "Prefix": "test1/",
+                    "Status": "disabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "MalformedXML"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "MalformedXML"
           }
         },
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "Days": 2
-                  },
-                  "Prefix": "test1/",
-                  "Status": "invalid"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "Days": 2
+                    },
+                    "Prefix": "test1/",
+                    "Status": "invalid"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "MalformedXML"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "MalformedXML"
           }
         }
       ]
@@ -783,39 +857,42 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9024",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "Days": 1
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "Days": 1
+                    },
+                    "Prefix": "test1/",
+                    "Status": "Enabled"
                   },
-                  "Prefix": "test1/",
-                  "Status": "Enabled"
-                },
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "Days": 2
-                  },
-                  "Prefix": "test2/",
-                  "Status": "Enabled"
-                }
-              ]
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "Days": 2
+                    },
+                    "Prefix": "test2/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "InvalidArgument"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidArgument"
           }
         }
       ]
@@ -832,38 +909,41 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L8441",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "Days": 1
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "Days": 1
+                    },
+                    "Prefix": "test1/",
+                    "Status": "Enabled"
                   },
-                  "Prefix": "test1/",
-                  "Status": "Enabled"
-                },
-                {
-                  "ID": "rule2",
-                  "Expiration": {
-                    "Days": 2
-                  },
-                  "Prefix": "test2/",
-                  "Status": "Disabled"
-                }
-              ]
+                  {
+                    "ID": "rule2",
+                    "Expiration": {
+                      "Days": 2
+                    },
+                    "Prefix": "test2/",
+                    "Status": "Disabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         }
       ]
@@ -880,30 +960,33 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9065",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "Date": "2017-09-27T00:00:00Z"
-                  },
-                  "Prefix": "test1/",
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "Date": "2017-09-27T00:00:00Z"
+                    },
+                    "Prefix": "test1/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         }
       ]
@@ -920,30 +1003,33 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9331",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "ExpiredObjectDeleteMarker": true
-                  },
-                  "Prefix": "test1/",
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "ExpiredObjectDeleteMarker": true
+                    },
+                    "Prefix": "test1/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         }
       ]
@@ -960,30 +1046,33 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9349",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "ExpiredObjectDeleteMarker": true
-                  },
-                  "Filter": {},
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "ExpiredObjectDeleteMarker": true
+                    },
+                    "Filter": {},
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         }
       ]
@@ -1000,32 +1089,35 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9340",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "ExpiredObjectDeleteMarker": true
-                  },
-                  "Filter": {
-                    "Prefix": "foo"
-                  },
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "ExpiredObjectDeleteMarker": true
+                    },
+                    "Filter": {
+                      "Prefix": "foo"
+                    },
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         }
       ]
@@ -1044,13 +1136,14 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9075",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "http": {
+          "$http": {
             "method": "PUT",
             "path": "/${res.b1.name}",
             "query": {
@@ -1060,10 +1153,10 @@
               "content-md5": "OQ1AgGgxCsub+Ba834kCMw==",
               "content-type": "application/xml"
             },
-            "body": "<LifecycleConfiguration><Rule><ID>rule1</ID><Prefix>test1/</Prefix><Status>Enabled</Status><Expiration><Date>20200101</Date></Expiration></Rule></LifecycleConfiguration>"
-          },
-          "expect": {
-            "status": 400
+            "body": "<LifecycleConfiguration><Rule><ID>rule1</ID><Prefix>test1/</Prefix><Status>Enabled</Status><Expiration><Date>20200101</Date></Expiration></Rule></LifecycleConfiguration>",
+            "expect": {
+              "status": 400
+            }
           }
         }
       ]
@@ -1080,52 +1173,57 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9292",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "past/foo",
-          "body": "past/foo"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "past/foo",
+            "body": "past/foo"
+          }
         },
         {
-          "type": "object",
-          "handle": "o2",
-          "bucket": "b1",
-          "key": "future/bar",
-          "body": "future/bar"
+          "$object": {
+            "handle": "o2",
+            "bucket": "b1",
+            "key": "future/bar",
+            "body": "future/bar"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "NoncurrentVersionExpiration": {
-                    "NoncurrentDays": 2
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "NoncurrentVersionExpiration": {
+                      "NoncurrentDays": 2
+                    },
+                    "Prefix": "past/",
+                    "Status": "Enabled"
                   },
-                  "Prefix": "past/",
-                  "Status": "Enabled"
-                },
-                {
-                  "ID": "rule2",
-                  "NoncurrentVersionExpiration": {
-                    "NoncurrentDays": 3
-                  },
-                  "Prefix": "future/",
-                  "Status": "Enabled"
-                }
-              ]
+                  {
+                    "ID": "rule2",
+                    "NoncurrentVersionExpiration": {
+                      "NoncurrentDays": 3
+                    },
+                    "Prefix": "future/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         }
       ]
@@ -1142,38 +1240,41 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9427",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Prefix": "test1/",
-                  "Status": "Enabled",
-                  "AbortIncompleteMultipartUpload": {
-                    "DaysAfterInitiation": 2
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Prefix": "test1/",
+                    "Status": "Enabled",
+                    "AbortIncompleteMultipartUpload": {
+                      "DaysAfterInitiation": 2
+                    }
+                  },
+                  {
+                    "ID": "rule2",
+                    "Prefix": "test2/",
+                    "Status": "Disabled",
+                    "AbortIncompleteMultipartUpload": {
+                      "DaysAfterInitiation": 3
+                    }
                   }
-                },
-                {
-                  "ID": "rule2",
-                  "Prefix": "test2/",
-                  "Status": "Disabled",
-                  "AbortIncompleteMultipartUpload": {
-                    "DaysAfterInitiation": 3
-                  }
-                }
-              ]
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         }
       ]
@@ -1191,36 +1292,39 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L9476",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule1",
-                  "Expiration": {
-                    "Date": "2023-09-27"
-                  },
-                  "Transitions": [
-                    {
-                      "Date": "20220927",
-                      "StorageClass": "GLACIER"
-                    }
-                  ],
-                  "Prefix": "test1/",
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule1",
+                    "Expiration": {
+                      "Date": "2023-09-27"
+                    },
+                    "Transitions": [
+                      {
+                        "Date": "20220927",
+                        "StorageClass": "GLACIER"
+                      }
+                    ],
+                    "Prefix": "test1/",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         }
       ]
@@ -1237,162 +1341,177 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/10.py#L16",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "expire-old-logs",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "logs/"
-                  },
-                  "Expiration": {
-                    "Days": 30
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "expire-old-logs",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "logs/"
+                    },
+                    "Expiration": {
+                      "Days": 30
+                    }
                   }
-                }
-              ]
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "Rules": [
-                {
-                  "ID": "expire-old-logs",
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "GetBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "Rules": [
+                  {
+                    "ID": "expire-old-logs",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "expire-temp-files",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "temp/"
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "expire-temp-files",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "temp/"
+                    },
+                    "Expiration": {
+                      "Days": 7
+                    }
                   },
-                  "Expiration": {
-                    "Days": 7
-                  }
-                },
-                {
-                  "ID": "expire-old-data",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "data/"
+                  {
+                    "ID": "expire-old-data",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "data/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
                   },
-                  "Expiration": {
-                    "Days": 365
+                  {
+                    "ID": "expire-archived",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "archive/"
+                    },
+                    "Expiration": {
+                      "Days": 180
+                    }
                   }
-                },
-                {
-                  "ID": "expire-archived",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "archive/"
-                  },
-                  "Expiration": {
-                    "Days": 180
-                  }
-                }
-              ]
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "Rules": [
-                {
-                  "ID": "expire-temp-files"
-                },
-                {
-                  "ID": "expire-old-data"
-                },
-                {
-                  "ID": "expire-archived"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "disabled-rule",
-                  "Status": "Disabled",
-                  "Filter": {
-                    "Prefix": "disabled/"
+          "$operation": {
+            "name": "GetBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "Rules": [
+                  {
+                    "ID": "expire-temp-files"
                   },
-                  "Expiration": {
-                    "Days": 1
-                  }
-                },
-                {
-                  "ID": "enabled-rule",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "enabled/"
+                  {
+                    "ID": "expire-old-data"
                   },
-                  "Expiration": {
-                    "Days": 1
+                  {
+                    "ID": "expire-archived"
                   }
-                }
-              ]
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "Rules": [
-                {
-                  "ID": "disabled-rule",
-                  "Status": "Disabled"
-                },
-                {
-                  "ID": "enabled-rule",
-                  "Status": "Enabled"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "disabled-rule",
+                    "Status": "Disabled",
+                    "Filter": {
+                      "Prefix": "disabled/"
+                    },
+                    "Expiration": {
+                      "Days": 1
+                    }
+                  },
+                  {
+                    "ID": "enabled-rule",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "enabled/"
+                    },
+                    "Expiration": {
+                      "Days": 1
+                    }
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteBucketLifecycle",
-          "params": {
-            "Bucket": "${res.b1.name}"
+          "$operation": {
+            "name": "GetBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "Rules": [
+                  {
+                    "ID": "disabled-rule",
+                    "Status": "Disabled"
+                  },
+                  {
+                    "ID": "enabled-rule",
+                    "Status": "Enabled"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteBucketLifecycle",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            }
           }
         }
       ]
@@ -1409,49 +1528,54 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/lifecycle/test_lifecycle_transitions.py#L16",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "basic-rule",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "logs/"
-                  },
-                  "Expiration": {
-                    "Days": 30
-                  },
-                  "Transitions": [
-                    {
-                      "Days": 7,
-                      "StorageClass": "GLACIER"
-                    }
-                  ]
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "basic-rule",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "logs/"
+                    },
+                    "Expiration": {
+                      "Days": 30
+                    },
+                    "Transitions": [
+                      {
+                        "Days": 7,
+                        "StorageClass": "GLACIER"
+                      }
+                    ]
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "Rules": [
-                {
-                  "ID": "basic-rule"
-                }
-              ]
+          "$operation": {
+            "name": "GetBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "Rules": [
+                  {
+                    "ID": "basic-rule"
+                  }
+                ]
+              }
             }
           }
         }
@@ -1469,37 +1593,40 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/lifecycle/test_lifecycle_transitions.py#L61",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "multi-transition",
-                  "Status": "Enabled",
-                  "Filter": {},
-                  "Transitions": [
-                    {
-                      "Days": 30,
-                      "StorageClass": "STANDARD_IA"
-                    },
-                    {
-                      "Days": 60,
-                      "StorageClass": "GLACIER"
-                    },
-                    {
-                      "Days": 180,
-                      "StorageClass": "DEEP_ARCHIVE"
-                    }
-                  ]
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "multi-transition",
+                    "Status": "Enabled",
+                    "Filter": {},
+                    "Transitions": [
+                      {
+                        "Days": 30,
+                        "StorageClass": "STANDARD_IA"
+                      },
+                      {
+                        "Days": 60,
+                        "StorageClass": "GLACIER"
+                      },
+                      {
+                        "Days": 180,
+                        "StorageClass": "DEEP_ARCHIVE"
+                      }
+                    ]
+                  }
+                ]
+              }
             }
           }
         }
@@ -1518,37 +1645,40 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/lifecycle/test_lifecycle_transitions.py#L88",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "invalid-order",
-                  "Status": "Enabled",
-                  "Filter": {},
-                  "Transitions": [
-                    {
-                      "Days": 60,
-                      "StorageClass": "GLACIER"
-                    },
-                    {
-                      "Days": 30,
-                      "StorageClass": "STANDARD_IA"
-                    }
-                  ]
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "invalid-order",
+                    "Status": "Enabled",
+                    "Filter": {},
+                    "Transitions": [
+                      {
+                        "Days": 60,
+                        "StorageClass": "GLACIER"
+                      },
+                      {
+                        "Days": 30,
+                        "StorageClass": "STANDARD_IA"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         }
       ]
@@ -1566,40 +1696,43 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/lifecycle/test_lifecycle_transitions.py#L152",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "tag-based",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "And": {
-                      "Prefix": "tagged/",
-                      "Tags": [
-                        {
-                          "Key": "Environment",
-                          "Value": "Production"
-                        },
-                        {
-                          "Key": "Archive",
-                          "Value": "true"
-                        }
-                      ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "tag-based",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "And": {
+                        "Prefix": "tagged/",
+                        "Tags": [
+                          {
+                            "Key": "Environment",
+                            "Value": "Production"
+                          },
+                          {
+                            "Key": "Archive",
+                            "Value": "true"
+                          }
+                        ]
+                      }
+                    },
+                    "Expiration": {
+                      "Days": 90
                     }
-                  },
-                  "Expiration": {
-                    "Days": 90
                   }
-                }
-              ]
+                ]
+              }
             }
           }
         }
@@ -1618,26 +1751,29 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/lifecycle/test_lifecycle_transitions.py#L183",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "abort-incomplete",
-                  "Status": "Enabled",
-                  "Filter": {},
-                  "AbortIncompleteMultipartUpload": {
-                    "DaysAfterInitiation": 7
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "abort-incomplete",
+                    "Status": "Enabled",
+                    "Filter": {},
+                    "AbortIncompleteMultipartUpload": {
+                      "DaysAfterInitiation": 7
+                    }
                   }
-                }
-              ]
+                ]
+              }
             }
           }
         }
@@ -1656,28 +1792,31 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/lifecycle/test_lifecycle_transitions.py#L208",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "date-expiration",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "expire/"
-                  },
-                  "Expiration": {
-                    "Date": "2099-01-01T00:00:00Z"
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "date-expiration",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "expire/"
+                    },
+                    "Expiration": {
+                      "Date": "2099-01-01T00:00:00Z"
+                    }
                   }
-                }
-              ]
+                ]
+              }
             }
           }
         }
@@ -1695,1018 +1834,1021 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/lifecycle/test_lifecycle_transitions.py#L232",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "rule-0000",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0000/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0001",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0001/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0002",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0002/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0003",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0003/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0004",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0004/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0005",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0005/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0006",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0006/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0007",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0007/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0008",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0008/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0009",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0009/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0010",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0010/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0011",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0011/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0012",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0012/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0013",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0013/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0014",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0014/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0015",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0015/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0016",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0016/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0017",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0017/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0018",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0018/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0019",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0019/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0020",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0020/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0021",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0021/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0022",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0022/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0023",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0023/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0024",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0024/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0025",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0025/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0026",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0026/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0027",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0027/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0028",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0028/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0029",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0029/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0030",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0030/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0031",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0031/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0032",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0032/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0033",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0033/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0034",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0034/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0035",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0035/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0036",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0036/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0037",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0037/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0038",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0038/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0039",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0039/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0040",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0040/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0041",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0041/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0042",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0042/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0043",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0043/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0044",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0044/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0045",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0045/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0046",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0046/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0047",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0047/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0048",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0048/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0049",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0049/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0050",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0050/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0051",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0051/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0052",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0052/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0053",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0053/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0054",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0054/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0055",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0055/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0056",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0056/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0057",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0057/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0058",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0058/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0059",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0059/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0060",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0060/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0061",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0061/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0062",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0062/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0063",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0063/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0064",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0064/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0065",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0065/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0066",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0066/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0067",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0067/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0068",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0068/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0069",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0069/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0070",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0070/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0071",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0071/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0072",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0072/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0073",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0073/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0074",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0074/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0075",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0075/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0076",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0076/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0077",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0077/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0078",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0078/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0079",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0079/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0080",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0080/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0081",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0081/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0082",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0082/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0083",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0083/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0084",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0084/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0085",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0085/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0086",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0086/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0087",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0087/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0088",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0088/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0089",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0089/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0090",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0090/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0091",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0091/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0092",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0092/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0093",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0093/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0094",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0094/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0095",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0095/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0096",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0096/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0097",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0097/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0098",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0098/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                },
-                {
-                  "ID": "rule-0099",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "prefix0099/"
-                  },
-                  "Expiration": {
-                    "Days": 365
-                  }
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "rule-0000",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0000/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0001",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0001/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0002",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0002/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0003",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0003/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0004",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0004/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0005",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0005/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0006",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0006/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0007",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0007/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0008",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0008/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0009",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0009/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0010",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0010/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0011",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0011/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0012",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0012/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0013",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0013/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0014",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0014/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0015",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0015/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0016",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0016/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0017",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0017/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0018",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0018/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0019",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0019/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0020",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0020/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0021",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0021/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0022",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0022/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0023",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0023/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0024",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0024/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0025",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0025/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0026",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0026/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0027",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0027/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0028",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0028/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0029",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0029/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0030",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0030/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0031",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0031/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0032",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0032/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0033",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0033/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0034",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0034/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0035",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0035/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0036",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0036/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0037",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0037/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0038",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0038/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0039",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0039/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0040",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0040/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0041",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0041/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0042",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0042/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0043",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0043/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0044",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0044/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0045",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0045/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0046",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0046/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0047",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0047/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0048",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0048/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0049",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0049/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0050",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0050/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0051",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0051/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0052",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0052/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0053",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0053/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0054",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0054/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0055",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0055/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0056",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0056/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0057",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0057/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0058",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0058/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0059",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0059/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0060",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0060/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0061",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0061/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0062",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0062/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0063",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0063/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0064",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0064/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0065",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0065/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0066",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0066/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0067",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0067/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0068",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0068/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0069",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0069/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0070",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0070/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0071",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0071/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0072",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0072/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0073",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0073/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0074",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0074/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0075",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0075/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0076",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0076/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0077",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0077/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0078",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0078/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0079",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0079/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0080",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0080/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0081",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0081/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0082",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0082/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0083",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0083/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0084",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0084/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0085",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0085/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0086",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0086/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0087",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0087/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0088",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0088/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0089",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0089/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0090",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0090/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0091",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0091/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0092",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0092/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0093",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0093/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0094",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0094/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0095",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0095/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0096",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0096/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0097",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0097/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0098",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0098/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  },
+                  {
+                    "ID": "rule-0099",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "prefix0099/"
+                    },
+                    "Expiration": {
+                      "Days": 365
+                    }
+                  }
+                ]
+              }
             }
           }
         }
@@ -2725,45 +2867,52 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/lifecycle/test_lifecycle_transitions.py#L256",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "LifecycleConfiguration": {
-              "Rules": [
-                {
-                  "ID": "to-delete",
-                  "Status": "Enabled",
-                  "Filter": {
-                    "Prefix": "data/"
-                  },
-                  "Expiration": {
-                    "Days": 30
+          "$operation": {
+            "name": "PutBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "LifecycleConfiguration": {
+                "Rules": [
+                  {
+                    "ID": "to-delete",
+                    "Status": "Enabled",
+                    "Filter": {
+                      "Prefix": "data/"
+                    },
+                    "Expiration": {
+                      "Days": 30
+                    }
                   }
-                }
-              ]
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteBucketLifecycle",
-          "params": {
-            "Bucket": "${res.b1.name}"
+          "$operation": {
+            "name": "DeleteBucketLifecycle",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            }
           }
         },
         {
-          "operation": "GetBucketLifecycleConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchLifecycleConfiguration"
+          "$operation": {
+            "name": "GetBucketLifecycleConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchLifecycleConfiguration"
+            }
           }
         }
       ]

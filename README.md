@@ -82,12 +82,14 @@ Every vector has:
   "title": "GetObject on a missing key returns NoSuchKey",
   "tags": ["tier-1", "object-crud", "errors", "source:storage-test"],
   "source": "https://github.com/olizilla/storage-test/blob/main/tests.json#L173",
-  "prerequisites": [{ "type": "bucket", "handle": "b1" }],
+  "prerequisites": [{ "$bucket": { "handle": "b1" } }],
   "steps": [
     {
-      "operation": "GetObject",
-      "params": { "Bucket": "${res.b1.name}", "Key": "missing-ghost-file.bin" },
-      "expect": { "status": 404, "error": "NoSuchKey" }
+      "$operation": {
+        "name": "GetObject",
+        "params": { "Bucket": "${res.b1.name}", "Key": "missing-ghost-file.bin" },
+        "expect": { "status": 404, "error": "NoSuchKey" }
+      }
     }
   ]
 }
@@ -97,14 +99,16 @@ Every vector has:
 
 Conditions the runner must establish **before step 1**. If a prerequisite cannot be
 established, the vector's outcome is **`blocked`** — distinct from `fail` — so a broken
-`CreateBucket` doesn't masquerade as hundreds of broken object tests. Each prerequisite
-declares a `handle`; steps reference resource attributes as `${res.<handle>.<attr>}`.
+`CreateBucket` doesn't masquerade as hundreds of broken object tests. A prerequisite is
+a **keyed union**: an object with exactly one of the keys `$bucket`, `$object` or
+`$credential`. Each declares a `handle`; steps reference resource attributes as
+`${res.<handle>.<attr>}`.
 
-| type | fields | attributes |
+| key | fields | attributes |
 |---|---|---|
-| `bucket` | `versioning?` (`Enabled`/`Suspended`), `objectLock?` (bool) | `name` (runner-chosen) |
-| `object` | `bucket` (a bucket handle), `key`, `body?`, `contentType?`, `metadata?` | `key`, `etag`, `versionId` |
-| `credential` | — (a second, distinct identity) | `accessKeyId`, `canonicalId`, `displayName` |
+| `$bucket` | `handle`, `versioning?` (`Enabled`/`Suspended`), `objectLock?` (bool) | `name` (runner-chosen) |
+| `$object` | `handle`, `bucket` (a `$bucket` handle), `key`, `body?`, `contentType?`, `metadata?` | `key`, `etag`, `versionId` |
+| `$credential` | `handle` (a second, distinct identity) | `accessKeyId`, `canonicalId`, `displayName` |
 
 The primary identity `main` always exists and needs no prerequisite. Cleanup/teardown
 is entirely the runner's responsibility.
@@ -112,34 +116,40 @@ is entirely the runner's responsibility.
 ### Steps
 
 Steps run strictly sequentially; a failing step aborts the remaining steps of that
-vector only. Two step types:
+vector only. A step is a **keyed union**: an object with exactly one of the keys
+`$operation` or `$http` (consistent with the `$data`/`$base64` discriminators).
 
-**Operation step** — the default. `operation` is the exact AWS S3 API operation name;
+**`$operation` step** — the default. `name` is the exact AWS S3 API operation name;
 `params` uses the AWS API model member names (as in the SDKs):
 
 ```jsonc
 {
-  "operation": "UploadPart",
-  "params": { "Bucket": "${res.b1.name}", "Key": "k", "UploadId": "${cap.uploadId}",
-              "PartNumber": 1, "Body": { "$data": "part1" } },
-  "identity": "main",                    // optional; default "main"
-  "presign": { "expiresIn": 300 },       // optional; execute via a runner-minted presigned URL
-  "capture": { "etag1": "ETag" },        // optional; save response values for later steps
-  "expect": { }                          // optional; omitted = the step must simply succeed
+  "$operation": {
+    "name": "UploadPart",
+    "params": { "Bucket": "${res.b1.name}", "Key": "k", "UploadId": "${cap.uploadId}",
+                "PartNumber": 1, "Body": { "$data": "part1" } },
+    "identity": "main",                  // optional; default "main"
+    "presign": { "expiresIn": 300 },     // optional; execute via a runner-minted presigned URL
+    "capture": { "etag1": "ETag" },      // optional; save response values for later steps
+    "expect": { }                        // optional; omitted = the step must simply succeed
+  }
 }
 ```
 
-**HTTP step** — raw-HTTP escape hatch for wire-level and malformed-request tests:
+**`$http` step** — raw-HTTP escape hatch for wire-level and malformed-request tests:
 
 ```jsonc
 {
-  "http": { "method": "PUT", "path": "/${res.b1.name}/k",
-            "query": { "partNumber": "1" },
-            "headers": { "content-md5": "not-valid-base64" },
-            "body": "hello" },
-  "sign": true,                          // default true: runner SigV4-signs with the step identity.
+  "$http": {
+    "method": "PUT",
+    "path": "/${res.b1.name}/k",
+    "query": { "partNumber": "1" },
+    "headers": { "content-md5": "not-valid-base64" },
+    "body": "hello",
+    "sign": true,                        // default true: runner SigV4-signs with the step identity.
                                          // false: send byte-literal (malformed-auth tests).
-  "expect": { "status": 400, "error": "InvalidDigest" }
+    "expect": { "status": 400, "error": "InvalidDigest" }
+  }
 }
 ```
 
@@ -149,8 +159,8 @@ runner-supplied credentials.
 - **`identity`** on any step: `"main"` (default) | `"anonymous"` (unsigned request) |
   `"invalid"` (well-formed signature, unknown access key) | the handle of a
   `credential` prerequisite.
-- **`capture`**: map of name → path into the parsed API-model response (operation
-  steps) or into `{status, headers}` (http steps). Path grammar:
+- **`capture`**: map of name → path into the parsed API-model response (`$operation`
+  steps) or into `{status, headers}` (`$http` steps). Path grammar:
   `ident ("." ident | "[" digits "]")*`, e.g. `UploadId`, `Contents[0].Key`,
   `headers.etag`. Captured values are available to **later** steps as `${cap.<name>}`.
 
@@ -181,13 +191,16 @@ Large payloads are declared, not inlined, under `data` (name → spec):
 
 ```jsonc
 "data": {
-  "big":   { "kind": "prng",  "seed": "multipart-0001/big", "size": 10485760 },
-  "part1": { "kind": "slice", "of": "big", "offset": 0, "length": 5242880 },
-  "aaa":   { "kind": "pattern", "pattern": "A", "size": 5242880 }
+  "big":   { "$prng": { "seed": "multipart-0001/big", "size": 10485760 } },
+  "part1": { "$slice": { "of": "big", "offset": 0, "length": 5242880 } },
+  "aaa":   { "$pattern": { "pattern": "A", "size": 5242880 } }
 }
 ```
 
-- **`prng`** — the byte stream is SHA-256 in counter mode (normative; reproducible
+Each dataset is a **keyed union**: an object with exactly one of the keys `$prng`,
+`$pattern` or `$slice`.
+
+- **`$prng`** — the byte stream is SHA-256 in counter mode (normative; reproducible
   byte-for-byte in any language):
 
   ```
@@ -197,9 +210,9 @@ Large payloads are declared, not inlined, under `data` (name → spec):
   ```
 
   Seed convention: `"<vector-id>/<name>"` (guarantees distinct data per vector).
-- **`pattern`** — the pattern bytes (`pattern` UTF-8, or `patternBase64`) repeated and
+- **`$pattern`** — the pattern bytes (`pattern` UTF-8, or `patternBase64`) repeated and
   truncated to `size`.
-- **`slice`** — a byte range `[offset, offset+length)` of another `prng`/`pattern`
+- **`$slice`** — a byte range `[offset, offset+length)` of another `$prng`/`$pattern`
   entry. Chained slices are not allowed.
 
 Datasets are referenced two ways:
@@ -227,7 +240,7 @@ independently computed check values).
   "error": "PreconditionFailed",                   // S3 error code; or { "code", "message" }
   "headers": { "content-range": "bytes 0-4/10",    // lowercase names → matchers
                "x-amz-request-id": { "$exists": true } },
-  "response": { "ContentLength": 5,                // operation steps only: subset match
+  "response": { "ContentLength": 5,                // $operation steps only: subset match
                 "Contents": [ { "Key": "a" } ] },  //   against the parsed API-model response
   "body": { "$data": "part1" }                     // exact bytes, or digest assertion
 }
@@ -320,42 +333,48 @@ teardown.
   "kind": "api",
   "title": "Two-part multipart upload with full and ranged read-back",
   "tags": ["tier-1", "multipart", "source:msst-s3"],
-  "prerequisites": [{ "type": "bucket", "handle": "b1" }],
+  "prerequisites": [{ "$bucket": { "handle": "b1" } }],
   "data": {
-    "big":   { "kind": "prng",  "seed": "multipart-0001/big", "size": 10485760 },
-    "part1": { "kind": "slice", "of": "big", "offset": 0,       "length": 5242880 },
-    "part2": { "kind": "slice", "of": "big", "offset": 5242880, "length": 5242880 }
+    "big":   { "$prng":  { "seed": "multipart-0001/big", "size": 10485760 } },
+    "part1": { "$slice": { "of": "big", "offset": 0,       "length": 5242880 } },
+    "part2": { "$slice": { "of": "big", "offset": 5242880, "length": 5242880 } }
   },
   "steps": [
-    { "operation": "CreateMultipartUpload",
-      "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin" },
-      "capture": { "uploadId": "UploadId" } },
-    { "operation": "UploadPart",
-      "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin",
-                  "UploadId": "${cap.uploadId}", "PartNumber": 1, "Body": { "$data": "part1" } },
-      "capture": { "etag1": "ETag" },
-      "expect": { "response": { "ETag": "${data.part1.etag}" } } },
-    { "operation": "UploadPart",
-      "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin",
-                  "UploadId": "${cap.uploadId}", "PartNumber": 2, "Body": { "$data": "part2" } },
-      "capture": { "etag2": "ETag" } },
-    { "operation": "CompleteMultipartUpload",
-      "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin",
-                  "MultipartUpload": { "Parts": [
-                    { "PartNumber": 1, "ETag": "${cap.etag1}" },
-                    { "PartNumber": 2, "ETag": "${cap.etag2}" } ] } },
-      "expect": { "response": { "Key": "mp/two-parts.bin", "ETag": { "$matches": "-2\"$" } } } },
-    { "operation": "GetObject",
-      "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin" },
-      "expect": { "status": 200,
-                  "response": { "ContentLength": 10485760 },
-                  "body": { "$size": 10485760, "$md5": "${data.big.md5}" } } },
-    { "operation": "GetObject",
-      "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin",
-                  "Range": "bytes=5242880-10485759" },
-      "expect": { "status": 206,
-                  "headers": { "content-range": "bytes 5242880-10485759/10485760" },
-                  "body": { "$data": "part2" } } }
+    { "$operation": {
+        "name": "CreateMultipartUpload",
+        "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin" },
+        "capture": { "uploadId": "UploadId" } } },
+    { "$operation": {
+        "name": "UploadPart",
+        "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin",
+                    "UploadId": "${cap.uploadId}", "PartNumber": 1, "Body": { "$data": "part1" } },
+        "capture": { "etag1": "ETag" },
+        "expect": { "response": { "ETag": "${data.part1.etag}" } } } },
+    { "$operation": {
+        "name": "UploadPart",
+        "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin",
+                    "UploadId": "${cap.uploadId}", "PartNumber": 2, "Body": { "$data": "part2" } },
+        "capture": { "etag2": "ETag" } } },
+    { "$operation": {
+        "name": "CompleteMultipartUpload",
+        "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin",
+                    "MultipartUpload": { "Parts": [
+                      { "PartNumber": 1, "ETag": "${cap.etag1}" },
+                      { "PartNumber": 2, "ETag": "${cap.etag2}" } ] } },
+        "expect": { "response": { "Key": "mp/two-parts.bin", "ETag": { "$matches": "-2\"$" } } } } },
+    { "$operation": {
+        "name": "GetObject",
+        "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin" },
+        "expect": { "status": 200,
+                    "response": { "ContentLength": 10485760 },
+                    "body": { "$size": 10485760, "$md5": "${data.big.md5}" } } } },
+    { "$operation": {
+        "name": "GetObject",
+        "params": { "Bucket": "${res.b1.name}", "Key": "mp/two-parts.bin",
+                    "Range": "bytes=5242880-10485759" },
+        "expect": { "status": 206,
+                    "headers": { "content-range": "bytes 5242880-10485759/10485760" },
+                    "body": { "$data": "part2" } } } }
   ]
 }
 ```

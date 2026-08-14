@@ -9,16 +9,16 @@ const BLOCK0 = 'b8cc3d1fcf7818feab07f224263256110eeb3b576a94ef8e7e439b48fc77998b
 const BLOCK1 = '64a3a04c326aae7efd121f8468df1ac90ead2ece1e952353903cbcb6ae47618d'
 
 const SPECS = {
-  t40: { kind: 'prng', seed: 'test', size: 40 },
-  t32: { kind: 'prng', seed: 'test', size: 32 },
-  t10: { kind: 'prng', seed: 'test', size: 10 },
-  aaa: { kind: 'pattern', pattern: 'A', size: 5 },
-  abc: { kind: 'pattern', pattern: 'abc', size: 8 },
-  bin: { kind: 'pattern', patternBase64: '3q2+7w==', size: 6 },
-  sl: { kind: 'slice', of: 't40', offset: 30, length: 6 },
-  chain: { kind: 'slice', of: 'sl', offset: 0, length: 1 },
-  over: { kind: 'slice', of: 't10', offset: 8, length: 8 },
-  check: { kind: 'pattern', pattern: '123456789', size: 9 }
+  t40: { $prng: { seed: 'test', size: 40 } },
+  t32: { $prng: { seed: 'test', size: 32 } },
+  t10: { $prng: { seed: 'test', size: 10 } },
+  aaa: { $pattern: { pattern: 'A', size: 5 } },
+  abc: { $pattern: { pattern: 'abc', size: 8 } },
+  bin: { $pattern: { patternBase64: '3q2+7w==', size: 6 } },
+  sl: { $slice: { of: 't40', offset: 30, length: 6 } },
+  chain: { $slice: { of: 'sl', offset: 0, length: 1 } },
+  over: { $slice: { of: 't10', offset: 8, length: 8 } },
+  check: { $pattern: { pattern: '123456789', size: 9 } }
 }
 
 test('datagen check values', () => {
@@ -83,7 +83,16 @@ test('vector shape smoke', () => {
       if (v.kind === 'api') {
         assert.ok(v.steps.length > 0, `${v.id}: steps`)
         for (const s of v.steps) {
-          assert.ok(('operation' in s) !== ('http' in s), `${v.id}: step must have exactly one of operation/http`)
+          assert.ok(('$operation' in s) !== ('$http' in s), `${v.id}: step must have exactly one of $operation/$http`)
+          assert.equal(Object.keys(s).length, 1, `${v.id}: step must have a single union key`)
+        }
+        for (const p of v.prerequisites ?? []) {
+          assert.equal(Object.keys(p).length, 1, `${v.id}: prerequisite must have a single union key`)
+          assert.ok('$bucket' in p || '$object' in p || '$credential' in p, `${v.id}: prerequisite union key`)
+        }
+        for (const [name, spec] of Object.entries(v.data ?? {})) {
+          assert.equal(Object.keys(spec).length, 1, `${v.id}/${name}: data spec must have a single union key`)
+          assert.ok('$prng' in spec || '$pattern' in spec || '$slice' in spec, `${v.id}/${name}: data union key`)
         }
       } else {
         assert.ok(v.expect.authorization.length > 0, `${v.id}: authorization`)
@@ -103,10 +112,15 @@ test('full-corpus datagen pass', () => {
     for (const v of file.vectors) {
       if (v.kind !== 'api' || !v.data) continue
       for (const [name, spec] of Object.entries(v.data)) {
-        const parentSize = spec.kind === 'slice' ? v.data[spec.of].size : spec.size
-        if (spec.kind !== 'slice') {
+        let parentSize
+        if (spec.$slice) {
+          const parent = v.data[spec.$slice.of]
+          parentSize = (parent.$prng ?? parent.$pattern).size
+        } else {
+          const inner = spec.$prng ?? spec.$pattern
+          parentSize = inner.size
           const bytes = generate(v.data, name)
-          assert.equal(bytes.length, spec.size, `${v.id}/${name}: size`)
+          assert.equal(bytes.length, inner.size, `${v.id}/${name}: size`)
         }
         if (parentSize <= DERIVED_CAP) {
           for (const f of DERIVED_FIELDS) derived(v.data, name, f)

@@ -40,78 +40,118 @@ func (v *Vector) IsAPI() bool { return v.Kind == "api" }
 // IsSigning reports whether this is an offline SigV4 signing vector.
 func (v *Vector) IsSigning() bool { return v.Kind == "signing" }
 
-// Prerequisite is a condition the runner must establish before step 1,
-// discriminated by Type ("bucket", "object" or "credential").
+// Prerequisite is a condition the runner must establish before step 1: a keyed
+// union with exactly one of Bucket ($bucket), Object ($object) or
+// Credential ($credential) set.
 type Prerequisite struct {
-	Type   string `json:"type"`
-	Handle string `json:"handle"`
+	Bucket     *BucketPrerequisite     `json:"$bucket,omitempty"`
+	Object     *ObjectPrerequisite     `json:"$object,omitempty"`
+	Credential *CredentialPrerequisite `json:"$credential,omitempty"`
+}
 
-	// type == "bucket"
+// Handle returns the prerequisite's resource handle.
+func (p *Prerequisite) Handle() string {
+	switch {
+	case p.Bucket != nil:
+		return p.Bucket.Handle
+	case p.Object != nil:
+		return p.Object.Handle
+	case p.Credential != nil:
+		return p.Credential.Handle
+	}
+	return ""
+}
+
+// BucketPrerequisite provisions a bucket; its runner-chosen name is
+// ${res.<handle>.name}.
+type BucketPrerequisite struct {
+	Handle     string `json:"handle"`
 	Versioning string `json:"versioning,omitempty"`
 	ObjectLock *bool  `json:"objectLock,omitempty"`
+}
 
-	// type == "object"
-	Bucket      string            `json:"bucket,omitempty"`
-	Key         string            `json:"key,omitempty"`
+// ObjectPrerequisite seeds an object into a $bucket prerequisite.
+type ObjectPrerequisite struct {
+	Handle      string            `json:"handle"`
+	Bucket      string            `json:"bucket"`
+	Key         string            `json:"key"`
 	Body        json.RawMessage   `json:"body,omitempty"` // content descriptor
 	ContentType string            `json:"contentType,omitempty"`
 	Metadata    map[string]string `json:"metadata,omitempty"`
 }
 
-// DataSpec declares a deterministic dataset, discriminated by Kind
-// ("prng", "pattern" or "slice").
-type DataSpec struct {
-	Kind string `json:"kind"`
-
-	// kind == "prng"
-	Seed string `json:"seed,omitempty"`
-
-	// kind == "prng" | "pattern"
-	Size int64 `json:"size,omitempty"`
-
-	// kind == "pattern" (exactly one of Pattern / PatternBase64)
-	Pattern       *string `json:"pattern,omitempty"`
-	PatternBase64 *string `json:"patternBase64,omitempty"`
-
-	// kind == "slice"
-	Of     string `json:"of,omitempty"`
-	Offset int64  `json:"offset,omitempty"`
-	Length int64  `json:"length,omitempty"`
+// CredentialPrerequisite provisions a second, distinct identity.
+type CredentialPrerequisite struct {
+	Handle string `json:"handle"`
 }
 
-// Step is one request/response step, structurally discriminated: exactly one
-// of Operation (an S3 API operation by name) or HTTP (raw request) is set.
+// DataSpec declares a deterministic dataset: a keyed union with exactly one of
+// Prng ($prng), Pattern ($pattern) or Slice ($slice) set.
+type DataSpec struct {
+	Prng    *PrngData    `json:"$prng,omitempty"`
+	Pattern *PatternData `json:"$pattern,omitempty"`
+	Slice   *SliceData   `json:"$slice,omitempty"`
+}
+
+// PrngData is SHA-256 counter-mode data: block(i) = SHA256(UTF8(seed) || BE64(i)).
+type PrngData struct {
+	Seed string `json:"seed"`
+	Size int64  `json:"size"`
+}
+
+// PatternData repeats the pattern bytes (exactly one of Pattern /
+// PatternBase64), truncated to Size.
+type PatternData struct {
+	Pattern       *string `json:"pattern,omitempty"`
+	PatternBase64 *string `json:"patternBase64,omitempty"`
+	Size          int64   `json:"size"`
+}
+
+// SliceData is a byte range [Offset, Offset+Length) of a $prng/$pattern dataset.
+type SliceData struct {
+	Of     string `json:"of"`
+	Offset int64  `json:"offset"`
+	Length int64  `json:"length"`
+}
+
+// Step is one request/response step: a keyed union with exactly one of
+// Operation ($operation, an S3 API operation by name) or HTTP ($http, a raw
+// wire-level request) set.
 type Step struct {
-	// operation step
-	Operation string                     `json:"operation,omitempty"`
-	Params    map[string]json.RawMessage `json:"params,omitempty"` // values may be content descriptors
-	Presign   *Presign                   `json:"presign,omitempty"`
-
-	// http step
-	HTTP *HTTPRequest `json:"http,omitempty"`
-	Sign *bool        `json:"sign,omitempty"` // nil => default true
-
-	// shared
-	Identity string            `json:"identity,omitempty"`
-	Capture  map[string]string `json:"capture,omitempty"`
-	Expect   *Expect           `json:"expect,omitempty"`
+	Operation *OperationStep `json:"$operation,omitempty"`
+	HTTP      *HTTPStep      `json:"$http,omitempty"`
 }
 
 // IsHTTP reports whether this is a raw-HTTP step.
 func (s *Step) IsHTTP() bool { return s.HTTP != nil }
+
+// OperationStep is an S3 API operation by name with API-model member names as
+// params. A nil Expect means the step must simply succeed.
+type OperationStep struct {
+	Name     string                     `json:"name"`
+	Params   map[string]json.RawMessage `json:"params,omitempty"` // values may be content descriptors
+	Identity string                     `json:"identity,omitempty"`
+	Presign  *Presign                   `json:"presign,omitempty"`
+	Capture  map[string]string          `json:"capture,omitempty"`
+	Expect   *Expect                    `json:"expect,omitempty"`
+}
 
 // Presign instructs the runner to execute the operation via a presigned URL.
 type Presign struct {
 	ExpiresIn int `json:"expiresIn"`
 }
 
-// HTTPRequest is a raw request for wire-level tests.
-type HTTPRequest struct {
-	Method  string               `json:"method"`
-	Path    string               `json:"path"`
-	Query   map[string]OneOrMany `json:"query,omitempty"`
-	Headers map[string]OneOrMany `json:"headers,omitempty"`
-	Body    json.RawMessage      `json:"body,omitempty"` // content descriptor
+// HTTPStep is a raw request for wire-level tests.
+type HTTPStep struct {
+	Method   string               `json:"method"`
+	Path     string               `json:"path"`
+	Query    map[string]OneOrMany `json:"query,omitempty"`
+	Headers  map[string]OneOrMany `json:"headers,omitempty"`
+	Body     json.RawMessage      `json:"body,omitempty"` // content descriptor
+	Sign     *bool                `json:"sign,omitempty"` // nil => default true
+	Identity string               `json:"identity,omitempty"`
+	Capture  map[string]string    `json:"capture,omitempty"`
+	Expect   *Expect              `json:"expect,omitempty"`
 }
 
 // OneOrMany decodes a JSON string or array of strings.

@@ -18,56 +18,67 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1719",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketAcl",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "ACL": "public-read-write"
+          "$operation": {
+            "name": "PutBucketAcl",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "ACL": "public-read-write"
+            }
           }
         },
         {
-          "operation": "ListObjects",
-          "params": {
-            "Bucket": "${res.b1.name}"
+          "$operation": {
+            "name": "ListObjects",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "bar"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "bar"
+            }
           }
         },
         {
-          "operation": "ListObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "ExpectedBucketOwner": "111111111111"
-          },
-          "identity": "anonymous",
-          "expect": {
-            "status": 403,
-            "error": "AccessDenied"
+          "$operation": {
+            "name": "ListObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "ExpectedBucketOwner": "111111111111"
+            },
+            "identity": "anonymous",
+            "expect": {
+              "status": 403,
+              "error": "AccessDenied"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "bar",
-            "Body": "coffee",
-            "ExpectedBucketOwner": "111111111111"
-          },
-          "identity": "anonymous",
-          "expect": {
-            "status": 403,
-            "error": "AccessDenied"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "bar",
+              "Body": "coffee",
+              "ExpectedBucketOwner": "111111111111"
+            },
+            "identity": "anonymous",
+            "expect": {
+              "status": 403,
+              "error": "AccessDenied"
+            }
           }
         }
       ]
@@ -85,46 +96,53 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L6765",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "singlepart",
-            "Body": "body"
-          },
-          "capture": {
-            "etag": "ETag"
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "singlepart",
-            "PartNumber": 2
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidPart"
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "singlepart",
-            "PartNumber": 1
-          },
-          "expect": {
-            "response": {
-              "ETag": "${cap.etag}"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "singlepart",
+              "Body": "body"
             },
-            "body": "body"
+            "capture": {
+              "etag": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "singlepart",
+              "PartNumber": 2
+            },
+            "expect": {
+              "status": 400,
+              "error": "InvalidPart"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "singlepart",
+              "PartNumber": 1
+            },
+            "expect": {
+              "response": {
+                "ETag": "${cap.etag}"
+              },
+              "body": "body"
+            }
           }
         }
       ]
@@ -143,55 +161,62 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L6786",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "singlepart",
-            "Body": "body",
-            "SSECustomerAlgorithm": "AES256",
-            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
-            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
-          },
-          "capture": {
-            "etag": "ETag"
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "singlepart",
-            "PartNumber": 2,
-            "SSECustomerAlgorithm": "AES256",
-            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
-            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidPart"
-          }
-        },
-        {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "singlepart",
-            "PartNumber": 1,
-            "SSECustomerAlgorithm": "AES256",
-            "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
-            "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
-          },
-          "expect": {
-            "response": {
-              "ETag": "${cap.etag}"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "singlepart",
+              "Body": "body",
+              "SSECustomerAlgorithm": "AES256",
+              "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+              "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
             },
-            "body": "body"
+            "capture": {
+              "etag": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "singlepart",
+              "PartNumber": 2,
+              "SSECustomerAlgorithm": "AES256",
+              "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+              "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+            },
+            "expect": {
+              "status": 400,
+              "error": "InvalidPart"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "singlepart",
+              "PartNumber": 1,
+              "SSECustomerAlgorithm": "AES256",
+              "SSECustomerKey": "pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=",
+              "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
+            },
+            "expect": {
+              "response": {
+                "ETag": "${cap.etag}"
+              },
+              "body": "body"
+            }
           }
         }
       ]
@@ -209,257 +234,283 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19090",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "misc-0004/obj",
-          "size": 31457280
+          "$prng": {
+            "seed": "misc-0004/obj",
+            "size": 31457280
+          }
         },
         "p1": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 0,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 0,
+            "length": 5242880
+          }
         },
         "p2": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 5242880,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 5242880,
+            "length": 5242880
+          }
         },
         "p3": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 10485760,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 10485760,
+            "length": 5242880
+          }
         },
         "p4": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 15728640,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 15728640,
+            "length": 5242880
+          }
         },
         "p5": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 20971520,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 20971520,
+            "length": 5242880
+          }
         },
         "p6": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 26214400,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 26214400,
+            "length": 5242880
+          }
         }
       },
       "steps": [
         {
-          "operation": "CreateMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart"
-          },
-          "capture": {
-            "uploadId": "UploadId"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 1,
-            "Body": {
-              "$data": "p1"
-            }
-          },
-          "capture": {
-            "etag1": "ETag"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 2,
-            "Body": {
-              "$data": "p2"
-            }
-          },
-          "capture": {
-            "etag2": "ETag"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 3,
-            "Body": {
-              "$data": "p3"
-            }
-          },
-          "capture": {
-            "etag3": "ETag"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 4,
-            "Body": {
-              "$data": "p4"
-            }
-          },
-          "capture": {
-            "etag4": "ETag"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 5,
-            "Body": {
-              "$data": "p5"
-            }
-          },
-          "capture": {
-            "etag5": "ETag"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 6,
-            "Body": {
-              "$data": "p6"
-            }
-          },
-          "capture": {
-            "etag6": "ETag"
-          }
-        },
-        {
-          "operation": "CompleteMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "MultipartUpload": {
-              "Parts": [
-                {
-                  "PartNumber": 1,
-                  "ETag": "${cap.etag1}"
-                },
-                {
-                  "PartNumber": 2,
-                  "ETag": "${cap.etag2}"
-                },
-                {
-                  "PartNumber": 3,
-                  "ETag": "${cap.etag3}"
-                },
-                {
-                  "PartNumber": 4,
-                  "ETag": "${cap.etag4}"
-                },
-                {
-                  "PartNumber": 5,
-                  "ETag": "${cap.etag5}"
-                },
-                {
-                  "PartNumber": 6,
-                  "ETag": "${cap.etag6}"
-                }
-              ]
+          "$operation": {
+            "name": "CreateMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart"
+            },
+            "capture": {
+              "uploadId": "UploadId"
             }
           }
         },
         {
-          "operation": "GetObjectAttributes",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "ObjectAttributes": [
-              "ETag",
-              "Checksum",
-              "ObjectParts",
-              "StorageClass",
-              "ObjectSize"
-            ]
-          },
-          "expect": {
-            "response": {
-              "ObjectSize": 31457280,
-              "ETag": {
-                "$matches": "-6$"
-              },
-              "StorageClass": "STANDARD",
-              "ObjectParts": {
-                "TotalPartsCount": 6,
-                "IsTruncated": false,
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 1,
+              "Body": {
+                "$data": "p1"
+              }
+            },
+            "capture": {
+              "etag1": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 2,
+              "Body": {
+                "$data": "p2"
+              }
+            },
+            "capture": {
+              "etag2": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 3,
+              "Body": {
+                "$data": "p3"
+              }
+            },
+            "capture": {
+              "etag3": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 4,
+              "Body": {
+                "$data": "p4"
+              }
+            },
+            "capture": {
+              "etag4": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 5,
+              "Body": {
+                "$data": "p5"
+              }
+            },
+            "capture": {
+              "etag5": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 6,
+              "Body": {
+                "$data": "p6"
+              }
+            },
+            "capture": {
+              "etag6": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "CompleteMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "MultipartUpload": {
                 "Parts": [
                   {
                     "PartNumber": 1,
-                    "Size": 5242880,
-                    "ChecksumSHA256": {
-                      "$absent": true
-                    }
+                    "ETag": "${cap.etag1}"
                   },
                   {
                     "PartNumber": 2,
-                    "Size": 5242880,
-                    "ChecksumSHA256": {
-                      "$absent": true
-                    }
+                    "ETag": "${cap.etag2}"
                   },
                   {
                     "PartNumber": 3,
-                    "Size": 5242880,
-                    "ChecksumSHA256": {
-                      "$absent": true
-                    }
+                    "ETag": "${cap.etag3}"
                   },
                   {
                     "PartNumber": 4,
-                    "Size": 5242880,
-                    "ChecksumSHA256": {
-                      "$absent": true
-                    }
+                    "ETag": "${cap.etag4}"
                   },
                   {
                     "PartNumber": 5,
-                    "Size": 5242880,
-                    "ChecksumSHA256": {
-                      "$absent": true
-                    }
+                    "ETag": "${cap.etag5}"
                   },
                   {
                     "PartNumber": 6,
-                    "Size": 5242880,
-                    "ChecksumSHA256": {
-                      "$absent": true
-                    }
+                    "ETag": "${cap.etag6}"
                   }
                 ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectAttributes",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "ObjectAttributes": [
+                "ETag",
+                "Checksum",
+                "ObjectParts",
+                "StorageClass",
+                "ObjectSize"
+              ]
+            },
+            "expect": {
+              "response": {
+                "ObjectSize": 31457280,
+                "ETag": {
+                  "$matches": "-6$"
+                },
+                "StorageClass": "STANDARD",
+                "ObjectParts": {
+                  "TotalPartsCount": 6,
+                  "IsTruncated": false,
+                  "Parts": [
+                    {
+                      "PartNumber": 1,
+                      "Size": 5242880,
+                      "ChecksumSHA256": {
+                        "$absent": true
+                      }
+                    },
+                    {
+                      "PartNumber": 2,
+                      "Size": 5242880,
+                      "ChecksumSHA256": {
+                        "$absent": true
+                      }
+                    },
+                    {
+                      "PartNumber": 3,
+                      "Size": 5242880,
+                      "ChecksumSHA256": {
+                        "$absent": true
+                      }
+                    },
+                    {
+                      "PartNumber": 4,
+                      "Size": 5242880,
+                      "ChecksumSHA256": {
+                        "$absent": true
+                      }
+                    },
+                    {
+                      "PartNumber": 5,
+                      "Size": 5242880,
+                      "ChecksumSHA256": {
+                        "$absent": true
+                      }
+                    },
+                    {
+                      "PartNumber": 6,
+                      "Size": 5242880,
+                      "ChecksumSHA256": {
+                        "$absent": true
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
@@ -479,225 +530,208 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19126",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "misc-0005/obj",
-          "size": 31457280
+          "$prng": {
+            "seed": "misc-0005/obj",
+            "size": 31457280
+          }
         },
         "p1": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 0,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 0,
+            "length": 5242880
+          }
         },
         "p2": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 5242880,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 5242880,
+            "length": 5242880
+          }
         },
         "p3": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 10485760,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 10485760,
+            "length": 5242880
+          }
         },
         "p4": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 15728640,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 15728640,
+            "length": 5242880
+          }
         },
         "p5": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 20971520,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 20971520,
+            "length": 5242880
+          }
         },
         "p6": {
-          "kind": "slice",
-          "of": "obj",
-          "offset": 26214400,
-          "length": 5242880
+          "$slice": {
+            "of": "obj",
+            "offset": 26214400,
+            "length": 5242880
+          }
         }
       },
       "steps": [
         {
-          "operation": "CreateMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart"
-          },
-          "capture": {
-            "uploadId": "UploadId"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 1,
-            "Body": {
-              "$data": "p1"
-            }
-          },
-          "capture": {
-            "etag1": "ETag"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 2,
-            "Body": {
-              "$data": "p2"
-            }
-          },
-          "capture": {
-            "etag2": "ETag"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 3,
-            "Body": {
-              "$data": "p3"
-            }
-          },
-          "capture": {
-            "etag3": "ETag"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 4,
-            "Body": {
-              "$data": "p4"
-            }
-          },
-          "capture": {
-            "etag4": "ETag"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 5,
-            "Body": {
-              "$data": "p5"
-            }
-          },
-          "capture": {
-            "etag5": "ETag"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 6,
-            "Body": {
-              "$data": "p6"
-            }
-          },
-          "capture": {
-            "etag6": "ETag"
-          }
-        },
-        {
-          "operation": "CompleteMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "MultipartUpload": {
-              "Parts": [
-                {
-                  "PartNumber": 1,
-                  "ETag": "${cap.etag1}"
-                },
-                {
-                  "PartNumber": 2,
-                  "ETag": "${cap.etag2}"
-                },
-                {
-                  "PartNumber": 3,
-                  "ETag": "${cap.etag3}"
-                },
-                {
-                  "PartNumber": 4,
-                  "ETag": "${cap.etag4}"
-                },
-                {
-                  "PartNumber": 5,
-                  "ETag": "${cap.etag5}"
-                },
-                {
-                  "PartNumber": 6,
-                  "ETag": "${cap.etag6}"
-                }
-              ]
+          "$operation": {
+            "name": "CreateMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart"
+            },
+            "capture": {
+              "uploadId": "UploadId"
             }
           }
         },
         {
-          "operation": "GetObjectAttributes",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "ObjectAttributes": [
-              "ETag",
-              "Checksum",
-              "ObjectParts",
-              "StorageClass",
-              "ObjectSize"
-            ],
-            "MaxParts": 1,
-            "PartNumberMarker": 3
-          },
-          "expect": {
-            "response": {
-              "ObjectSize": 31457280,
-              "ETag": {
-                "$matches": "-6$"
-              },
-              "StorageClass": "STANDARD",
-              "ObjectParts": {
-                "TotalPartsCount": 6,
-                "MaxParts": 1,
-                "PartNumberMarker": 3,
-                "IsTruncated": true,
-                "NextPartNumberMarker": 4,
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 1,
+              "Body": {
+                "$data": "p1"
+              }
+            },
+            "capture": {
+              "etag1": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 2,
+              "Body": {
+                "$data": "p2"
+              }
+            },
+            "capture": {
+              "etag2": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 3,
+              "Body": {
+                "$data": "p3"
+              }
+            },
+            "capture": {
+              "etag3": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 4,
+              "Body": {
+                "$data": "p4"
+              }
+            },
+            "capture": {
+              "etag4": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 5,
+              "Body": {
+                "$data": "p5"
+              }
+            },
+            "capture": {
+              "etag5": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 6,
+              "Body": {
+                "$data": "p6"
+              }
+            },
+            "capture": {
+              "etag6": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "CompleteMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "MultipartUpload": {
                 "Parts": [
                   {
+                    "PartNumber": 1,
+                    "ETag": "${cap.etag1}"
+                  },
+                  {
+                    "PartNumber": 2,
+                    "ETag": "${cap.etag2}"
+                  },
+                  {
+                    "PartNumber": 3,
+                    "ETag": "${cap.etag3}"
+                  },
+                  {
                     "PartNumber": 4,
-                    "Size": 5242880,
-                    "ChecksumSHA256": {
-                      "$absent": true
-                    }
+                    "ETag": "${cap.etag4}"
+                  },
+                  {
+                    "PartNumber": 5,
+                    "ETag": "${cap.etag5}"
+                  },
+                  {
+                    "PartNumber": 6,
+                    "ETag": "${cap.etag6}"
                   }
                 ]
               }
@@ -705,48 +739,93 @@
           }
         },
         {
-          "operation": "GetObjectAttributes",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "ObjectAttributes": [
-              "ETag",
-              "Checksum",
-              "ObjectParts",
-              "StorageClass",
-              "ObjectSize"
-            ],
-            "MaxParts": 10,
-            "PartNumberMarker": 4
-          },
-          "expect": {
-            "response": {
-              "ObjectSize": 31457280,
-              "ETag": {
-                "$matches": "-6$"
-              },
-              "StorageClass": "STANDARD",
-              "ObjectParts": {
-                "TotalPartsCount": 6,
-                "MaxParts": 10,
-                "PartNumberMarker": 4,
-                "IsTruncated": false,
-                "Parts": [
-                  {
-                    "PartNumber": 5,
-                    "Size": 5242880,
-                    "ChecksumSHA256": {
-                      "$absent": true
+          "$operation": {
+            "name": "GetObjectAttributes",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "ObjectAttributes": [
+                "ETag",
+                "Checksum",
+                "ObjectParts",
+                "StorageClass",
+                "ObjectSize"
+              ],
+              "MaxParts": 1,
+              "PartNumberMarker": 3
+            },
+            "expect": {
+              "response": {
+                "ObjectSize": 31457280,
+                "ETag": {
+                  "$matches": "-6$"
+                },
+                "StorageClass": "STANDARD",
+                "ObjectParts": {
+                  "TotalPartsCount": 6,
+                  "MaxParts": 1,
+                  "PartNumberMarker": 3,
+                  "IsTruncated": true,
+                  "NextPartNumberMarker": 4,
+                  "Parts": [
+                    {
+                      "PartNumber": 4,
+                      "Size": 5242880,
+                      "ChecksumSHA256": {
+                        "$absent": true
+                      }
                     }
-                  },
-                  {
-                    "PartNumber": 6,
-                    "Size": 5242880,
-                    "ChecksumSHA256": {
-                      "$absent": true
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectAttributes",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "ObjectAttributes": [
+                "ETag",
+                "Checksum",
+                "ObjectParts",
+                "StorageClass",
+                "ObjectSize"
+              ],
+              "MaxParts": 10,
+              "PartNumberMarker": 4
+            },
+            "expect": {
+              "response": {
+                "ObjectSize": 31457280,
+                "ETag": {
+                  "$matches": "-6$"
+                },
+                "StorageClass": "STANDARD",
+                "ObjectParts": {
+                  "TotalPartsCount": 6,
+                  "MaxParts": 10,
+                  "PartNumberMarker": 4,
+                  "IsTruncated": false,
+                  "Parts": [
+                    {
+                      "PartNumber": 5,
+                      "Size": 5242880,
+                      "ChecksumSHA256": {
+                        "$absent": true
+                      }
+                    },
+                    {
+                      "PartNumber": 6,
+                      "Size": 5242880,
+                      "ChecksumSHA256": {
+                        "$absent": true
+                      }
                     }
-                  }
-                ]
+                  ]
+                }
               }
             }
           }
@@ -766,90 +845,100 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19187",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "misc-0006/obj",
-          "size": 5242880
+          "$prng": {
+            "seed": "misc-0006/obj",
+            "size": 5242880
+          }
         }
       },
       "steps": [
         {
-          "operation": "CreateMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart"
-          },
-          "capture": {
-            "uploadId": "UploadId"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 1,
-            "Body": {
-              "$data": "obj"
-            }
-          },
-          "capture": {
-            "etag1": "ETag"
-          }
-        },
-        {
-          "operation": "CompleteMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "UploadId": "${cap.uploadId}",
-            "MultipartUpload": {
-              "Parts": [
-                {
-                  "PartNumber": 1,
-                  "ETag": "${cap.etag1}"
-                }
-              ]
+          "$operation": {
+            "name": "CreateMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart"
+            },
+            "capture": {
+              "uploadId": "UploadId"
             }
           }
         },
         {
-          "operation": "GetObjectAttributes",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart",
-            "ObjectAttributes": [
-              "ETag",
-              "Checksum",
-              "ObjectParts",
-              "StorageClass",
-              "ObjectSize"
-            ]
-          },
-          "expect": {
-            "response": {
-              "ObjectSize": 5242880,
-              "ETag": {
-                "$matches": "-1$"
-              },
-              "StorageClass": "STANDARD",
-              "ObjectParts": {
-                "TotalPartsCount": 1,
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 1,
+              "Body": {
+                "$data": "obj"
+              }
+            },
+            "capture": {
+              "etag1": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "CompleteMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "UploadId": "${cap.uploadId}",
+              "MultipartUpload": {
                 "Parts": [
                   {
                     "PartNumber": 1,
-                    "Size": 5242880,
-                    "ChecksumSHA256": {
-                      "$absent": true
-                    }
+                    "ETag": "${cap.etag1}"
                   }
                 ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectAttributes",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart",
+              "ObjectAttributes": [
+                "ETag",
+                "Checksum",
+                "ObjectParts",
+                "StorageClass",
+                "ObjectSize"
+              ]
+            },
+            "expect": {
+              "response": {
+                "ObjectSize": 5242880,
+                "ETag": {
+                  "$matches": "-1$"
+                },
+                "StorageClass": "STANDARD",
+                "ObjectParts": {
+                  "TotalPartsCount": 1,
+                  "Parts": [
+                    {
+                      "PartNumber": 1,
+                      "Size": 5242880,
+                      "ChecksumSHA256": {
+                        "$absent": true
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
@@ -869,84 +958,93 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19242",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "Body": "foo"
-          },
-          "capture": {
-            "v1": "VersionId"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "Body": "foo"
+            },
+            "capture": {
+              "v1": "VersionId"
+            }
           }
         },
         {
-          "operation": "GetObjectAttributes",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "ObjectAttributes": [
-              "ETag",
-              "Checksum",
-              "ObjectParts",
-              "StorageClass",
-              "ObjectSize"
-            ]
-          },
-          "expect": {
-            "response": {
-              "DeleteMarker": {
-                "$absent": true
-              },
-              "VersionId": "${cap.v1}",
-              "ObjectSize": 3,
-              "ETag": "acbd18db4cc2f85cedef654fccc4a4d8",
-              "StorageClass": "STANDARD",
-              "ObjectParts": {
-                "$absent": true
+          "$operation": {
+            "name": "GetObjectAttributes",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "ObjectAttributes": [
+                "ETag",
+                "Checksum",
+                "ObjectParts",
+                "StorageClass",
+                "ObjectSize"
+              ]
+            },
+            "expect": {
+              "response": {
+                "DeleteMarker": {
+                  "$absent": true
+                },
+                "VersionId": "${cap.v1}",
+                "ObjectSize": 3,
+                "ETag": "acbd18db4cc2f85cedef654fccc4a4d8",
+                "StorageClass": "STANDARD",
+                "ObjectParts": {
+                  "$absent": true
+                }
               }
             }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "Body": "foo"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "Body": "foo"
+            }
           }
         },
         {
-          "operation": "GetObjectAttributes",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.v1}",
-            "ObjectAttributes": [
-              "ETag",
-              "Checksum",
-              "ObjectParts",
-              "StorageClass",
-              "ObjectSize"
-            ]
-          },
-          "expect": {
-            "response": {
-              "DeleteMarker": {
-                "$absent": true
-              },
+          "$operation": {
+            "name": "GetObjectAttributes",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
               "VersionId": "${cap.v1}",
-              "ObjectSize": 3,
-              "ETag": "acbd18db4cc2f85cedef654fccc4a4d8",
-              "StorageClass": "STANDARD",
-              "ObjectParts": {
-                "$absent": true
+              "ObjectAttributes": [
+                "ETag",
+                "Checksum",
+                "ObjectParts",
+                "StorageClass",
+                "ObjectSize"
+              ]
+            },
+            "expect": {
+              "response": {
+                "DeleteMarker": {
+                  "$absent": true
+                },
+                "VersionId": "${cap.v1}",
+                "ObjectSize": 3,
+                "ETag": "acbd18db4cc2f85cedef654fccc4a4d8",
+                "StorageClass": "STANDARD",
+                "ObjectParts": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -965,91 +1063,104 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/21.py#L14",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketWebsite",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "WebsiteConfiguration": {
-              "IndexDocument": {
-                "Suffix": "index.html"
-              },
-              "ErrorDocument": {
-                "Key": "error.html"
+          "$operation": {
+            "name": "PutBucketWebsite",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "WebsiteConfiguration": {
+                "IndexDocument": {
+                  "Suffix": "index.html"
+                },
+                "ErrorDocument": {
+                  "Key": "error.html"
+                }
               }
             }
           }
         },
         {
-          "operation": "GetBucketWebsite",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "IndexDocument": {
-                "Suffix": "index.html"
-              },
-              "ErrorDocument": {
-                "Key": "error.html"
+          "$operation": {
+            "name": "GetBucketWebsite",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "IndexDocument": {
+                  "Suffix": "index.html"
+                },
+                "ErrorDocument": {
+                  "Key": "error.html"
+                }
               }
             }
           }
         },
         {
-          "operation": "PutBucketWebsite",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "WebsiteConfiguration": {
-              "IndexDocument": {
-                "Suffix": "default.html"
-              },
-              "ErrorDocument": {
-                "Key": "404.html"
+          "$operation": {
+            "name": "PutBucketWebsite",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "WebsiteConfiguration": {
+                "IndexDocument": {
+                  "Suffix": "default.html"
+                },
+                "ErrorDocument": {
+                  "Key": "404.html"
+                }
               }
             }
           }
         },
         {
-          "operation": "GetBucketWebsite",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "IndexDocument": {
-                "Suffix": "default.html"
-              },
-              "ErrorDocument": {
-                "Key": "404.html"
+          "$operation": {
+            "name": "GetBucketWebsite",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "IndexDocument": {
+                  "Suffix": "default.html"
+                },
+                "ErrorDocument": {
+                  "Key": "404.html"
+                }
               }
             }
           }
         },
         {
-          "operation": "PutBucketWebsite",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "WebsiteConfiguration": {
-              "IndexDocument": {
-                "Suffix": "index.html"
+          "$operation": {
+            "name": "PutBucketWebsite",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "WebsiteConfiguration": {
+                "IndexDocument": {
+                  "Suffix": "index.html"
+                }
               }
             }
           }
         },
         {
-          "operation": "GetBucketWebsite",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "IndexDocument": {
-                "$exists": true
+          "$operation": {
+            "name": "GetBucketWebsite",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "IndexDocument": {
+                  "$exists": true
+                }
               }
             }
           }
@@ -1068,60 +1179,46 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/22.py#L13",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "bucket",
-          "handle": "b2"
+          "$bucket": {
+            "handle": "b2"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketInventoryConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "daily-inventory",
-            "InventoryConfiguration": {
-              "Destination": {
-                "S3BucketDestination": {
-                  "AccountId": "123456789012",
-                  "Bucket": "arn:aws:s3:::${res.b2.name}",
-                  "Format": "CSV",
-                  "Prefix": "inventory/"
-                }
-              },
-              "IsEnabled": true,
-              "Filter": {
-                "Prefix": "data/"
-              },
+          "$operation": {
+            "name": "PutBucketInventoryConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
               "Id": "daily-inventory",
-              "IncludedObjectVersions": "Current",
-              "OptionalFields": [
-                "Size",
-                "LastModifiedDate",
-                "StorageClass",
-                "ETag",
-                "IsMultipartUploaded",
-                "ReplicationStatus"
-              ],
-              "Schedule": {
-                "Frequency": "Daily"
-              }
-            }
-          }
-        },
-        {
-          "operation": "GetBucketInventoryConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "daily-inventory"
-          },
-          "expect": {
-            "response": {
               "InventoryConfiguration": {
-                "Id": "daily-inventory",
+                "Destination": {
+                  "S3BucketDestination": {
+                    "AccountId": "123456789012",
+                    "Bucket": "arn:aws:s3:::${res.b2.name}",
+                    "Format": "CSV",
+                    "Prefix": "inventory/"
+                  }
+                },
                 "IsEnabled": true,
+                "Filter": {
+                  "Prefix": "data/"
+                },
+                "Id": "daily-inventory",
+                "IncludedObjectVersions": "Current",
+                "OptionalFields": [
+                  "Size",
+                  "LastModifiedDate",
+                  "StorageClass",
+                  "ETag",
+                  "IsMultipartUploaded",
+                  "ReplicationStatus"
+                ],
                 "Schedule": {
                   "Frequency": "Daily"
                 }
@@ -1130,47 +1227,71 @@
           }
         },
         {
-          "operation": "PutBucketInventoryConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "daily-inventory",
-            "InventoryConfiguration": {
-              "Destination": {
-                "S3BucketDestination": {
-                  "AccountId": "123456789012",
-                  "Bucket": "arn:aws:s3:::${res.b2.name}",
-                  "Format": "CSV",
-                  "Prefix": "inventory/"
+          "$operation": {
+            "name": "GetBucketInventoryConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Id": "daily-inventory"
+            },
+            "expect": {
+              "response": {
+                "InventoryConfiguration": {
+                  "Id": "daily-inventory",
+                  "IsEnabled": true,
+                  "Schedule": {
+                    "Frequency": "Daily"
+                  }
                 }
-              },
-              "IsEnabled": false,
-              "Filter": {
-                "Prefix": "data/"
-              },
-              "Id": "daily-inventory",
-              "IncludedObjectVersions": "Current",
-              "OptionalFields": [
-                "Size",
-                "ETag"
-              ],
-              "Schedule": {
-                "Frequency": "Daily"
               }
             }
           }
         },
         {
-          "operation": "GetBucketInventoryConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "daily-inventory"
-          },
-          "expect": {
-            "response": {
+          "$operation": {
+            "name": "PutBucketInventoryConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Id": "daily-inventory",
               "InventoryConfiguration": {
+                "Destination": {
+                  "S3BucketDestination": {
+                    "AccountId": "123456789012",
+                    "Bucket": "arn:aws:s3:::${res.b2.name}",
+                    "Format": "CSV",
+                    "Prefix": "inventory/"
+                  }
+                },
                 "IsEnabled": false,
-                "OptionalFields": {
-                  "$length": 2
+                "Filter": {
+                  "Prefix": "data/"
+                },
+                "Id": "daily-inventory",
+                "IncludedObjectVersions": "Current",
+                "OptionalFields": [
+                  "Size",
+                  "ETag"
+                ],
+                "Schedule": {
+                  "Frequency": "Daily"
+                }
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetBucketInventoryConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Id": "daily-inventory"
+            },
+            "expect": {
+              "response": {
+                "InventoryConfiguration": {
+                  "IsEnabled": false,
+                  "OptionalFields": {
+                    "$length": 2
+                  }
                 }
               }
             }
@@ -1190,29 +1311,18 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/28.py#L12",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketMetricsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "EntireBucket",
-            "MetricsConfiguration": {
-              "Id": "EntireBucket"
-            }
-          }
-        },
-        {
-          "operation": "GetBucketMetricsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "EntireBucket"
-          },
-          "expect": {
-            "response": {
+          "$operation": {
+            "name": "PutBucketMetricsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Id": "EntireBucket",
               "MetricsConfiguration": {
                 "Id": "EntireBucket"
               }
@@ -1220,40 +1330,44 @@
           }
         },
         {
-          "operation": "PutBucketMetricsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "DocumentsMetrics",
-            "MetricsConfiguration": {
+          "$operation": {
+            "name": "GetBucketMetricsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Id": "EntireBucket"
+            },
+            "expect": {
+              "response": {
+                "MetricsConfiguration": {
+                  "Id": "EntireBucket"
+                }
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "PutBucketMetricsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
               "Id": "DocumentsMetrics",
-              "Filter": {
-                "Prefix": "documents/"
-              }
-            }
-          }
-        },
-        {
-          "operation": "PutBucketMetricsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "EntireBucket",
-            "MetricsConfiguration": {
-              "Id": "EntireBucket",
-              "Filter": {
-                "Prefix": "updated/"
-              }
-            }
-          }
-        },
-        {
-          "operation": "GetBucketMetricsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "EntireBucket"
-          },
-          "expect": {
-            "response": {
               "MetricsConfiguration": {
+                "Id": "DocumentsMetrics",
+                "Filter": {
+                  "Prefix": "documents/"
+                }
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "PutBucketMetricsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Id": "EntireBucket",
+              "MetricsConfiguration": {
+                "Id": "EntireBucket",
                 "Filter": {
                   "Prefix": "updated/"
                 }
@@ -1262,10 +1376,30 @@
           }
         },
         {
-          "operation": "DeleteBucketMetricsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "DocumentsMetrics"
+          "$operation": {
+            "name": "GetBucketMetricsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Id": "EntireBucket"
+            },
+            "expect": {
+              "response": {
+                "MetricsConfiguration": {
+                  "Filter": {
+                    "Prefix": "updated/"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteBucketMetricsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Id": "DocumentsMetrics"
+            }
           }
         }
       ]
@@ -1282,71 +1416,79 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/29.py#L12",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "bucket",
-          "handle": "b2"
+          "$bucket": {
+            "handle": "b2"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketAnalyticsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "EntireBucketAnalysis",
-            "AnalyticsConfiguration": {
+          "$operation": {
+            "name": "PutBucketAnalyticsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
               "Id": "EntireBucketAnalysis",
-              "StorageClassAnalysis": {
-                "DataExport": {
-                  "OutputSchemaVersion": "V_1",
-                  "Destination": {
-                    "S3BucketDestination": {
-                      "Format": "CSV",
-                      "BucketAccountId": "123456789012",
-                      "Bucket": "arn:aws:s3:::${res.b2.name}",
-                      "Prefix": "analytics-results/"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        {
-          "operation": "GetBucketAnalyticsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "EntireBucketAnalysis"
-          },
-          "expect": {
-            "response": {
               "AnalyticsConfiguration": {
-                "Id": "EntireBucketAnalysis"
+                "Id": "EntireBucketAnalysis",
+                "StorageClassAnalysis": {
+                  "DataExport": {
+                    "OutputSchemaVersion": "V_1",
+                    "Destination": {
+                      "S3BucketDestination": {
+                        "Format": "CSV",
+                        "BucketAccountId": "123456789012",
+                        "Bucket": "arn:aws:s3:::${res.b2.name}",
+                        "Prefix": "analytics-results/"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
         },
         {
-          "operation": "PutBucketAnalyticsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "DocumentsAnalysis",
-            "AnalyticsConfiguration": {
+          "$operation": {
+            "name": "GetBucketAnalyticsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Id": "EntireBucketAnalysis"
+            },
+            "expect": {
+              "response": {
+                "AnalyticsConfiguration": {
+                  "Id": "EntireBucketAnalysis"
+                }
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "PutBucketAnalyticsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
               "Id": "DocumentsAnalysis",
-              "Filter": {
-                "Prefix": "documents/"
-              },
-              "StorageClassAnalysis": {
-                "DataExport": {
-                  "OutputSchemaVersion": "V_1",
-                  "Destination": {
-                    "S3BucketDestination": {
-                      "Format": "CSV",
-                      "BucketAccountId": "123456789012",
-                      "Bucket": "arn:aws:s3:::${res.b2.name}",
-                      "Prefix": "documents-analysis/"
+              "AnalyticsConfiguration": {
+                "Id": "DocumentsAnalysis",
+                "Filter": {
+                  "Prefix": "documents/"
+                },
+                "StorageClassAnalysis": {
+                  "DataExport": {
+                    "OutputSchemaVersion": "V_1",
+                    "Destination": {
+                      "S3BucketDestination": {
+                        "Format": "CSV",
+                        "BucketAccountId": "123456789012",
+                        "Bucket": "arn:aws:s3:::${res.b2.name}",
+                        "Prefix": "documents-analysis/"
+                      }
                     }
                   }
                 }
@@ -1355,21 +1497,23 @@
           }
         },
         {
-          "operation": "PutBucketAnalyticsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "EntireBucketAnalysis",
-            "AnalyticsConfiguration": {
+          "$operation": {
+            "name": "PutBucketAnalyticsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
               "Id": "EntireBucketAnalysis",
-              "StorageClassAnalysis": {
-                "DataExport": {
-                  "OutputSchemaVersion": "V_1",
-                  "Destination": {
-                    "S3BucketDestination": {
-                      "Format": "CSV",
-                      "BucketAccountId": "123456789012",
-                      "Bucket": "arn:aws:s3:::${res.b2.name}",
-                      "Prefix": "updated-analytics/"
+              "AnalyticsConfiguration": {
+                "Id": "EntireBucketAnalysis",
+                "StorageClassAnalysis": {
+                  "DataExport": {
+                    "OutputSchemaVersion": "V_1",
+                    "Destination": {
+                      "S3BucketDestination": {
+                        "Format": "CSV",
+                        "BucketAccountId": "123456789012",
+                        "Bucket": "arn:aws:s3:::${res.b2.name}",
+                        "Prefix": "updated-analytics/"
+                      }
                     }
                   }
                 }
@@ -1378,10 +1522,12 @@
           }
         },
         {
-          "operation": "DeleteBucketAnalyticsConfiguration",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Id": "DocumentsAnalysis"
+          "$operation": {
+            "name": "DeleteBucketAnalyticsConfiguration",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Id": "DocumentsAnalysis"
+            }
           }
         }
       ]

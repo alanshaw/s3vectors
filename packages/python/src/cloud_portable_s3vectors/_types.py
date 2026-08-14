@@ -13,14 +13,12 @@ ContentDescriptor = Union[str, dict[str, str]]  # "text" | {"$data": name} | {"$
 
 
 class BucketPrerequisite(TypedDict, total=False):
-    type: Required[Literal["bucket"]]
     handle: Required[str]
     versioning: Literal["Enabled", "Suspended"]
     objectLock: bool
 
 
 class ObjectPrerequisite(TypedDict, total=False):
-    type: Required[Literal["object"]]
     handle: Required[str]
     bucket: Required[str]
     key: Required[str]
@@ -30,34 +28,44 @@ class ObjectPrerequisite(TypedDict, total=False):
 
 
 class CredentialPrerequisite(TypedDict):
-    type: Literal["credential"]
     handle: str
 
 
-Prerequisite = Union[BucketPrerequisite, ObjectPrerequisite, CredentialPrerequisite]
+# Keyed unions: exactly one $-prefixed key per object ($-keys are invalid
+# Python identifiers, hence the functional TypedDict syntax).
+BucketPrerequisiteWrapper = TypedDict("BucketPrerequisiteWrapper", {"$bucket": BucketPrerequisite})
+ObjectPrerequisiteWrapper = TypedDict("ObjectPrerequisiteWrapper", {"$object": ObjectPrerequisite})
+CredentialPrerequisiteWrapper = TypedDict(
+    "CredentialPrerequisiteWrapper", {"$credential": CredentialPrerequisite}
+)
+
+Prerequisite = Union[
+    BucketPrerequisiteWrapper, ObjectPrerequisiteWrapper, CredentialPrerequisiteWrapper
+]
 
 
 class PrngData(TypedDict):
-    kind: Literal["prng"]
     seed: str
     size: int
 
 
 class PatternData(TypedDict, total=False):
-    kind: Required[Literal["pattern"]]
     pattern: str
     patternBase64: str
     size: Required[int]
 
 
 class SliceData(TypedDict):
-    kind: Literal["slice"]
     of: str
     offset: int
     length: int
 
 
-DataSpec = Union[PrngData, PatternData, SliceData]
+PrngSpecWrapper = TypedDict("PrngSpecWrapper", {"$prng": PrngData})
+PatternSpecWrapper = TypedDict("PatternSpecWrapper", {"$pattern": PatternData})
+SliceSpecWrapper = TypedDict("SliceSpecWrapper", {"$slice": SliceData})
+
+DataSpec = Union[PrngSpecWrapper, PatternSpecWrapper, SliceSpecWrapper]
 
 
 class Expect(TypedDict, total=False):
@@ -73,7 +81,7 @@ class Presign(TypedDict):
 
 
 class OperationStep(TypedDict, total=False):
-    operation: Required[str]
+    name: Required[str]
     params: dict[str, Any]
     identity: str
     presign: Presign
@@ -81,23 +89,24 @@ class OperationStep(TypedDict, total=False):
     expect: Expect
 
 
-class HttpRequest(TypedDict, total=False):
+class HttpStep(TypedDict, total=False):
     method: Required[str]
     path: Required[str]
     query: dict[str, Union[str, list[str]]]
     headers: dict[str, Union[str, list[str]]]
     body: ContentDescriptor
-
-
-class HttpStep(TypedDict, total=False):
-    http: Required[HttpRequest]
     sign: bool
     identity: str
     capture: dict[str, str]
     expect: Expect
 
 
-Step = Union[OperationStep, HttpStep]
+# Keyed union: a step object has exactly one of the keys "$operation" / "$http"
+# ($-prefixed keys are invalid Python identifiers, hence the functional syntax).
+OperationStepWrapper = TypedDict("OperationStepWrapper", {"$operation": OperationStep})
+HttpStepWrapper = TypedDict("HttpStepWrapper", {"$http": HttpStep})
+
+Step = Union[OperationStepWrapper, HttpStepWrapper]
 
 
 class ApiVector(TypedDict, total=False):

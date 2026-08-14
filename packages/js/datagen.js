@@ -33,27 +33,28 @@ function pattern (patternBytes, size) {
 export function generate (specs, name) {
   const spec = specs[name]
   if (!spec) throw new Error(`unknown dataset: ${name}`)
-  switch (spec.kind) {
-    case 'prng':
-      return prng(spec.seed, spec.size)
-    case 'pattern':
-      return pattern(
-        spec.pattern !== undefined ? Buffer.from(spec.pattern, 'utf8') : Buffer.from(spec.patternBase64, 'base64'),
-        spec.size
-      )
-    case 'slice': {
-      const parent = specs[spec.of]
-      if (!parent) throw new Error(`slice '${name}' references unknown dataset '${spec.of}'`)
-      if (parent.kind === 'slice') throw new Error(`slice '${name}' references slice '${spec.of}' (chained slices are not allowed)`)
-      const base = generate(specs, spec.of)
-      if (spec.offset + spec.length > base.length) {
-        throw new Error(`slice '${name}' [${spec.offset}, ${spec.offset + spec.length}) exceeds '${spec.of}' size ${base.length}`)
-      }
-      return base.subarray(spec.offset, spec.offset + spec.length)
-    }
-    default:
-      throw new Error(`unknown data kind: ${spec.kind}`)
+  if (spec.$prng) {
+    return prng(spec.$prng.seed, spec.$prng.size)
   }
+  if (spec.$pattern) {
+    const d = spec.$pattern
+    return pattern(
+      d.pattern !== undefined ? Buffer.from(d.pattern, 'utf8') : Buffer.from(d.patternBase64, 'base64'),
+      d.size
+    )
+  }
+  if (spec.$slice) {
+    const d = spec.$slice
+    const parent = specs[d.of]
+    if (!parent) throw new Error(`slice '${name}' references unknown dataset '${d.of}'`)
+    if (parent.$slice) throw new Error(`slice '${name}' references slice '${d.of}' (chained slices are not allowed)`)
+    const base = generate(specs, d.of)
+    if (d.offset + d.length > base.length) {
+      throw new Error(`slice '${name}' [${d.offset}, ${d.offset + d.length}) exceeds '${d.of}' size ${base.length}`)
+    }
+    return base.subarray(d.offset, d.offset + d.length)
+  }
+  throw new Error(`unknown data kind: ${JSON.stringify(Object.keys(spec))}`)
 }
 
 function makeCrc32Table (poly) {
