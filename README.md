@@ -42,8 +42,10 @@ README for usage:
 | Rust | `cargo add cloud-portable-s3vectors` | [packages/rust](packages/rust) |
 
 The package version identifies the corpus snapshot and is identical across all
-four. Vector JSON inside `packages/` is synchronized from `vectors/` by
-`node scripts/sync-packages.js` — never edit it by hand.
+four. Each package also ships `schema/vector.schema.json` alongside its data so
+the vector files' relative `$schema` links resolve. Vector JSON inside
+`packages/` is synchronized from `vectors/` by `node scripts/sync-packages.js`
+— never edit it by hand.
 
 ## Vector basics
 

@@ -34,9 +34,8 @@ if (!/^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/.test(version)) {
 }
 
 const license = fs.readFileSync(path.join(ROOT, 'LICENSE.md'))
-const schemaSha256 = crypto.createHash('sha256')
-  .update(fs.readFileSync(path.join(ROOT, 'schema', 'vector.schema.json')))
-  .digest('hex')
+const schema = fs.readFileSync(path.join(ROOT, 'schema', 'vector.schema.json'))
+const schemaSha256 = crypto.createHash('sha256').update(schema).digest('hex')
 
 const areaFiles = fs.readdirSync(path.join(ROOT, 'vectors')).filter(f => f.endsWith('.json')).sort()
 const areas = []
@@ -57,6 +56,12 @@ for (const dir of DATA_DIRS) {
 }
 for (const dir of PACKAGE_ROOTS) {
   desired.set(dir, { ...(desired.get(dir) || {}), 'LICENSE.md': license })
+}
+// The schema ships as a sibling of each data dir so the vectors' relative
+// "$schema": "../schema/vector.schema.json" links resolve inside packages.
+for (const dir of DATA_DIRS) {
+  const schemaDir = path.posix.join(path.posix.dirname(dir), 'schema')
+  desired.set(schemaDir, { 'vector.schema.json': schema })
 }
 
 let drift = 0

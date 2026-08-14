@@ -72,6 +72,15 @@ class TestDatagen(unittest.TestCase):
 
 
 class TestCorpus(unittest.TestCase):
+    def test_shipped_schema_matches_manifest(self):
+        # Vector files carry "$schema": "../schema/vector.schema.json" — the
+        # schema must ship at that location, matching the manifest hash.
+        import hashlib
+        from importlib import resources
+
+        schema = (resources.files("cloud_portable_s3vectors") / "schema" / "vector.schema.json").read_bytes()
+        self.assertEqual(hashlib.sha256(schema).hexdigest(), s3v.manifest()["schemaSha256"])
+
     def test_manifest_agreement(self):
         m = s3v.manifest()
         total = 0

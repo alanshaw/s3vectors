@@ -1,5 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { areas, load, all, manifest } from '../index.js'
 import { generate, derived, DERIVED_FIELDS } from '../datagen.js'
 
@@ -45,6 +47,13 @@ test('datagen error cases', () => {
   assert.throws(() => derived(SPECS, 'aaa', 'sha512'), /unknown derived data field/)
   assert.throws(() => generate(SPECS, 'chain'), /chained slices/)
   assert.throws(() => generate(SPECS, 'over'), /exceeds/)
+})
+
+test('shipped schema resolves and matches manifest.schemaSha256', () => {
+  // Vector files carry "$schema": "../schema/vector.schema.json" — the schema
+  // must ship at that location relative to data/, byte-identical to canonical.
+  const schema = readFileSync(new URL('../data/../schema/vector.schema.json', import.meta.url))
+  assert.equal(createHash('sha256').update(schema).digest('hex'), manifest.schemaSha256)
 })
 
 test('manifest agreement', () => {

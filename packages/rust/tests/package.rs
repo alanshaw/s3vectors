@@ -96,6 +96,16 @@ fn datagen_error_cases() {
 }
 
 #[test]
+fn shipped_schema_matches_manifest() {
+    use sha2::{Digest as _, Sha256};
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/schema/vector.schema.json");
+    let schema = std::fs::read(path).expect("shipped schema missing");
+    let sum = Sha256::digest(&schema);
+    let hex: String = sum.iter().map(|b| format!("{b:02x}")).collect();
+    assert_eq!(hex, s3v::manifest().schema_sha256);
+}
+
+#[test]
 fn manifest_agreement() {
     let m = s3v::manifest();
     assert!(!m.version.is_empty());
