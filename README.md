@@ -297,6 +297,10 @@ Four outcomes per vector:
   look for the failure in the vectors covering that prerequisite's operations)
 - **`skipped`** — excluded by an id or tag filter
 
+These outcomes map cleanly onto standard test-report formats (JUnit XML, CTRF,
+TAP), so existing CI integrations and HTML report generators work out of the
+box — see [docs/reporting.md](docs/reporting.md) for the recommended mappings.
+
 ## Out of scope (v1)
 
 Not expressible by design: concurrency/race tests; time-dependent behavior (lifecycle
