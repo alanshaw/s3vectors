@@ -134,10 +134,14 @@ export interface Expect {
  * $-prefixed = assertion; other object = recursive subset match. */
 export type Matcher = string | number | boolean | null | Matcher[] | AssertionObject | SubsetObject
 
+/** All $-keys present must hold (AND). $matches patterns use the portable
+ * regex subset valid in both ECMA-262 and RE2 (no lookarounds/backreferences). */
 export interface AssertionObject {
   $exists?: true
   $absent?: true
   $eq?: unknown
+  /** Scalar inequality, compared after placeholder interpolation. */
+  $ne?: string | number | boolean | null
   $matches?: string
   $length?: number
   $contains?: Matcher

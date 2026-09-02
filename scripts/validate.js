@@ -54,6 +54,32 @@ function walkStrings (node, fn, p = '') {
   }
 }
 
+// Lint $matches regex patterns: must stay in the portable subset valid in both
+// ECMA-262 and RE2 (no lookarounds, no backreferences), so native regex engines
+// work in every runner language.
+function lintMatchers (file, id, node, p = '') {
+  if (Array.isArray(node)) { node.forEach((v, i) => lintMatchers(file, id, v, `${p}[${i}]`)); return }
+  if (!node || typeof node !== 'object') return
+  for (const [k, v] of Object.entries(node)) {
+    if (k === '$matches' && typeof v === 'string') {
+      if (/\(\?=|\(\?!|\(\?<=|\(\?<!/.test(v)) {
+        fail(file, id, `${p}: $matches uses a lookaround (not portable to RE2): ${JSON.stringify(v)}`)
+      }
+      if (/\\[1-9]/.test(v)) {
+        fail(file, id, `${p}: $matches uses a backreference (not portable to RE2): ${JSON.stringify(v)}`)
+      }
+      try {
+        // eslint-disable-next-line no-new
+        new RegExp(v.replace(/\$\{[^}]*\}/g, 'x'))
+      } catch (e) {
+        fail(file, id, `${p}: $matches is not a valid regex: ${e.message}`)
+      }
+    } else {
+      lintMatchers(file, id, v, p ? `${p}.${k}` : k)
+    }
+  }
+}
+
 // Collect {"$data": name} references in a subtree.
 function dataRefs (node, out = []) {
   if (Array.isArray(node)) node.forEach(v => dataRefs(v, out))
@@ -215,7 +241,10 @@ function main () {
       if (!v.id.startsWith(`${doc.area}-`)) fail(relName, v.id, `id prefix does not match area '${doc.area}'`)
       if (seenIds.has(v.id)) fail(relName, v.id, `duplicate id (also in ${seenIds.get(v.id)})`)
       seenIds.set(v.id, relName)
-      if (v.kind === 'api') lintApiVector(relName, v, opts)
+      if (v.kind === 'api') {
+        lintApiVector(relName, v, opts)
+        lintMatchers(relName, v.id, v.steps, 'steps')
+      }
     }
   }
 

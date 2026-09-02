@@ -260,8 +260,14 @@ omitted/empty `expect` means the step must succeed (no error, 2xx).
   list-ordering assertion)
 - assertion object (ALL keys `$`-prefixed): `{"$exists": true}`, `{"$absent": true}`,
   `{"$eq": v}` (escape hatch for literals that would parse as assertions),
-  `{"$matches": "regex"}` (ECMA-262, unanchored), `{"$length": n}` (arrays/strings),
-  `{"$contains": matcher}` (some array element matches — unordered membership)
+  `{"$ne": v}` (scalar inequality, after placeholder interpolation — e.g. "this ETag
+  differs from the captured one"), `{"$matches": "regex"}` (unanchored; patterns use
+  the portable subset valid in both ECMA-262 and RE2 — no lookaheads, lookbehinds or
+  backreferences — so native regex engines work in every language, including Go's
+  `regexp` and Rust's `regex`), `{"$length": n}` (arrays/strings),
+  `{"$contains": matcher}` (some array element matches — unordered membership).
+  When an assertion object has multiple `$`-keys, ALL of them must hold (AND) —
+  e.g. `{"$ne": "${cap.singleEtag}", "$matches": "-"}`.
 
 `body` is either a content descriptor (exact byte equality) or a digest assertion
 `{"$size": n, "$md5": "hex", "$sha256": "hex"}` (any subset, ANDed).
