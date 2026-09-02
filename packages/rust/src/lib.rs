@@ -1,12 +1,12 @@
 //! Language-independent S3 API compatibility test vectors, embedded and parsed,
-//! importable per feature area or all at once, plus the deterministic
+//! importable per feature group or all at once, plus the deterministic
 //! test-data generator (feature `datagen`, on by default).
 //!
 //! Normative semantics (placeholder grammar, matcher semantics, generated data,
 //! runner outcomes) are defined in the repository README:
 //! <https://github.com/cloud-portable/s3vectors>
 //!
-//! The `signing` area embeds the published dummy credentials from the AWS SigV4
+//! The `signing` group embeds the published dummy credentials from the AWS SigV4
 //! test suite — public documentation constants, never real secrets.
 
 mod model;
@@ -19,8 +19,8 @@ pub mod datagen;
 use std::sync::OnceLock;
 
 macro_rules! corpus {
-    ( $( $area:literal => $file:literal ),+ $(,)? ) => {
-        static SOURCES: &[(&str, &str)] = &[ $( ($area, include_str!(concat!("../vectors/", $file))) ),+ ];
+    ( $( $group:literal => $file:literal ),+ $(,)? ) => {
+        static SOURCES: &[(&str, &str)] = &[ $( ($group, include_str!(concat!("../vectors/", $file))) ),+ ];
     };
 }
 
@@ -50,16 +50,16 @@ corpus! {
     "wire-headers" => "wire-headers.json",
 }
 
-const AREA_COUNT: usize = 23;
+const GROUP_COUNT: usize = 23;
 
 static MANIFEST_JSON: &str = include_str!("../vectors/manifest.json");
 
 #[allow(clippy::declare_interior_mutable_const)]
 const CELL: OnceLock<VectorFile> = OnceLock::new();
-static CACHE: [OnceLock<VectorFile>; AREA_COUNT] = [CELL; AREA_COUNT];
+static CACHE: [OnceLock<VectorFile>; GROUP_COUNT] = [CELL; GROUP_COUNT];
 static MANIFEST: OnceLock<Manifest> = OnceLock::new();
 
-/// The embedded corpus snapshot description (version, totals, areas).
+/// The embedded corpus snapshot description (version, totals, groups).
 pub fn manifest() -> &'static Manifest {
     MANIFEST.get_or_init(|| {
         serde_json::from_str(MANIFEST_JSON).expect("embedded manifest is valid")
@@ -67,29 +67,29 @@ pub fn manifest() -> &'static Manifest {
 }
 
 /// Area names, in embedded order.
-pub fn areas() -> impl Iterator<Item = &'static str> {
+pub fn groups() -> impl Iterator<Item = &'static str> {
     SOURCES.iter().map(|(name, _)| *name)
 }
 
-/// One area's vectors. Lazy; parsed once and cached.
-/// Returns `None` for an unknown area name.
-pub fn area(name: &str) -> Option<&'static VectorFile> {
+/// One group's vectors. Lazy; parsed once and cached.
+/// Returns `None` for an unknown group name.
+pub fn group(name: &str) -> Option<&'static VectorFile> {
     let idx = SOURCES.iter().position(|(n, _)| *n == name)?;
     Some(CACHE[idx].get_or_init(|| {
         serde_json::from_str(SOURCES[idx].1)
-            .unwrap_or_else(|e| panic!("embedded area {name} is valid: {e}"))
+            .unwrap_or_else(|e| panic!("embedded group {name} is valid: {e}"))
     }))
 }
 
-/// Every area's vectors, in embedded order.
+/// Every group's vectors, in embedded order.
 pub fn all() -> impl Iterator<Item = &'static VectorFile> {
-    areas().map(|name| area(name).expect("known area"))
+    groups().map(|name| group(name).expect("known group"))
 }
 
 #[cfg(test)]
 mod tests {
     #[test]
-    fn sources_match_area_count() {
-        assert_eq!(super::SOURCES.len(), super::AREA_COUNT);
+    fn sources_match_group_count() {
+        assert_eq!(super::SOURCES.len(), super::GROUP_COUNT);
     }
 }

@@ -8,13 +8,12 @@ use std::collections::BTreeMap;
 use serde::Deserialize;
 use serde_json::Value;
 
-/// One feature area's vectors.
+/// One feature group's vectors.
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct VectorFile {
     #[serde(rename = "$schema", default)]
     pub schema: Option<String>,
-    pub area: String,
     pub vectors: Vec<Vector>,
 }
 
@@ -31,6 +30,13 @@ impl Vector {
         match self {
             Vector::Api(v) => &v.id,
             Vector::Signing(v) => &v.id,
+        }
+    }
+
+    pub fn group(&self) -> &str {
+        match self {
+            Vector::Api(v) => &v.group,
+            Vector::Signing(v) => &v.group,
         }
     }
 
@@ -69,6 +75,8 @@ pub enum SigningKind {
 #[serde(deny_unknown_fields)]
 pub struct ApiVector {
     pub id: String,
+    /// Feature group; the id is prefixed `<group>-`.
+    pub group: String,
     pub kind: ApiKind,
     pub title: String,
     #[serde(default)]
@@ -91,6 +99,8 @@ pub struct ApiVector {
 #[serde(deny_unknown_fields)]
 pub struct SigningVector {
     pub id: String,
+    /// Feature group; the id is prefixed `<group>-`.
+    pub group: String,
     pub kind: SigningKind,
     pub title: String,
     #[serde(default)]
@@ -374,13 +384,13 @@ pub struct Manifest {
     pub version: String,
     pub total: usize,
     pub schema_sha256: String,
-    pub areas: Vec<AreaInfo>,
+    pub groups: Vec<GroupInfo>,
 }
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct AreaInfo {
-    pub area: String,
+pub struct GroupInfo {
+    pub group: String,
     pub file: String,
     pub count: usize,
 }

@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "bucket",
   "vectors": [
     {
       "id": "bucket-0001",
+      "group": "bucket",
       "kind": "api",
       "title": "DeleteBucket succeeds once, then repeating it returns NoSuchBucket",
       "tags": [
@@ -45,6 +45,7 @@
     },
     {
       "id": "bucket-0002",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket on a name owned by another user returns BucketAlreadyExists",
       "tags": [
@@ -84,6 +85,7 @@
     },
     {
       "id": "bucket-0003",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket with an IP-address-formatted name returns InvalidBucketName",
       "tags": [
@@ -111,6 +113,7 @@
     },
     {
       "id": "bucket-0004",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket with a one-character name returns InvalidBucketName",
       "tags": [
@@ -137,6 +140,7 @@
     },
     {
       "id": "bucket-0005",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket with a two-character name returns InvalidBucketName",
       "tags": [
@@ -163,6 +167,7 @@
     },
     {
       "id": "bucket-0006",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket with a name starting with underscore returns InvalidBucketName",
       "tags": [
@@ -190,6 +195,7 @@
     },
     {
       "id": "bucket-0007",
+      "group": "bucket",
       "kind": "api",
       "title": "Raw CreateBucket with a name ending in a dash returns InvalidBucketName",
       "tags": [
@@ -216,6 +222,7 @@
     },
     {
       "id": "bucket-0008",
+      "group": "bucket",
       "kind": "api",
       "title": "Raw CreateBucket with dash-dot in the name returns InvalidBucketName",
       "tags": [
@@ -242,6 +249,7 @@
     },
     {
       "id": "bucket-0009",
+      "group": "bucket",
       "kind": "api",
       "title": "Raw CreateBucket with dot-dash in the name returns InvalidBucketName",
       "tags": [
@@ -268,6 +276,7 @@
     },
     {
       "id": "bucket-0010",
+      "group": "bucket",
       "kind": "api",
       "title": "Raw CreateBucket with consecutive dots in the name returns InvalidBucketName",
       "tags": [
@@ -294,6 +303,7 @@
     },
     {
       "id": "bucket-0011",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket with a maximum-length 63-character DNS name succeeds",
       "tags": [
@@ -319,6 +329,7 @@
     },
     {
       "id": "bucket-0012",
+      "group": "bucket",
       "kind": "api",
       "title": "Raw CreateBucket with an underscore in the name returns InvalidBucketName",
       "tags": [
@@ -345,6 +356,7 @@
     },
     {
       "id": "bucket-0013",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket with a 60-character name succeeds",
       "tags": [
@@ -370,6 +382,7 @@
     },
     {
       "id": "bucket-0014",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket with a 61-character name succeeds",
       "tags": [
@@ -395,6 +408,7 @@
     },
     {
       "id": "bucket-0015",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket with a 62-character name succeeds",
       "tags": [
@@ -420,6 +434,7 @@
     },
     {
       "id": "bucket-0017",
+      "group": "bucket",
       "kind": "api",
       "title": "DeleteBucket on a non-empty bucket returns BucketNotEmpty",
       "tags": [
@@ -462,6 +477,7 @@
     },
     {
       "id": "bucket-0018",
+      "group": "bucket",
       "kind": "api",
       "title": "DeleteBucket on a nonexistent bucket returns NoSuchBucket",
       "tags": [
@@ -489,6 +505,7 @@
     },
     {
       "id": "bucket-0019",
+      "group": "bucket",
       "kind": "api",
       "title": "HeadBucket on an existing bucket returns 200",
       "tags": [
@@ -521,6 +538,7 @@
     },
     {
       "id": "bucket-0020",
+      "group": "bucket",
       "kind": "api",
       "title": "HeadBucket on a nonexistent bucket returns 404",
       "tags": [
@@ -547,6 +565,7 @@
     },
     {
       "id": "bucket-0021",
+      "group": "bucket",
       "kind": "api",
       "title": "ListObjects on a nonexistent bucket returns NoSuchBucket",
       "tags": [
@@ -573,6 +592,7 @@
     },
     {
       "id": "bucket-0022",
+      "group": "bucket",
       "kind": "api",
       "title": "Recreating an existing bucket with a new ACL returns BucketAlreadyExists",
       "tags": [
@@ -609,6 +629,7 @@
     },
     {
       "id": "bucket-0023",
+      "group": "bucket",
       "kind": "api",
       "title": "Recreating a bucket created with public-read ACL returns BucketAlreadyExists",
       "tags": [
@@ -645,6 +666,7 @@
     },
     {
       "id": "bucket-0024",
+      "group": "bucket",
       "kind": "api",
       "title": "ListBuckets includes every created bucket",
       "tags": [
@@ -760,6 +782,7 @@
     },
     {
       "id": "bucket-0025",
+      "group": "bucket",
       "kind": "api",
       "title": "ListObjectsV2 on a nonexistent bucket returns NoSuchBucket",
       "tags": [
@@ -786,6 +809,7 @@
     },
     {
       "id": "bucket-0026",
+      "group": "bucket",
       "kind": "api",
       "title": "Put, get and delete bucket ownership controls; get after delete returns 404",
       "tags": [
@@ -869,6 +893,7 @@
     },
     {
       "id": "bucket-0027",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket succeeds for a name containing a hyphen",
       "tags": [
@@ -893,6 +918,7 @@
     },
     {
       "id": "bucket-0028",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket succeeds for a name containing a period",
       "tags": [
@@ -917,6 +943,7 @@
     },
     {
       "id": "bucket-0029",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket succeeds for a name starting with a lowercase letter",
       "tags": [
@@ -941,6 +968,7 @@
     },
     {
       "id": "bucket-0030",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket succeeds for a name starting with a digit",
       "tags": [
@@ -965,6 +993,7 @@
     },
     {
       "id": "bucket-0031",
+      "group": "bucket",
       "kind": "api",
       "title": "Re-creating an existing bucket does not remove its objects",
       "tags": [
@@ -1049,6 +1078,7 @@
     },
     {
       "id": "bucket-0032",
+      "group": "bucket",
       "kind": "api",
       "title": "Anonymous ListBuckets succeeds and returns an empty bucket list",
       "tags": [
@@ -1078,6 +1108,7 @@
     },
     {
       "id": "bucket-0033",
+      "group": "bucket",
       "kind": "api",
       "title": "ListBuckets with an unknown access key is rejected with 403",
       "tags": [
@@ -1102,6 +1133,7 @@
     },
     {
       "id": "bucket-0034",
+      "group": "bucket",
       "kind": "api",
       "title": "Create and list a bucket with a 61-character name",
       "description": "The source builds a 61-character bucket name and verifies the bucket is usable (an object listing succeeds and is empty).",
@@ -1140,6 +1172,7 @@
     },
     {
       "id": "bucket-0035",
+      "group": "bucket",
       "kind": "api",
       "title": "Created bucket appears in ListBuckets and HeadBucket returns 404 after deletion",
       "description": "Bucket creation is covered by the prerequisite; the final not-in-list assertion of the source test is expressed as HeadBucket returning 404 after DeleteBucket.",
@@ -1203,6 +1236,7 @@
     },
     {
       "id": "bucket-0036",
+      "group": "bucket",
       "kind": "api",
       "title": "Request payment configuration defaults to BucketOwner and can be set to Requester",
       "tags": [
@@ -1284,6 +1318,7 @@
     },
     {
       "id": "bucket-0037",
+      "group": "bucket",
       "kind": "api",
       "title": "Transfer acceleration status can be enabled, suspended and re-enabled",
       "tags": [
@@ -1376,6 +1411,7 @@
     },
     {
       "id": "bucket-0038",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket rejects invalid bucket names",
       "description": "Server-side bucket-naming rules: uppercase, underscores, leading/trailing hyphens, consecutive dots, dot-hyphen sequences, IP-address form, xn-- prefix, reserved -s3alias/--ol-s3 affixes and length limits (3-63). Original test accepted any rejection error; AWS returns InvalidBucketName. Name cases that common SDKs reject client-side (empty, space, slash, punctuation) were dropped, as were the tolerant valid-name and reserved-prefix branches that pass on either outcome; the duplicate-name check is covered by the CreateBucket-on-existing-bucket vector.",
@@ -1547,6 +1583,7 @@
     },
     {
       "id": "bucket-0039",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket on an existing bucket you own returns BucketAlreadyOwnedByYou",
       "description": "Original test also accepted BucketAlreadyExists. Note that AWS us-east-1 has legacy behavior returning 200 for re-creating a bucket you own.",
@@ -1580,6 +1617,7 @@
     },
     {
       "id": "bucket-0040",
+      "group": "bucket",
       "kind": "api",
       "title": "CreateBucket succeeds and the bucket is accessible via HeadBucket",
       "tags": [
@@ -1609,6 +1647,7 @@
     },
     {
       "id": "bucket-0041",
+      "group": "bucket",
       "kind": "api",
       "title": "Full bucket lifecycle: create, put and read an object, delete object, delete bucket",
       "tags": [
@@ -1681,6 +1720,7 @@
     },
     {
       "id": "bucket-0044",
+      "group": "bucket",
       "kind": "api",
       "title": "DeleteBucket removes the bucket",
       "tags": [
@@ -1720,6 +1760,7 @@
     },
     {
       "id": "bucket-0045",
+      "group": "bucket",
       "kind": "api",
       "title": "GetBucketLocation on a non-existent bucket returns NoSuchBucket",
       "tags": [
@@ -1745,6 +1786,7 @@
     },
     {
       "id": "bucket-0046",
+      "group": "bucket",
       "kind": "api",
       "title": "GetBucketLocation succeeds on an existing bucket",
       "description": "Original test only asserted the LocationConstraint key was present in the boto3 response shape (it is null for us-east-1), so this vector asserts the call succeeds.",
@@ -1774,6 +1816,7 @@
     },
     {
       "id": "bucket-0049",
+      "group": "bucket",
       "kind": "api",
       "title": "ListBuckets returns a Buckets list",
       "tags": [
@@ -1801,6 +1844,7 @@
     },
     {
       "id": "bucket-0050",
+      "group": "bucket",
       "kind": "api",
       "title": "ListBuckets includes created buckets",
       "tags": [
@@ -1857,6 +1901,7 @@
     },
     {
       "id": "bucket-0051",
+      "group": "bucket",
       "kind": "api",
       "title": "Empty bucket lists zero keys and can be deleted",
       "tags": [
@@ -1898,6 +1943,7 @@
     },
     {
       "id": "bucket-0052",
+      "group": "bucket",
       "kind": "api",
       "title": "ListBuckets rejects a negative max-buckets value",
       "description": "Raw HTTP so the out-of-range value reaches the server rather than being caught client-side. AWS's valid MaxBuckets range is 1-10000 and a negative value is rejected with InvalidArgument. The original also probed an over-large value (2000000) but its primary branch accepted success (some implementations cap silently) and only tolerated rejection as an alternative; that undecidable success-or-error case is omitted.",
@@ -1933,6 +1979,7 @@
     },
     {
       "id": "bucket-0053",
+      "group": "bucket",
       "kind": "api",
       "title": "ListBuckets MaxBuckets truncates the listing and ContinuationToken resumes it",
       "description": "Six runner-provisioned buckets guarantee the account holds more than MaxBuckets=3 buckets, so the first page must be truncated. The original tolerated implementations without pagination support.",
@@ -2016,6 +2063,7 @@
     },
     {
       "id": "bucket-0054",
+      "group": "bucket",
       "kind": "api",
       "title": "ListBuckets with Prefix returns only buckets whose names match the prefix",
       "description": "Buckets are created in steps as suffixes of the runner-provisioned bucket name so the prefix is unique to this vector. The original tolerated implementations that ignore Prefix (MinIO); this vector asserts the AWS filtering behavior.",

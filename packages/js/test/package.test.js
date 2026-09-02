@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
-import { areas, load, all, manifest } from '../index.js'
+import { groups, load, all, manifest } from '../index.js'
 import { generate, derived, DERIVED_FIELDS } from '../datagen.js'
 
 // Independently computed check values (shasum/md5/CRC catalog); shared by all
@@ -57,27 +57,27 @@ test('shipped schema resolves and matches manifest.schemaSha256', () => {
 })
 
 test('manifest agreement', () => {
-  assert.equal(areas.length, manifest.areas.length)
+  assert.equal(groups.length, manifest.groups.length)
   let total = 0
-  for (const entry of manifest.areas) {
-    const file = load(entry.area)
-    assert.equal(file.area, entry.area)
+  for (const entry of manifest.groups) {
+    const file = load(entry.group)
+    for (const v of file.vectors) assert.equal(v.group, entry.group)
     assert.equal(file.vectors.length, entry.count)
     total += file.vectors.length
   }
   assert.equal(total, manifest.total)
-  assert.throws(() => load('no-such-area'), /unknown area/)
+  assert.throws(() => load('no-such-group'), /unknown group/)
 })
 
-test('root equals union of areas; ids unique and area-prefixed', () => {
+test('root equals union of groups; ids unique and group-prefixed', () => {
   const files = all()
-  assert.deepEqual(files.map(f => f.area), [...areas])
+  assert.deepEqual(files.map(f => f.vectors[0].group), [...groups])
   const ids = new Set()
   for (const file of files) {
     for (const v of file.vectors) {
       assert.ok(!ids.has(v.id), `duplicate id ${v.id}`)
       ids.add(v.id)
-      assert.ok(v.id.startsWith(`${file.area}-`), `${v.id} not prefixed with ${file.area}`)
+      assert.ok(v.id.startsWith(`${v.group}-`), `${v.id} not prefixed with ${v.group}`)
     }
   }
   assert.equal(ids.size, manifest.total)

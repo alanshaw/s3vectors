@@ -233,12 +233,12 @@ function main () {
       continue // lint assumes schema-valid shapes
     }
 
-    const expectedArea = path.basename(file, '.json')
-    if (doc.area !== expectedArea) fail(relName, null, `area '${doc.area}' does not match filename`)
+    const expectedGroup = path.basename(file, '.json')
 
     for (const v of doc.vectors) {
       vectorCount++
-      if (!v.id.startsWith(`${doc.area}-`)) fail(relName, v.id, `id prefix does not match area '${doc.area}'`)
+      if (v.group !== expectedGroup) fail(relName, v.id, `group '${v.group}' does not match filename`)
+      if (!v.id.startsWith(`${v.group}-`)) fail(relName, v.id, `id prefix does not match group '${v.group}'`)
       if (seenIds.has(v.id)) fail(relName, v.id, `duplicate id (also in ${seenIds.get(v.id)})`)
       seenIds.set(v.id, relName)
       if (v.kind === 'api') {

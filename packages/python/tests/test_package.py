@@ -84,24 +84,25 @@ class TestCorpus(unittest.TestCase):
     def test_manifest_agreement(self):
         m = s3v.manifest()
         total = 0
-        for entry in m["areas"]:
-            file = s3v.load(entry["area"])
-            self.assertEqual(file["area"], entry["area"])
-            self.assertEqual(len(file["vectors"]), entry["count"], entry["area"])
+        for entry in m["groups"]:
+            file = s3v.load(entry["group"])
+            for v in file["vectors"]:
+                self.assertEqual(v["group"], entry["group"], v["id"])
+            self.assertEqual(len(file["vectors"]), entry["count"], entry["group"])
             total += len(file["vectors"])
         self.assertEqual(total, m["total"])
         with self.assertRaises(KeyError):
-            s3v.load("no-such-area")
+            s3v.load("no-such-group")
 
-    def test_root_equals_union_of_areas(self):
+    def test_root_equals_union_of_groups(self):
         files = s3v.load_all()
-        self.assertEqual([f["area"] for f in files], list(s3v.AREAS))
+        self.assertEqual([f["vectors"][0]["group"] for f in files], list(s3v.GROUPS))
         ids = set()
         for file in files:
             for v in file["vectors"]:
                 self.assertNotIn(v["id"], ids, f"duplicate id {v['id']}")
                 ids.add(v["id"])
-                self.assertTrue(v["id"].startswith(file["area"] + "-"), v["id"])
+                self.assertTrue(v["id"].startswith(v["group"] + "-"), v["id"])
         self.assertEqual(len(ids), s3v.manifest()["total"])
 
     def test_vector_shape_smoke(self):

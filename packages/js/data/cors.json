@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "cors",
   "vectors": [
     {
       "id": "cors-0001",
+      "group": "cors",
       "kind": "api",
       "title": "CORS preflight requesting a non-allowed header is rejected",
       "description": "A rule allows origin '*' for GET and exposes x-amz-meta-header1 but declares no AllowedHeaders; an OPTIONS preflight asking for x-amz-meta-header2 returns 403 with no CORS headers. The source test sleeps 3s after PutBucketCors for propagation; the sleep is omitted here.",
@@ -92,6 +92,7 @@
     },
     {
       "id": "cors-0002",
+      "group": "cors",
       "kind": "api",
       "title": "CORS origin wildcard matching on unauthenticated GET, PUT and OPTIONS requests",
       "description": "With rules for origins '*suffix', 'start*end', 'prefix*' (GET) and '*.put' (PUT) on a public-read bucket, checks access-control-allow-origin/access-control-allow-methods on plain requests and OPTIONS preflights for matching and non-matching origins. The source test sleeps 3s after PutBucketCors for propagation; the sleep is omitted here.",
@@ -818,6 +819,7 @@
     },
     {
       "id": "cors-0003",
+      "group": "cors",
       "kind": "api",
       "title": "CORS wildcard '*' origin echoes '*' in access-control-allow-origin",
       "description": "With a single GET rule allowing origin '*' on a public-read bucket, a request without an Origin header gets no CORS headers and a request with any Origin gets access-control-allow-origin '*'. The source test sleeps 3s after PutBucketCors for propagation; the sleep is omitted here.",
@@ -915,6 +917,7 @@
     },
     {
       "id": "cors-0004",
+      "group": "cors",
       "kind": "api",
       "title": "Put, get and delete bucket CORS configuration",
       "description": "GetBucketCors returns 404 before any configuration is set, the stored rules round-trip exactly, and GetBucketCors returns 404 again after DeleteBucketCors.",
@@ -1013,6 +1016,7 @@
     },
     {
       "id": "cors-0005",
+      "group": "cors",
       "kind": "api",
       "title": "CORS configuration: put, replace with multiple rules, update, and delete returns NoSuchCORSConfiguration",
       "tags": [
@@ -1218,6 +1222,7 @@
     },
     {
       "id": "cors-0007",
+      "group": "cors",
       "kind": "api",
       "title": "CORS rule limit: 100 rules accepted, 101 rules rejected",
       "description": "The original test accepted either TooManyRules or InvalidRequest for the 101-rule case; only the shared 400 status is asserted here.",
@@ -2875,6 +2880,7 @@
     },
     {
       "id": "cors-0008",
+      "group": "cors",
       "kind": "api",
       "title": "PutBucketCors rejects unsupported HTTP methods in AllowedMethods",
       "description": "The original test accepted either InvalidArgument or MalformedXML; only the shared 400 status is asserted here.",
@@ -2922,6 +2928,7 @@
     },
     {
       "id": "cors-0009",
+      "group": "cors",
       "kind": "api",
       "title": "MaxAgeSeconds: negative rejected, zero and large values accepted",
       "description": "The original test accepted any error for the negative case; a 400 rejection is asserted here.",
@@ -3052,6 +3059,7 @@
     },
     {
       "id": "cors-0010",
+      "group": "cors",
       "kind": "api",
       "title": "DeleteBucketCors removes the configuration; GetBucketCors then returns NoSuchCORSConfiguration",
       "tags": [
@@ -3113,6 +3121,7 @@
     },
     {
       "id": "cors-0011",
+      "group": "cors",
       "kind": "api",
       "title": "DeleteBucketCors on a non-existent bucket returns NoSuchBucket",
       "tags": [
@@ -3138,6 +3147,7 @@
     },
     {
       "id": "cors-0012",
+      "group": "cors",
       "kind": "api",
       "title": "DeleteBucketCors succeeds on unset configuration and removes a set configuration",
       "tags": [
@@ -3212,6 +3222,7 @@
     },
     {
       "id": "cors-0013",
+      "group": "cors",
       "kind": "api",
       "title": "GetBucketCors on a bucket without CORS configuration returns NoSuchCORSConfiguration",
       "tags": [
@@ -3244,6 +3255,7 @@
     },
     {
       "id": "cors-0014",
+      "group": "cors",
       "kind": "api",
       "title": "GetBucketCors on a non-existent bucket returns NoSuchBucket",
       "tags": [
@@ -3269,6 +3281,7 @@
     },
     {
       "id": "cors-0015",
+      "group": "cors",
       "kind": "api",
       "title": "PutBucketCors then GetBucketCors round-trips the rules",
       "description": "Original test compared the list members as sets; this vector asserts them in the order they were put, which is the order S3 returns them.",
@@ -3396,6 +3409,7 @@
     },
     {
       "id": "cors-0016",
+      "group": "cors",
       "kind": "api",
       "title": "PutBucketCors with an empty CORSRules array returns MalformedXML",
       "description": "Original test also accepted InvalidRequest as the error code.",
@@ -3432,6 +3446,7 @@
     },
     {
       "id": "cors-0017",
+      "group": "cors",
       "kind": "api",
       "title": "PutBucketCors rejects invalid header names in AllowedHeaders",
       "description": "Header names containing spaces, colons, parentheses, slashes, brackets, equals or quotes are invalid. Original test also accepted InvalidArgument or AccessControlAllowRequestHeaderNotAllowed as the error code.",
@@ -3664,6 +3679,7 @@
     },
     {
       "id": "cors-0018",
+      "group": "cors",
       "kind": "api",
       "title": "PutBucketCors rejects invalid header names in ExposeHeaders",
       "description": "Header names containing spaces, colons, parentheses, slashes, brackets, equals or quotes are invalid. Original test also accepted InvalidArgument or UnexpectedContent as the error code.",
@@ -3896,6 +3912,7 @@
     },
     {
       "id": "cors-0019",
+      "group": "cors",
       "kind": "api",
       "title": "PutBucketCors rejects invalid HTTP methods in AllowedMethods",
       "description": "Only uppercase GET, PUT, POST, DELETE, HEAD are valid CORS methods. Original test also accepted CORSInvalidAccessControlMethod or InvalidArgument as the error code.",
@@ -4157,6 +4174,7 @@
     },
     {
       "id": "cors-0020",
+      "group": "cors",
       "kind": "api",
       "title": "PutBucketCors with malformed Content-MD5 returns InvalidDigest and wrong Content-MD5 returns BadDigest",
       "description": "Original test accepted InvalidDigest or InvalidRequest for the malformed value, and BadDigest or InvalidDigest for the well-formed-but-wrong value.",
@@ -4255,6 +4273,7 @@
     },
     {
       "id": "cors-0021",
+      "group": "cors",
       "kind": "api",
       "title": "PutBucketCors on a non-existent bucket returns NoSuchBucket",
       "tags": [
@@ -4292,6 +4311,7 @@
     },
     {
       "id": "cors-0022",
+      "group": "cors",
       "kind": "api",
       "title": "PutBucketCors accepts multiple rules with wildcard origins and negative MaxAgeSeconds",
       "tags": [

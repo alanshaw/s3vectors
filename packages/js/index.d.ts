@@ -10,6 +10,8 @@ export type Vector = ApiVector | SigningVector
 
 export interface ApiVector {
   id: string
+  /** Feature group; the id is prefixed '<group>-'. */
+  group: string
   kind: 'api'
   title: string
   description?: string
@@ -25,6 +27,8 @@ export interface ApiVector {
 
 export interface SigningVector {
   id: string
+  /** Feature group; the id is prefixed '<group>-'. */
+  group: string
   kind: 'signing'
   title: string
   description?: string
@@ -157,7 +161,6 @@ export type BodyExpect = ContentDescriptor | { $size?: number; $md5?: string; $s
 
 export interface VectorFile {
   $schema?: string
-  area: string
   vectors: Vector[]
 }
 
@@ -166,13 +169,13 @@ export interface Manifest {
   version: string
   total: number
   schemaSha256: string
-  areas: { area: string; file: string; count: number }[]
+  groups: { group: string; file: string; count: number }[]
 }
 
 export const manifest: Manifest
-/** Area names, in manifest order. */
-export const areas: readonly string[]
-/** Load one area's vectors. Lazy; parsed once and cached. Throws on unknown area. */
-export function load (area: string): VectorFile
-/** Load every area, in manifest order. */
+/** Group names, in manifest order. */
+export const groups: readonly string[]
+/** Load one group's vectors. Lazy; parsed once and cached. Throws on unknown group. */
+export function load (group: string): VectorFile
+/** Load every group, in manifest order. */
 export function all (): VectorFile[]

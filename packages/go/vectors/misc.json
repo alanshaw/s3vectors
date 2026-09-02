@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "misc",
   "vectors": [
     {
       "id": "misc-0001",
+      "group": "misc",
       "kind": "api",
       "title": "Requests with a wrong ExpectedBucketOwner are denied even on a public bucket",
       "description": "The source test uses the main user's id with 'foo' appended as the incorrect owner; the main account id is not referenceable in vectors, so a fixed wrong account id is used instead.",
@@ -85,6 +85,7 @@
     },
     {
       "id": "misc-0002",
+      "group": "misc",
       "kind": "api",
       "title": "GetObject with PartNumber on a non-multipart object: part 2 fails, part 1 returns the whole object",
       "tags": [
@@ -149,6 +150,7 @@
     },
     {
       "id": "misc-0003",
+      "group": "misc",
       "kind": "api",
       "title": "GetObject with PartNumber on a non-multipart SSE-C object: part 2 fails, part 1 returns the whole object",
       "tags": [
@@ -223,6 +225,7 @@
     },
     {
       "id": "misc-0004",
+      "group": "misc",
       "kind": "api",
       "title": "GetObjectAttributes on a 6-part multipart object reports size, parts and composite ETag",
       "tags": [
@@ -519,6 +522,7 @@
     },
     {
       "id": "misc-0005",
+      "group": "misc",
       "kind": "api",
       "title": "GetObjectAttributes paginates the multipart part list with MaxParts and PartNumberMarker",
       "tags": [
@@ -834,6 +838,7 @@
     },
     {
       "id": "misc-0006",
+      "group": "misc",
       "kind": "api",
       "title": "GetObjectAttributes on a single-part multipart object lists one part",
       "tags": [
@@ -947,6 +952,7 @@
     },
     {
       "id": "misc-0007",
+      "group": "misc",
       "kind": "api",
       "title": "GetObjectAttributes returns VersionId and honors an explicit VersionId on a versioned object",
       "tags": [
@@ -1053,6 +1059,7 @@
     },
     {
       "id": "misc-0008",
+      "group": "misc",
       "kind": "api",
       "title": "Website configuration: put with index/error documents, update, and minimal index-only form",
       "tags": [
@@ -1169,6 +1176,7 @@
     },
     {
       "id": "misc-0009",
+      "group": "misc",
       "kind": "api",
       "title": "Inventory configuration: create daily CSV report config, verify, and update in place",
       "tags": [
@@ -1301,6 +1309,7 @@
     },
     {
       "id": "misc-0010",
+      "group": "misc",
       "kind": "api",
       "title": "Metrics configuration: create, add prefix-filtered config, update filter, and delete",
       "tags": [
@@ -1406,6 +1415,7 @@
     },
     {
       "id": "misc-0011",
+      "group": "misc",
       "kind": "api",
       "title": "Analytics configuration: create storage-class analysis configs, verify, update, and delete",
       "tags": [

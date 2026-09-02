@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "wire-headers",
   "vectors": [
     {
       "id": "wire-headers-0001",
+      "group": "wire-headers",
       "kind": "api",
       "title": "CreateBucket with an empty Authorization header returns AccessDenied",
       "tags": [
@@ -39,6 +39,7 @@
     },
     {
       "id": "wire-headers-0002",
+      "group": "wire-headers",
       "kind": "api",
       "title": "CreateBucket without an Authorization header returns AccessDenied",
       "tags": [
@@ -71,6 +72,7 @@
     },
     {
       "id": "wire-headers-0003",
+      "group": "wire-headers",
       "kind": "api",
       "title": "CreateBucket with an empty Content-Length header returns 400",
       "tags": [
@@ -104,6 +106,7 @@
     },
     {
       "id": "wire-headers-0004",
+      "group": "wire-headers",
       "kind": "api",
       "title": "CreateBucket with a negative Content-Length header returns 400",
       "tags": [
@@ -137,6 +140,7 @@
     },
     {
       "id": "wire-headers-0005",
+      "group": "wire-headers",
       "kind": "api",
       "title": "CreateBucket with an empty Expect header succeeds",
       "tags": [
@@ -169,6 +173,7 @@
     },
     {
       "id": "wire-headers-0007",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutBucketAcl with an invalid canned ACL value in x-amz-acl returns 400",
       "tags": [
@@ -206,6 +211,7 @@
     },
     {
       "id": "wire-headers-0008",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty Authorization header returns 403",
       "tags": [
@@ -241,6 +247,7 @@
     },
     {
       "id": "wire-headers-0009",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject without an Authorization header returns 403",
       "tags": [
@@ -273,6 +280,7 @@
     },
     {
       "id": "wire-headers-0010",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty Content-Length header returns 400",
       "tags": [
@@ -307,6 +315,7 @@
     },
     {
       "id": "wire-headers-0011",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with a negative Content-Length header returns 400",
       "tags": [
@@ -340,6 +349,7 @@
     },
     {
       "id": "wire-headers-0012",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty Content-Type succeeds",
       "tags": [
@@ -371,6 +381,7 @@
     },
     {
       "id": "wire-headers-0013",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an ordinary Content-Type header succeeds",
       "tags": [
@@ -413,6 +424,7 @@
     },
     {
       "id": "wire-headers-0015",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty Expect header succeeds",
       "tags": [
@@ -455,6 +467,7 @@
     },
     {
       "id": "wire-headers-0017",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject without an Expect header succeeds",
       "tags": [
@@ -494,6 +507,7 @@
     },
     {
       "id": "wire-headers-0018",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with a well-formed but non-matching Content-MD5 returns BadDigest",
       "tags": [
@@ -529,6 +543,7 @@
     },
     {
       "id": "wire-headers-0019",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty Content-MD5 header returns InvalidDigest",
       "tags": [
@@ -564,6 +579,7 @@
     },
     {
       "id": "wire-headers-0020",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with a Content-MD5 that decodes to the wrong length returns InvalidDigest",
       "tags": [
@@ -599,6 +615,7 @@
     },
     {
       "id": "wire-headers-0022",
+      "group": "wire-headers",
       "kind": "api",
       "title": "CreateBucket with malformed SigV2-style Authorization header 'AWS HAHAHA' returns InvalidArgument",
       "description": "The request is sent byte-literal (unsigned) with a two-token 'AWS HAHAHA' Authorization header; the server must reject the malformed header with 400 InvalidArgument before evaluating anything else, so the target bucket is never created.",
@@ -629,6 +646,7 @@
     },
     {
       "id": "wire-headers-0023",
+      "group": "wire-headers",
       "kind": "api",
       "title": "CreateBucket with an empty User-Agent header succeeds",
       "description": "Source test used a SigV2 client, but User-Agent is not part of either signature scheme, so the behavior under test (server accepts an empty User-Agent) is signing-independent; the runner signs SigV4.",
@@ -656,6 +674,7 @@
     },
     {
       "id": "wire-headers-0025",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with malformed SigV2-style Authorization header 'AWS HAHAHA' returns InvalidArgument",
       "description": "The request is sent byte-literal (unsigned) with a two-token 'AWS HAHAHA' Authorization header; the server must reject the malformed header with 400 InvalidArgument.",
@@ -694,6 +713,7 @@
     },
     {
       "id": "wire-headers-0026",
+      "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty User-Agent header succeeds",
       "description": "Source test used a SigV2 client, but User-Agent is not part of either signature scheme, so the behavior under test (server accepts an empty User-Agent) is signing-independent; the runner signs SigV4. The source performs two puts to the same key with the empty User-Agent, first with an empty body, then with body 'bar'.",

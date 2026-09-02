@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "object-lock",
   "vectors": [
     {
       "id": "object-lock-0001",
+      "group": "object-lock",
       "kind": "api",
       "title": "Multipart object created with object-lock retention resists delete until bypassed",
       "tags": [
@@ -105,6 +105,7 @@
     },
     {
       "id": "object-lock-0002",
+      "group": "object-lock",
       "kind": "api",
       "title": "Deleting a version under GOVERNANCE retention fails without bypass and succeeds with it",
       "tags": [
@@ -176,6 +177,7 @@
     },
     {
       "id": "object-lock-0003",
+      "group": "object-lock",
       "kind": "api",
       "title": "GOVERNANCE retention still blocks version delete after creating and removing a delete marker",
       "tags": [
@@ -284,6 +286,7 @@
     },
     {
       "id": "object-lock-0004",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectLegalHold reflects legal hold status after setting ON then OFF",
       "tags": [
@@ -370,6 +373,7 @@
     },
     {
       "id": "object-lock-0005",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectLockConfiguration returns the stored default retention configuration",
       "tags": [
@@ -430,6 +434,7 @@
     },
     {
       "id": "object-lock-0006",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectLockConfiguration on a bucket without object lock returns ObjectLockConfigurationNotFoundError",
       "tags": [
@@ -464,6 +469,7 @@
     },
     {
       "id": "object-lock-0008",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectRetention on a bucket without object lock returns InvalidRequest",
       "tags": [
@@ -507,6 +513,7 @@
     },
     {
       "id": "object-lock-0009",
+      "group": "object-lock",
       "kind": "api",
       "title": "HeadObject exposes x-amz-object-lock-retain-until-date as an ISO 8601 timestamp",
       "tags": [
@@ -578,6 +585,7 @@
     },
     {
       "id": "object-lock-0010",
+      "group": "object-lock",
       "kind": "api",
       "title": "DeleteObjects reports AccessDenied for a retained version and deletes the unretained one",
       "tags": [
@@ -693,6 +701,7 @@
     },
     {
       "id": "object-lock-0011",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLegalHold accepts Status ON and OFF",
       "tags": [
@@ -752,6 +761,7 @@
     },
     {
       "id": "object-lock-0012",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLegalHold on a bucket without object lock returns InvalidRequest",
       "tags": [
@@ -798,6 +808,7 @@
     },
     {
       "id": "object-lock-0013",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLegalHold with an invalid status returns MalformedXML",
       "tags": [
@@ -844,6 +855,7 @@
     },
     {
       "id": "object-lock-0014",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLockConfiguration accepts GOVERNANCE/Days and COMPLIANCE/Years defaults and implies versioning enabled",
       "tags": [
@@ -919,6 +931,7 @@
     },
     {
       "id": "object-lock-0015",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLockConfiguration fails on unversioned or suspended bucket but succeeds once versioning is enabled",
       "tags": [
@@ -1051,6 +1064,7 @@
     },
     {
       "id": "object-lock-0016",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLockConfiguration on a bucket without object lock returns InvalidBucketState",
       "tags": [
@@ -1093,6 +1107,7 @@
     },
     {
       "id": "object-lock-0017",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLockConfiguration with Days of 0 returns InvalidRetentionPeriod",
       "tags": [
@@ -1136,6 +1151,7 @@
     },
     {
       "id": "object-lock-0018",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLockConfiguration with an invalid or lowercase retention mode returns MalformedXML",
       "tags": [
@@ -1200,6 +1216,7 @@
     },
     {
       "id": "object-lock-0019",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLockConfiguration with ObjectLockEnabled of Disabled returns MalformedXML",
       "tags": [
@@ -1243,6 +1260,7 @@
     },
     {
       "id": "object-lock-0020",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLockConfiguration with negative Years returns InvalidRetentionPeriod",
       "tags": [
@@ -1286,6 +1304,7 @@
     },
     {
       "id": "object-lock-0021",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLockConfiguration with both Days and Years returns MalformedXML",
       "tags": [
@@ -1330,6 +1349,7 @@
     },
     {
       "id": "object-lock-0022",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectRetention stores GOVERNANCE retention readable via GetObjectRetention",
       "tags": [
@@ -1403,6 +1423,7 @@
     },
     {
       "id": "object-lock-0023",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectRetention can extend an existing GOVERNANCE retention period",
       "tags": [
@@ -1486,6 +1507,7 @@
     },
     {
       "id": "object-lock-0024",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectRetention on a bucket without object lock returns InvalidRequest",
       "tags": [
@@ -1533,6 +1555,7 @@
     },
     {
       "id": "object-lock-0025",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectRetention with lowercase or invalid mode returns MalformedXML",
       "tags": [
@@ -1597,6 +1620,7 @@
     },
     {
       "id": "object-lock-0026",
+      "group": "object-lock",
       "kind": "api",
       "title": "Explicit PutObjectRetention overrides the bucket default retention",
       "tags": [
@@ -1689,6 +1713,7 @@
     },
     {
       "id": "object-lock-0027",
+      "group": "object-lock",
       "kind": "api",
       "title": "Shortening a GOVERNANCE retention period without bypass returns AccessDenied",
       "tags": [
@@ -1760,6 +1785,7 @@
     },
     {
       "id": "object-lock-0028",
+      "group": "object-lock",
       "kind": "api",
       "title": "Shortening a GOVERNANCE retention period succeeds with BypassGovernanceRetention",
       "tags": [
@@ -1844,6 +1870,7 @@
     },
     {
       "id": "object-lock-0029",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectRetention targeting a specific version stores retention readable for that version",
       "tags": [
@@ -1925,6 +1952,7 @@
     },
     {
       "id": "object-lock-0030",
+      "group": "object-lock",
       "kind": "api",
       "title": "Suspending versioning on an object-lock bucket returns InvalidBucketState",
       "tags": [
@@ -1963,6 +1991,7 @@
     },
     {
       "id": "object-lock-0031",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectRetention changing GOVERNANCE to COMPLIANCE without bypass returns AccessDenied",
       "description": "The source test uses a retain-until date 10 seconds in the future; a fixed future date is used here since GOVERNANCE retention remains bypassable for cleanup.",
@@ -2015,6 +2044,7 @@
     },
     {
       "id": "object-lock-0032",
+      "group": "object-lock",
       "kind": "api",
       "title": "DeleteObject on a multipart-uploaded version created with legal hold ON returns AccessDenied",
       "tags": [
@@ -2114,6 +2144,7 @@
     },
     {
       "id": "object-lock-0033",
+      "group": "object-lock",
       "kind": "api",
       "title": "DeleteObject on a version with legal hold OFF succeeds with 204",
       "tags": [
@@ -2169,6 +2200,7 @@
     },
     {
       "id": "object-lock-0034",
+      "group": "object-lock",
       "kind": "api",
       "title": "DeleteObject on a version with legal hold ON returns AccessDenied",
       "tags": [
@@ -2238,6 +2270,7 @@
     },
     {
       "id": "object-lock-0035",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectLegalHold on a bucket without object lock returns InvalidRequest",
       "tags": [
@@ -2281,6 +2314,7 @@
     },
     {
       "id": "object-lock-0036",
+      "group": "object-lock",
       "kind": "api",
       "title": "HeadObject reports object lock mode, retain-until date and legal hold status",
       "tags": [
@@ -2377,6 +2411,7 @@
     },
     {
       "id": "object-lock-0037",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObject with object lock parameters; HeadObject reports them back",
       "tags": [
@@ -2453,6 +2488,7 @@
     },
     {
       "id": "object-lock-0039",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectLegalHold on a non-existent bucket returns NoSuchBucket",
       "description": "Source test also tolerated InvalidRequest/NoSuchKey (MinIO); the primary expected AWS code NoSuchBucket is asserted.",
@@ -2480,6 +2516,7 @@
     },
     {
       "id": "object-lock-0040",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectLegalHold on a missing key in a lock-enabled bucket returns NoSuchKey",
       "tags": [
@@ -2514,6 +2551,7 @@
     },
     {
       "id": "object-lock-0042",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectLegalHold on an object with no legal hold set returns NoSuchObjectLockConfiguration",
       "description": "Source test also tolerated InvalidRequest; the primary expected AWS code NoSuchObjectLockConfiguration is asserted.",
@@ -2557,6 +2595,7 @@
     },
     {
       "id": "object-lock-0043",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLegalHold with no legal-hold body returns MalformedXML",
       "description": "Source test also tolerated InvalidArgument/InvalidRequest; the primary expected AWS code MalformedXML is asserted.",
@@ -2591,6 +2630,7 @@
     },
     {
       "id": "object-lock-0044",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLegalHold on a non-existent bucket returns NoSuchBucket",
       "tags": [
@@ -2617,6 +2657,7 @@
     },
     {
       "id": "object-lock-0045",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLegalHold on a missing key in a lock-enabled bucket returns NoSuchKey",
       "tags": [
@@ -2654,6 +2695,7 @@
     },
     {
       "id": "object-lock-0046",
+      "group": "object-lock",
       "kind": "api",
       "title": "Legal hold set to ON is readable via GetObjectLegalHold",
       "tags": [
@@ -2723,6 +2765,7 @@
     },
     {
       "id": "object-lock-0048",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectLockConfiguration on a non-existent bucket returns NoSuchBucket",
       "description": "Source test also tolerated ObjectLockConfigurationNotFound(Error) (MinIO); the primary expected AWS code NoSuchBucket is asserted.",
@@ -2749,6 +2792,7 @@
     },
     {
       "id": "object-lock-0049",
+      "group": "object-lock",
       "kind": "api",
       "title": "Object lock configuration with COMPLIANCE default retention round-trips",
       "tags": [
@@ -2808,6 +2852,7 @@
     },
     {
       "id": "object-lock-0051",
+      "group": "object-lock",
       "kind": "api",
       "title": "Default retention specifying both Days and Years returns MalformedXML",
       "description": "Source test also tolerated InvalidArgument/InvalidRequest; the primary expected AWS code MalformedXML is asserted. Bucket is created without object lock, matching the source test.",
@@ -2851,6 +2896,7 @@
     },
     {
       "id": "object-lock-0052",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLockConfiguration with no configuration body returns MalformedXML",
       "description": "Source test also tolerated InvalidArgument/InvalidRequest; the primary expected AWS code MalformedXML is asserted.",
@@ -2884,6 +2930,7 @@
     },
     {
       "id": "object-lock-0053",
+      "group": "object-lock",
       "kind": "api",
       "title": "Negative default retention Days or Years returns InvalidArgument",
       "description": "Source test also tolerated InvalidRequest; the primary expected AWS code InvalidArgument is asserted. Bucket is created without object lock, matching the source test.",
@@ -2946,6 +2993,7 @@
     },
     {
       "id": "object-lock-0054",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectLockConfiguration on a non-existent bucket returns NoSuchBucket",
       "description": "Source test also tolerated InvalidBucketState (MinIO); the primary expected AWS code NoSuchBucket is asserted.",
@@ -2975,6 +3023,7 @@
     },
     {
       "id": "object-lock-0055",
+      "group": "object-lock",
       "kind": "api",
       "title": "Minimal object lock configuration round-trips on a lock-enabled bucket",
       "tags": [
@@ -3022,6 +3071,7 @@
     },
     {
       "id": "object-lock-0057",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectRetention on missing bucket returns NoSuchBucket",
       "description": "Source test also accepted NoSuchKey/InvalidRequest; AWS returns NoSuchBucket.",
@@ -3050,6 +3100,7 @@
     },
     {
       "id": "object-lock-0058",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectRetention on missing key returns NoSuchKey",
       "tags": [
@@ -3085,6 +3136,7 @@
     },
     {
       "id": "object-lock-0059",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectRetention returns the mode and retain-until date that were set",
       "tags": [
@@ -3146,6 +3198,7 @@
     },
     {
       "id": "object-lock-0060",
+      "group": "object-lock",
       "kind": "api",
       "title": "GetObjectRetention with no retention set returns NoSuchObjectLockConfiguration",
       "description": "Source test also accepted InvalidRequest; AWS returns NoSuchObjectLockConfiguration.",
@@ -3190,6 +3243,7 @@
     },
     {
       "id": "object-lock-0061",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectRetention with past RetainUntilDate returns InvalidArgument",
       "description": "The source test never creates the key, matching its request exactly. It also accepted InvalidRequest and MalformedXML; AWS returns InvalidArgument (the retain until date must be in the future).",
@@ -3230,6 +3284,7 @@
     },
     {
       "id": "object-lock-0062",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectRetention on missing bucket returns NoSuchBucket",
       "tags": [
@@ -3257,6 +3312,7 @@
     },
     {
       "id": "object-lock-0063",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObjectRetention on missing key returns NoSuchKey",
       "tags": [
@@ -3296,6 +3352,7 @@
     },
     {
       "id": "object-lock-0064",
+      "group": "object-lock",
       "kind": "api",
       "title": "COMPLIANCE retention cannot be overwritten with GOVERNANCE",
       "description": "Source test also accepted vendor codes ObjectLocked/InvalidRequest; AWS returns AccessDenied. Leaves a COMPLIANCE-locked object: runner cleanup is blocked until the retention date passes.",
@@ -3357,6 +3414,7 @@
     },
     {
       "id": "object-lock-0065",
+      "group": "object-lock",
       "kind": "api",
       "title": "COMPLIANCE retention can be extended to a later date",
       "description": "Leaves a COMPLIANCE-locked object: runner cleanup is blocked until the retention date passes.",
@@ -3432,6 +3490,7 @@
     },
     {
       "id": "object-lock-0066",
+      "group": "object-lock",
       "kind": "api",
       "title": "GOVERNANCE retention can be extended to a later date",
       "tags": [
@@ -3503,6 +3562,7 @@
     },
     {
       "id": "object-lock-0067",
+      "group": "object-lock",
       "kind": "api",
       "title": "GOVERNANCE retention overwritten with BypassGovernanceRetention",
       "description": "Source test skipped when bypass permission was unavailable; the runner's main identity is assumed to hold s3:BypassGovernanceRetention. Leaves a COMPLIANCE-locked object: runner cleanup is blocked until the retention date passes.",
@@ -3560,6 +3620,7 @@
     },
     {
       "id": "object-lock-0068",
+      "group": "object-lock",
       "kind": "api",
       "title": "GOVERNANCE to COMPLIANCE change without bypass is denied",
       "description": "Source test also accepted vendor codes ObjectLocked/InvalidRequest; AWS returns AccessDenied.",
@@ -3621,6 +3682,7 @@
     },
     {
       "id": "object-lock-0071",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObject with ObjectLockLegalHoldStatus ON sets a legal hold, visible via HeadObject",
       "description": "The original test used a plain bucket and skipped when object lock was unavailable; here an object-lock-enabled bucket prerequisite is used so the behavior is actually exercised. Runner cleanup must remove the legal hold before deleting the object.",
@@ -3668,6 +3730,7 @@
     },
     {
       "id": "object-lock-0072",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObject with GOVERNANCE ObjectLockMode and a future RetainUntilDate sets retention, visible via HeadObject",
       "description": "The original test used a plain bucket, a retain-until date of now+30 days, and skipped when object lock was unavailable; here an object-lock-enabled bucket prerequisite and a fixed far-future date are used. Runner cleanup must delete with governance bypass.",
@@ -3716,6 +3779,7 @@
     },
     {
       "id": "object-lock-0073",
+      "group": "object-lock",
       "kind": "api",
       "title": "CreateBucket with ObjectLockEnabledForBucket enables object lock",
       "tags": [
@@ -3777,6 +3841,7 @@
     },
     {
       "id": "object-lock-0075",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObject with GOVERNANCE retention, read back via GetObjectRetention",
       "tags": [
@@ -3829,6 +3894,7 @@
     },
     {
       "id": "object-lock-0076",
+      "group": "object-lock",
       "kind": "api",
       "title": "PutObject with COMPLIANCE retention, read back via GetObjectRetention",
       "tags": [
@@ -3881,6 +3947,7 @@
     },
     {
       "id": "object-lock-0078",
+      "group": "object-lock",
       "kind": "api",
       "title": "Extend a GOVERNANCE retention period with PutObjectRetention",
       "tags": [

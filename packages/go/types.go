@@ -5,10 +5,9 @@ import (
 	"fmt"
 )
 
-// VectorFile is one feature area's vectors.
+// VectorFile is one feature group's vectors.
 type VectorFile struct {
 	Schema  string   `json:"$schema,omitempty"`
-	Area    string   `json:"area"`
 	Vectors []Vector `json:"vectors"`
 }
 
@@ -16,6 +15,7 @@ type VectorFile struct {
 // Fields below the Kind comment lines are only populated for that kind.
 type Vector struct {
 	ID          string   `json:"id"`
+	Group       string   `json:"group"`
 	Kind        string   `json:"kind"`
 	Title       string   `json:"title"`
 	Description string   `json:"description,omitempty"`
@@ -219,15 +219,15 @@ type SigningExpect struct {
 
 // ManifestInfo describes the embedded corpus snapshot.
 type ManifestInfo struct {
-	Version      string     `json:"version"`
-	Total        int        `json:"total"`
-	SchemaSHA256 string     `json:"schemaSha256"`
-	Areas        []AreaInfo `json:"areas"`
+	Version      string      `json:"version"`
+	Total        int         `json:"total"`
+	SchemaSHA256 string      `json:"schemaSha256"`
+	Groups       []GroupInfo `json:"groups"`
 }
 
-// AreaInfo is one area's manifest entry.
-type AreaInfo struct {
-	Area  string `json:"area"`
+// GroupInfo is one group's manifest entry.
+type GroupInfo struct {
+	Group string `json:"group"`
 	File  string `json:"file"`
 	Count int    `json:"count"`
 }

@@ -17,7 +17,7 @@ logic anywhere, especially not to `packages/`.
 ## Repo map
 
 ```
-vectors/<area>.json      CANONICAL vector data (one file per feature area)
+vectors/<group>.json     CANONICAL vector data (one file per feature group)
 schema/vector.schema.json  structure (draft 2020-12); README covers semantics
 scripts/validate.js      schema + lint validation      (node scripts/validate.js)
 scripts/datagen.js       normative data-generator reference (--self-test)
@@ -38,7 +38,8 @@ resources/               cloned upstream test suites (source material) — read-
    `schema/vector.schema.json` inside packages are **generated** — never edit
    them by hand. After changing canonical vectors or the schema, run
    `node scripts/sync-packages.js`; CI fails on drift via `--check`.
-2. **Vector ids are permanent.** `<area>-<NNNN>`, prefix = file's `area`. Never
+2. **Vector ids are permanent.** `<group>-<NNNN>`, prefix = the vector's `group`
+   (which equals the filename stem). Never
    reuse or renumber; deletions leave gaps; a new vector takes the next number
    in its file. Consumers key skip-lists on these ids.
 3. **Keyed unions everywhere.** Steps: `{"$operation": {...}}` /
@@ -49,7 +50,7 @@ resources/               cloned upstream test suites (source material) — read-
 4. **Tags**: exactly one tier tag per vector (schema-enforced). Tier = max tier
    of the **step** operations (prerequisites excluded): tier-1 = core object
    ops, tier-2 = CreateBucket/DeleteBucket/ListBuckets, tier-3 = everything
-   else. Plus the area tag and a `source:` provenance tag.
+   else. Plus the group tag and a `source:` provenance tag.
 5. **Five datagen implementations must behave identically**:
    `scripts/datagen.js` (normative) and the ports in packages/js, python, go,
    rust. Any algorithm change must land in all five plus their shared
@@ -95,8 +96,8 @@ takes ~100 s).
 
 ## Common tasks
 
-- **Add or fix a vector**: edit `vectors/<area>.json` (next free id, correct
-  tier/area/source tags; follow README examples) → `node scripts/validate.js`
+- **Add or fix a vector**: edit `vectors/<group>.json` (next free id + matching `group`, correct
+  tier/group/source tags; follow README examples) → `node scripts/validate.js`
   → `node scripts/sync-packages.js` → run the four package suites.
 - **Release**: bump `packages/VERSION`, sync, commit to `main` —
   `.github/workflows/release.yml` verifies, tags `vX.Y.Z` **and**
@@ -115,5 +116,5 @@ takes ~100 s).
   dependencies minimal and deliberate: js/python/go have zero runtime deps;
   rust has only serde + serde_json unconditionally (hash crates sit behind the
   default `datagen` feature); `scripts/` uses ajv (dev-only). Don't add more.
-- Keep package public APIs in lockstep across languages: `areas` / `load(area)`
+- Keep package public APIs in lockstep across languages: `groups` / `load(group)`
   / `all()` / `manifest()` and `datagen.generate` / `datagen.derived`.

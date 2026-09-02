@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "signing",
   "vectors": [
     {
       "id": "signing-0001",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-header-key-duplicate",
       "description": "Duplicate header keys must be merged (values comma-joined in order) in the canonical request.",
@@ -57,6 +57,7 @@
     },
     {
       "id": "signing-0002",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-header-value-multiline",
       "description": "A folded (obs-fold multiline) header value must be canonicalized by joining continuation lines with commas and collapsing internal whitespace. The request header value preserves the raw folded form.",
@@ -102,6 +103,7 @@
     },
     {
       "id": "signing-0003",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-header-value-order",
       "description": "Multiple values for the same header key keep their original order when comma-joined in the canonical request.",
@@ -159,6 +161,7 @@
     },
     {
       "id": "signing-0004",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-header-value-trim",
       "description": "Leading and trailing whitespace in header values must be trimmed in the canonical request.",
@@ -208,6 +211,7 @@
     },
     {
       "id": "signing-0005",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-relative",
       "description": "A relative path segment ('..') must be normalized away (generic, non-S3 rules).",
@@ -250,6 +254,7 @@
     },
     {
       "id": "signing-0006",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-relative-relative",
       "description": "Multiple relative path segments ('..') must be normalized away (generic, non-S3 rules).",
@@ -292,6 +297,7 @@
     },
     {
       "id": "signing-0007",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-slash",
       "description": "A trailing '//' must normalize to '/' (generic, non-S3 rules).",
@@ -334,6 +340,7 @@
     },
     {
       "id": "signing-0008",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-slash-dot-slash",
       "description": "A '/./' segment must be normalized away (generic, non-S3 rules).",
@@ -376,6 +383,7 @@
     },
     {
       "id": "signing-0009",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-slash-pointless-dot",
       "description": "A './' prefix segment must be normalized away (generic, non-S3 rules).",
@@ -418,6 +426,7 @@
     },
     {
       "id": "signing-0010",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-slashes",
       "description": "Repeated slashes ('//') must be collapsed (generic, non-S3 rules).",
@@ -460,6 +469,7 @@
     },
     {
       "id": "signing-0011",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-space",
       "description": "A space in the URI path must be percent-encoded in the canonical request (generic, non-S3 rules).",
@@ -502,6 +512,7 @@
     },
     {
       "id": "signing-0012",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-unreserved",
       "description": "RFC 3986 unreserved characters in the path must not be percent-encoded.",
@@ -543,6 +554,7 @@
     },
     {
       "id": "signing-0013",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-utf8",
       "description": "A non-ASCII (UTF-8) path must be percent-encoded in the canonical request.",
@@ -584,6 +596,7 @@
     },
     {
       "id": "signing-0014",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-vanilla",
       "description": "Minimal GET request: canonicalization, string to sign and signature.",
@@ -625,6 +638,7 @@
     },
     {
       "id": "signing-0015",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-vanilla-empty-query-key",
       "description": "A query parameter with an empty value keeps its key in the canonical query string.",
@@ -666,6 +680,7 @@
     },
     {
       "id": "signing-0016",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-vanilla-query",
       "description": "GET with no query parameters (empty canonical query string).",
@@ -707,6 +722,7 @@
     },
     {
       "id": "signing-0017",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-vanilla-query-order-key",
       "description": "Query parameters must be sorted by key in the canonical query string.",
@@ -748,6 +764,7 @@
     },
     {
       "id": "signing-0018",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-vanilla-query-order-key-case",
       "description": "Query parameters must be sorted by key, case-sensitively (by character code).",
@@ -789,6 +806,7 @@
     },
     {
       "id": "signing-0019",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-vanilla-query-order-value",
       "description": "Query parameters with the same key must be sorted by value in the canonical query string.",
@@ -830,6 +848,7 @@
     },
     {
       "id": "signing-0020",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-vanilla-query-unreserved",
       "description": "RFC 3986 unreserved characters in query keys/values must not be percent-encoded.",
@@ -871,6 +890,7 @@
     },
     {
       "id": "signing-0021",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: get-vanilla-utf8-query",
       "description": "Non-ASCII (UTF-8) query values must be percent-encoded in the canonical query string.",
@@ -912,6 +932,7 @@
     },
     {
       "id": "signing-0022",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: post-header-key-case",
       "description": "Header names must be lowercased in the canonical request.",
@@ -953,6 +974,7 @@
     },
     {
       "id": "signing-0023",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: post-header-key-sort",
       "description": "Headers must be sorted by (lowercased) name in the canonical request.",
@@ -998,6 +1020,7 @@
     },
     {
       "id": "signing-0024",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: post-header-value-case",
       "description": "Header values are not case-mapped in the canonical request.",
@@ -1043,6 +1066,7 @@
     },
     {
       "id": "signing-0025",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: post-sts-header-after",
       "description": "Temporary STS credentials where X-Amz-Security-Token is added AFTER signing: the token appears in the signed request but not in the signed headers.",
@@ -1086,6 +1110,7 @@
     },
     {
       "id": "signing-0026",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: post-sts-header-before",
       "description": "Temporary STS credentials where X-Amz-Security-Token is included in the signed (canonical) request.",
@@ -1133,6 +1158,7 @@
     },
     {
       "id": "signing-0027",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: post-vanilla",
       "description": "Minimal POST request: canonicalization, string to sign and signature.",
@@ -1174,6 +1200,7 @@
     },
     {
       "id": "signing-0028",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: post-vanilla-empty-query-value",
       "description": "A query parameter with an empty value in a POST request.",
@@ -1215,6 +1242,7 @@
     },
     {
       "id": "signing-0029",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: post-vanilla-query",
       "description": "POST with a query parameter.",
@@ -1256,6 +1284,7 @@
     },
     {
       "id": "signing-0030",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: post-x-www-form-urlencoded",
       "description": "A form-encoded POST body participates in the payload hash.",
@@ -1302,6 +1331,7 @@
     },
     {
       "id": "signing-0031",
+      "group": "signing",
       "kind": "signing",
       "title": "SigV4: post-x-www-form-urlencoded-parameters",
       "description": "A form-encoded POST body with a Content-Type parameter (charset) participates in the payload hash.",

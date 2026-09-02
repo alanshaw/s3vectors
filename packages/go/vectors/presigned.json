@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "presigned",
   "vectors": [
     {
       "id": "presigned-0001",
+      "group": "presigned",
       "kind": "api",
       "title": "Presigned GetObject URL succeeds before its expiry",
       "description": "The source additionally sends an OPTIONS request to the presigned URL expecting 400; that part is not expressible (the presigned URL is runner-minted per step) and is omitted.",
@@ -60,6 +60,7 @@
     },
     {
       "id": "presigned-0002",
+      "group": "presigned",
       "kind": "api",
       "title": "Presigned PUT with ACL parameter then presigned GET reads the body back",
       "tags": [
@@ -114,6 +115,7 @@
     },
     {
       "id": "presigned-0003",
+      "group": "presigned",
       "kind": "api",
       "title": "Presigned GET URL returns the object body",
       "tags": [
@@ -158,6 +160,7 @@
     },
     {
       "id": "presigned-0004",
+      "group": "presigned",
       "kind": "api",
       "title": "Presigned PUT URL uploads the object",
       "tags": [
@@ -207,6 +210,7 @@
     },
     {
       "id": "presigned-0005",
+      "group": "presigned",
       "kind": "api",
       "title": "Presigned GET URL honors ResponseContentDisposition override",
       "tags": [
@@ -257,6 +261,7 @@
     },
     {
       "id": "presigned-0006",
+      "group": "presigned",
       "kind": "api",
       "title": "Presigned GET URL for a missing key returns 404",
       "tags": [
@@ -294,6 +299,7 @@
     },
     {
       "id": "presigned-0007",
+      "group": "presigned",
       "kind": "api",
       "title": "Presigned DELETE URL removes the object",
       "tags": [

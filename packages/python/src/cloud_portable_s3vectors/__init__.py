@@ -1,6 +1,6 @@
 """Language-independent S3 API compatibility test vectors.
 
-Parsed and importable per feature area or all at once, plus the deterministic
+Parsed and importable per feature group or all at once, plus the deterministic
 test-data generator (`cloud_portable_s3vectors.datagen`).
 
 Normative semantics (placeholder grammar, matcher semantics, generated data,
@@ -18,7 +18,7 @@ from importlib import resources
 
 from ._types import Manifest, Vector, VectorFile
 
-__all__ = ["AREAS", "load", "all", "load_all", "manifest", "Manifest", "Vector", "VectorFile"]
+__all__ = ["GROUPS", "load", "all", "load_all", "manifest", "Manifest", "Vector", "VectorFile"]
 
 _DATA = resources.files(__package__) / "data"
 
@@ -30,26 +30,26 @@ def _read_json(name: str):
 
 @functools.lru_cache(maxsize=1)
 def manifest() -> Manifest:
-    """The embedded corpus snapshot: version, totals, per-area counts."""
+    """The embedded corpus snapshot: version, totals, per-group counts."""
     return _read_json("manifest.json")
 
 
-#: Area names, in manifest order.
-AREAS: tuple[str, ...] = tuple(a["area"] for a in manifest()["areas"])
+#: Group names, in manifest order.
+GROUPS: tuple[str, ...] = tuple(g["group"] for g in manifest()["groups"])
 
 
 @functools.lru_cache(maxsize=None)
-def load(area: str) -> VectorFile:
-    """Load one area's vectors. Lazy; parsed once and cached (read-only)."""
-    for entry in manifest()["areas"]:
-        if entry["area"] == area:
+def load(group: str) -> VectorFile:
+    """Load one group's vectors. Lazy; parsed once and cached (read-only)."""
+    for entry in manifest()["groups"]:
+        if entry["group"] == group:
             return _read_json(entry["file"])
-    raise KeyError(f"unknown area: {area} (known: {', '.join(AREAS)})")
+    raise KeyError(f"unknown group: {group} (known: {', '.join(GROUPS)})")
 
 
 def load_all() -> list[VectorFile]:
-    """Load every area, in manifest order."""
-    return [load(a) for a in AREAS]
+    """Load every group, in manifest order."""
+    return [load(g) for g in GROUPS]
 
 
 #: Alias for :func:`load_all` (shadows the ``all`` builtin only if star-imported).

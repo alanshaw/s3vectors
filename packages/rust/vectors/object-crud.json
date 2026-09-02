@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "object-crud",
   "vectors": [
     {
       "id": "object-crud-0001",
+      "group": "object-crud",
       "kind": "api",
       "title": "Put and get a plain text object",
       "tags": [
@@ -50,6 +50,7 @@
     },
     {
       "id": "object-crud-0004",
+      "group": "object-crud",
       "kind": "api",
       "title": "Put and get an empty object",
       "tags": [
@@ -96,6 +97,7 @@
     },
     {
       "id": "object-crud-0005",
+      "group": "object-crud",
       "kind": "api",
       "title": "Put and get a key containing subdirectories and spaces",
       "tags": [
@@ -142,6 +144,7 @@
     },
     {
       "id": "object-crud-0006",
+      "group": "object-crud",
       "kind": "api",
       "title": "Write, read, delete, then verify absence",
       "tags": [
@@ -207,6 +210,7 @@
     },
     {
       "id": "object-crud-0008",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject response-* query overrides set the corresponding response headers",
       "description": "Source also passes ResponseExpires='123' (an invalid timestamp string, never asserted); it is omitted here because a typed SDK ResponseExpires member would reformat it and diverge from the raw source request. The source's bucket/object ACLs are 'private', the defaults, so plain prerequisites are used.",
@@ -261,6 +265,7 @@
     },
     {
       "id": "object-crud-0009",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject with a non-matching If-Match returns PreconditionFailed",
       "tags": [
@@ -305,6 +310,7 @@
     },
     {
       "id": "object-crud-0010",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject with a matching If-Match returns the object",
       "description": "The source captures the ETag from the PutObject response; the object prerequisite's etag attribute is the same value.",
@@ -348,6 +354,7 @@
     },
     {
       "id": "object-crud-0011",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject with a future If-Modified-Since returns 304 with the ETag header",
       "description": "The source computes LastModified+1s and sleeps before the request; vectors cannot do time arithmetic, so a fixed far-future date (which the object's mtime always precedes) is used. A 304 has no error body; the source's 'Not Modified' message assertion is boto's synthesized reason phrase, so the raw-HTTP form asserts status 304 and the ETag header.",
@@ -393,6 +400,7 @@
     },
     {
       "id": "object-crud-0012",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject with a past If-Modified-Since returns the object",
       "description": "The source passes 'Sat, 29 Oct 1994 19:43:31 GMT'; the same instant is written in ISO 8601 form for the timestamp parameter.",
@@ -436,6 +444,7 @@
     },
     {
       "id": "object-crud-0013",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject with a non-matching If-None-Match returns the object",
       "tags": [
@@ -478,6 +487,7 @@
     },
     {
       "id": "object-crud-0014",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject with a matching If-None-Match returns 304 with the ETag header",
       "description": "A 304 response has no error body; the source additionally asserts boto's synthesized error message 'Not Modified' (the HTTP reason phrase). The raw-HTTP form asserts the wire-defined parts: status 304 and the ETag response header.",
@@ -523,6 +533,7 @@
     },
     {
       "id": "object-crud-0015",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject with a future If-Unmodified-Since returns the object",
       "description": "The source passes 'Sat, 29 Oct 2100 19:43:31 GMT'; the same instant is written in ISO 8601 form for the timestamp parameter.",
@@ -566,6 +577,7 @@
     },
     {
       "id": "object-crud-0016",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject with a past If-Unmodified-Since returns PreconditionFailed",
       "description": "The source passes 'Sat, 29 Oct 1994 19:43:31 GMT'; the same instant is written in ISO 8601 form for the timestamp parameter.",
@@ -611,6 +623,7 @@
     },
     {
       "id": "object-crud-0017",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects removes multiple keys and repeating it reports the missing keys as deleted",
       "tags": [
@@ -762,6 +775,7 @@
     },
     {
       "id": "object-crud-0018",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects with more than 1000 keys returns 400",
       "description": "The source test seeds 1001 objects and verifies the count via a listing paginator before the delete; the 400 response to a 1001-key request is request validation independent of the objects existing, so the seeding and pagination count-check are omitted. The source asserts only the 400 status, not an error code.",
@@ -3802,6 +3816,7 @@
     },
     {
       "id": "object-crud-0019",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects removes multiple keys (verified with ListObjectsV2) and repeating it reports the missing keys as deleted",
       "tags": [
@@ -3953,6 +3968,7 @@
     },
     {
       "id": "object-crud-0020",
+      "group": "object-crud",
       "kind": "api",
       "title": "Content-Encoding set on PutObject is returned by HeadObject",
       "tags": [
@@ -4022,6 +4038,7 @@
     },
     {
       "id": "object-crud-0021",
+      "group": "object-crud",
       "kind": "api",
       "title": "aws-chunked is stripped from the stored Content-Encoding",
       "description": "S3 removes the aws-chunked token from the Content-Encoding it stores; a Content-Encoding consisting only of aws-chunked tokens is stored as no Content-Encoding at all.",
@@ -4144,6 +4161,7 @@
     },
     {
       "id": "object-crud-0022",
+      "group": "object-crud",
       "kind": "api",
       "title": "Anonymous DeleteObject after the bucket is deleted returns NoSuchBucket",
       "description": "The source sets public-read ACLs on the bucket and object via a shared helper; both are deleted before the tested request, so the ACLs are irrelevant and omitted (bucket prerequisites cannot carry ACLs).",
@@ -4205,6 +4223,7 @@
     },
     {
       "id": "object-crud-0023",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject on an empty object reports ContentLength 0",
       "tags": [
@@ -4247,6 +4266,7 @@
     },
     {
       "id": "object-crud-0024",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject without metadata replaces existing metadata",
       "description": "The source asserts the returned Metadata map is exactly empty; the only metadata ever written is meta1, so absence of the x-amz-meta-meta1 response header expresses the same assertion.",
@@ -4308,6 +4328,7 @@
     },
     {
       "id": "object-crud-0025",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject on a missing key returns NoSuchKey",
       "tags": [
@@ -4344,6 +4365,7 @@
     },
     {
       "id": "object-crud-0026",
+      "group": "object-crud",
       "kind": "api",
       "title": "Empty-string user metadata value round-trips",
       "tags": [
@@ -4394,6 +4416,7 @@
     },
     {
       "id": "object-crud-0027",
+      "group": "object-crud",
       "kind": "api",
       "title": "User metadata set on PutObject is returned on GetObject",
       "tags": [
@@ -4444,6 +4467,7 @@
     },
     {
       "id": "object-crud-0028",
+      "group": "object-crud",
       "kind": "api",
       "title": "Overwriting an object can replace its metadata value with the empty string",
       "tags": [
@@ -4523,6 +4547,7 @@
     },
     {
       "id": "object-crud-0029",
+      "group": "object-crud",
       "kind": "api",
       "title": "Cache-Control set on PutObject is returned by HeadObject",
       "tags": [
@@ -4569,6 +4594,7 @@
     },
     {
       "id": "object-crud-0030",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject response ETag is the quoted MD5 of the body",
       "tags": [
@@ -4606,6 +4632,7 @@
     },
     {
       "id": "object-crud-0031",
+      "group": "object-crud",
       "kind": "api",
       "title": "Expires set on PutObject is returned by HeadObject",
       "description": "The source sets Expires to now+6000s and compares the round-tripped timestamp; vectors cannot compute relative times, so a fixed far-future instant is used. The expected header value is the RFC 7231 http-date serialization of that instant, which is how SDKs encode timestamp-in-header parameters.",
@@ -4653,6 +4680,7 @@
     },
     {
       "id": "object-crud-0032",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject with a binary body reads back identically",
       "tags": [
@@ -4696,6 +4724,7 @@
     },
     {
       "id": "object-crud-0033",
+      "group": "object-crud",
       "kind": "api",
       "title": "Object write, read, overwrite, re-read and delete round-trip",
       "tags": [
@@ -4769,6 +4798,7 @@
     },
     {
       "id": "object-crud-0034",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject to a nonexistent bucket returns NoSuchBucket",
       "description": "The source uses the literal bucket name 'whatchutalkinboutwillis'; a reserved never-created name is used instead to avoid collisions with real buckets.",
@@ -4798,6 +4828,7 @@
     },
     {
       "id": "object-crud-0035",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObjectAttributes on a simple object returns size, unquoted ETag and storage class",
       "description": "ETag is the unquoted MD5 of the 3-byte body 'foo'. Attributes not applicable (DeleteMarker, VersionId, ObjectParts) must be absent.",
@@ -4859,6 +4890,7 @@
     },
     {
       "id": "object-crud-0036",
+      "group": "object-crud",
       "kind": "api",
       "title": "Authenticated PutObject succeeds with HTTP 200",
       "tags": [
@@ -4893,6 +4925,7 @@
     },
     {
       "id": "object-crud-0037",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject with an unparseable control-character key returns 400",
       "description": "Key is U+00AE U+008A '-'. The source test asserts status 400 and the error message \"Couldn't parse the specified URI.\" only (it does not assert an error code). The format cannot express a message assertion without a code; the code shown is the genuine AWS S3 code for this message, added solely so the asserted message can be expressed. fails_on_rgw.",
@@ -4931,6 +4964,7 @@
     },
     {
       "id": "object-crud-0038",
+      "group": "object-crud",
       "kind": "api",
       "title": "Ranged GetObject over an 8 MiB object returns 206 with the correct middle slice",
       "tags": [
@@ -4995,6 +5029,7 @@
     },
     {
       "id": "object-crud-0039",
+      "group": "object-crud",
       "kind": "api",
       "title": "Ranged GetObject on an empty object returns 416 InvalidRange",
       "tags": [
@@ -5038,6 +5073,7 @@
     },
     {
       "id": "object-crud-0040",
+      "group": "object-crud",
       "kind": "api",
       "title": "Ranged GetObject entirely beyond the object size returns 416 InvalidRange",
       "tags": [
@@ -5082,6 +5118,7 @@
     },
     {
       "id": "object-crud-0041",
+      "group": "object-crud",
       "kind": "api",
       "title": "Ranged GetObject returns 206 with the requested slice and Content-Range",
       "tags": [
@@ -5128,6 +5165,7 @@
     },
     {
       "id": "object-crud-0042",
+      "group": "object-crud",
       "kind": "api",
       "title": "Ranged GetObject with a suffix range returns the trailing bytes",
       "tags": [
@@ -5174,6 +5212,7 @@
     },
     {
       "id": "object-crud-0043",
+      "group": "object-crud",
       "kind": "api",
       "title": "Ranged GetObject with an open-ended range skips leading bytes",
       "tags": [
@@ -5220,6 +5259,7 @@
     },
     {
       "id": "object-crud-0044",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects bulk-deletes 20 objects and leaves the prefix empty",
       "description": "Reduced from the source test's batch-operations flow: concurrent copy/tagging phases are omitted; the bulk delete is applied to the batch-uploaded objects.",
@@ -5502,6 +5542,7 @@
     },
     {
       "id": "object-crud-0045",
+      "group": "object-crud",
       "kind": "api",
       "title": "Put a simple object, read it back and find it in a listing",
       "tags": [
@@ -5578,6 +5619,7 @@
     },
     {
       "id": "object-crud-0046",
+      "group": "object-crud",
       "kind": "api",
       "title": "Deleted object returns NoSuchKey on GET and disappears from listing",
       "tags": [
@@ -5676,6 +5718,7 @@
     },
     {
       "id": "object-crud-0047",
+      "group": "object-crud",
       "kind": "api",
       "title": "Cache-Control header round-trips for several directive combinations",
       "tags": [
@@ -5796,6 +5839,7 @@
     },
     {
       "id": "object-crud-0048",
+      "group": "object-crud",
       "kind": "api",
       "title": "Content-Encoding gzip header round-trips on a gzip-compressed object",
       "tags": [
@@ -5844,6 +5888,7 @@
     },
     {
       "id": "object-crud-0049",
+      "group": "object-crud",
       "kind": "api",
       "title": "Content-Disposition header round-trips for inline, attachment and filename forms",
       "tags": [
@@ -5939,6 +5984,7 @@
     },
     {
       "id": "object-crud-0050",
+      "group": "object-crud",
       "kind": "api",
       "title": "Single-part PutObject ETag equals content MD5 and metadata is preserved",
       "tags": [
@@ -6008,6 +6054,7 @@
     },
     {
       "id": "object-crud-0053",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject with 10 user metadata entries, all returned by HeadObject",
       "tags": [
@@ -6076,6 +6123,7 @@
     },
     {
       "id": "object-crud-0054",
+      "group": "object-crud",
       "kind": "api",
       "title": "Put/get round-trip preserves body bytes and the ETag",
       "tags": [
@@ -6136,6 +6184,7 @@
     },
     {
       "id": "object-crud-0055",
+      "group": "object-crud",
       "kind": "api",
       "title": "10 MiB object round-trips with size and MD5 intact",
       "tags": [
@@ -6191,6 +6240,7 @@
     },
     {
       "id": "object-crud-0056",
+      "group": "object-crud",
       "kind": "api",
       "title": "ETag determinism: identical bodies share an ETag, different bodies do not",
       "description": "Five body pairs (identical, differing digit, case, trailing space, both empty). Inequality is asserted with a negative-lookahead regex against the captured first ETag.",
@@ -6358,6 +6408,7 @@
     },
     {
       "id": "object-crud-0057",
+      "group": "object-crud",
       "kind": "api",
       "title": "Ranged GETs return exactly the requested bytes of a patterned object",
       "tags": [
@@ -6450,6 +6501,7 @@
     },
     {
       "id": "object-crud-0058",
+      "group": "object-crud",
       "kind": "api",
       "title": "All 256 byte values survive a put/get round-trip",
       "tags": [
@@ -6504,6 +6556,7 @@
     },
     {
       "id": "object-crud-0060",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject ETag is a quoted hex string across object sizes 0 B to 5 MiB",
       "tags": [
@@ -6635,6 +6688,7 @@
     },
     {
       "id": "object-crud-0061",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObject on 'dir/' succeeds even when nested keys exist under it",
       "description": "Original tolerated DirectoryNotEmpty/NoSuchKey from POSIX-backed gateways; S3 semantics are idempotent success.",
@@ -6673,6 +6727,7 @@
     },
     {
       "id": "object-crud-0062",
+      "group": "object-crud",
       "kind": "api",
       "title": "Deleting 'name' does not remove the distinct object 'name/'",
       "tags": [
@@ -6724,6 +6779,7 @@
     },
     {
       "id": "object-crud-0063",
+      "group": "object-crud",
       "kind": "api",
       "title": "Deleting directory marker 'dir/' leaves nested 'dir/file' intact",
       "tags": [
@@ -6787,6 +6843,7 @@
     },
     {
       "id": "object-crud-0064",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObject on a missing key succeeds (idempotent)",
       "tags": [
@@ -6816,6 +6873,7 @@
     },
     {
       "id": "object-crud-0065",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObject returns HTTP 204",
       "description": "Original accepted 200 or 204; S3 responds 204 No Content.",
@@ -6867,6 +6925,7 @@
     },
     {
       "id": "object-crud-0066",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObject on a non-versioned bucket returns no DeleteMarker",
       "description": "Original accepted DeleteMarker absent or explicitly false; AWS omits the field on non-versioned buckets, asserted here as absent.",
@@ -6923,6 +6982,7 @@
     },
     {
       "id": "object-crud-0067",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObject removes the object; subsequent HeadObject returns 404",
       "tags": [
@@ -6997,6 +7057,7 @@
     },
     {
       "id": "object-crud-0068",
+      "group": "object-crud",
       "kind": "api",
       "title": "Deleting the same key twice succeeds both times",
       "tags": [
@@ -7053,6 +7114,7 @@
     },
     {
       "id": "object-crud-0069",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObject works with dashes, underscores, dots, spaces and parens in keys",
       "tags": [
@@ -7219,6 +7281,7 @@
     },
     {
       "id": "object-crud-0070",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects with a single missing key reports it deleted and leaves others",
       "tags": [
@@ -7304,6 +7367,7 @@
     },
     {
       "id": "object-crud-0071",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects deletes a 100-key batch in one request",
       "tags": [
@@ -8457,6 +8521,7 @@
     },
     {
       "id": "object-crud-0072",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects mixing existing and missing keys reports all deleted and empties the bucket",
       "description": "Original asserted set equality of Deleted keys; unordered set equality beyond length plus one membership probe is not expressible; the emptied bucket is verified by listing.",
@@ -8545,6 +8610,7 @@
     },
     {
       "id": "object-crud-0073",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects on a missing bucket returns NoSuchBucket",
       "tags": [
@@ -8578,6 +8644,7 @@
     },
     {
       "id": "object-crud-0074",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects on missing keys reports them deleted (idempotent)",
       "description": "Original asserted set equality of Deleted keys; unordered set equality beyond length plus one membership probe is not expressible.",
@@ -8630,6 +8697,7 @@
     },
     {
       "id": "object-crud-0075",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects in Quiet mode omits the Deleted list but deletes the keys",
       "description": "Original accepted an empty Deleted list as well; AWS omits it entirely in quiet mode.",
@@ -8718,6 +8786,7 @@
     },
     {
       "id": "object-crud-0076",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects returns HTTP 200",
       "tags": [
@@ -8764,6 +8833,7 @@
     },
     {
       "id": "object-crud-0077",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects response lists every deleted key",
       "description": "Original asserted set equality of Deleted keys; unordered set equality beyond length plus one membership probe is not expressible.",
@@ -8840,6 +8910,7 @@
     },
     {
       "id": "object-crud-0078",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects removes the named keys and leaves the rest",
       "description": "Original asserted set equality of Deleted keys; unordered set equality beyond length plus one membership probe is not expressible; the surviving keys are verified by listing.",
@@ -8967,6 +9038,7 @@
     },
     {
       "id": "object-crud-0079",
+      "group": "object-crud",
       "kind": "api",
       "title": "DeleteObjects handles keys with spaces, slashes and @",
       "description": "Original asserted set equality of Deleted keys; unordered set equality beyond length plus one membership probe is not expressible.",
@@ -9066,6 +9138,7 @@
     },
     {
       "id": "object-crud-0080",
+      "group": "object-crud",
       "kind": "api",
       "title": "Zero-byte object: upload, HEAD, GET and copy all preserve zero length",
       "tags": [
@@ -9149,6 +9222,7 @@
     },
     {
       "id": "object-crud-0081",
+      "group": "object-crud",
       "kind": "api",
       "title": "Empty user-metadata map and empty metadata values are accepted, empty values preserved",
       "tags": [
@@ -9210,6 +9284,7 @@
     },
     {
       "id": "object-crud-0082",
+      "group": "object-crud",
       "kind": "api",
       "title": "Single-character object key is accepted",
       "tags": [
@@ -9240,6 +9315,7 @@
     },
     {
       "id": "object-crud-0083",
+      "group": "object-crud",
       "kind": "api",
       "title": "ETag is identical across PutObject, HeadObject, GetObject and ListObjectsV2",
       "tags": [
@@ -9319,6 +9395,7 @@
     },
     {
       "id": "object-crud-0084",
+      "group": "object-crud",
       "kind": "api",
       "title": "Zero-byte object PUT returns an ETag",
       "tags": [
@@ -9356,6 +9433,7 @@
     },
     {
       "id": "object-crud-0085",
+      "group": "object-crud",
       "kind": "api",
       "title": "Identical content uploaded to two keys yields identical ETags",
       "tags": [
@@ -9404,6 +9482,7 @@
     },
     {
       "id": "object-crud-0086",
+      "group": "object-crud",
       "kind": "api",
       "title": "Overwriting an object with different content changes its ETag",
       "description": "The source asserts only inequality of the two ETags; expressed as a negative-lookahead regex against the captured original ETag.",
@@ -9455,6 +9534,7 @@
     },
     {
       "id": "object-crud-0087",
+      "group": "object-crud",
       "kind": "api",
       "title": "ETag is a quoted hex string of at least 32 characters across object sizes",
       "tags": [
@@ -9561,6 +9641,7 @@
     },
     {
       "id": "object-crud-0088",
+      "group": "object-crud",
       "kind": "api",
       "title": "Binary, control-character, Unicode and embedded-NUL bodies all yield quoted ETags",
       "tags": [
@@ -9665,6 +9746,7 @@
     },
     {
       "id": "object-crud-0089",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject after DeleteObject returns 404 NoSuchKey",
       "tags": [
@@ -9716,6 +9798,7 @@
     },
     {
       "id": "object-crud-0090",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject on an existing object returns HTTP 200",
       "tags": [
@@ -9756,6 +9839,7 @@
     },
     {
       "id": "object-crud-0091",
+      "group": "object-crud",
       "kind": "api",
       "title": "Expires header set at upload is returned by GetObject",
       "description": "The source used utcnow() plus one hour; a fixed future date is equivalent since Expires is stored metadata, not enforced behavior.",
@@ -9804,6 +9888,7 @@
     },
     {
       "id": "object-crud-0092",
+      "group": "object-crud",
       "kind": "api",
       "title": "WebsiteRedirectLocation set at upload is returned by GetObject",
       "description": "The source tolerated implementations that omit WebsiteRedirectLocation; converted to the AWS round-trip assertion that the value is echoed back.",
@@ -9850,6 +9935,7 @@
     },
     {
       "id": "object-crud-0094",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject on an empty directory-marker key (trailing slash) returns zero-length body",
       "tags": [
@@ -9895,6 +9981,7 @@
     },
     {
       "id": "object-crud-0095",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject on a key under a non-existing parent path returns NoSuchKey",
       "tags": [
@@ -9929,6 +10016,7 @@
     },
     {
       "id": "object-crud-0097",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject on a missing directory-marker key (trailing slash) returns NoSuchKey",
       "tags": [
@@ -9963,6 +10051,7 @@
     },
     {
       "id": "object-crud-0103",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject with ResponseExpires sets an Expires header in the response",
       "tags": [
@@ -10009,6 +10098,7 @@
     },
     {
       "id": "object-crud-0104",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObjectAttributes with an empty attributes list returns InvalidArgument",
       "tags": [
@@ -10052,6 +10142,7 @@
     },
     {
       "id": "object-crud-0105",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObjectAttributes returns ETag, ObjectSize, StorageClass and LastModified for an existing object",
       "tags": [
@@ -10117,6 +10208,7 @@
     },
     {
       "id": "object-crud-0106",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObjectAttributes with an invalid attribute name alongside a valid one returns InvalidArgument",
       "tags": [
@@ -10163,6 +10255,7 @@
     },
     {
       "id": "object-crud-0107",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObjectAttributes on a key nested under an existing file object returns NoSuchKey",
       "tags": [
@@ -10208,6 +10301,7 @@
     },
     {
       "id": "object-crud-0108",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObjectAttributes with a single invalid attribute name returns InvalidArgument",
       "tags": [
@@ -10245,6 +10339,7 @@
     },
     {
       "id": "object-crud-0109",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObjectAttributes on a non-existing bucket returns NoSuchBucket",
       "tags": [
@@ -10275,6 +10370,7 @@
     },
     {
       "id": "object-crud-0110",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObjectAttributes on a non-existing object returns NoSuchKey",
       "tags": [
@@ -10312,6 +10408,7 @@
     },
     {
       "id": "object-crud-0112",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject ContentLength matches the actual body size",
       "tags": [
@@ -10367,6 +10464,7 @@
     },
     {
       "id": "object-crud-0113",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject without trailing slash does not match a directory-style key with slash",
       "tags": [
@@ -10408,6 +10506,7 @@
     },
     {
       "id": "object-crud-0114",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject returns a 1 MiB object intact",
       "tags": [
@@ -10460,6 +10559,7 @@
     },
     {
       "id": "object-crud-0118",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject response includes a LastModified timestamp",
       "tags": [
@@ -10514,6 +10614,7 @@
     },
     {
       "id": "object-crud-0120",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject returns the Cache-Control value set at upload",
       "tags": [
@@ -10569,6 +10670,7 @@
     },
     {
       "id": "object-crud-0121",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject returns the ContentType set at upload",
       "tags": [
@@ -10622,6 +10724,7 @@
     },
     {
       "id": "object-crud-0122",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject returns user metadata set at upload",
       "tags": [
@@ -10681,6 +10784,7 @@
     },
     {
       "id": "object-crud-0123",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject on a zero-length object returns empty body and ContentLength 0",
       "tags": [
@@ -10724,6 +10828,7 @@
     },
     {
       "id": "object-crud-0124",
+      "group": "object-crud",
       "kind": "api",
       "title": "Ranged GetObject over a known byte pattern returns exact bytes for several ranges",
       "tags": [
@@ -10850,6 +10955,7 @@
     },
     {
       "id": "object-crud-0126",
+      "group": "object-crud",
       "kind": "api",
       "title": "Range extending past the object end is trimmed to object size",
       "tags": [
@@ -10906,6 +11012,7 @@
     },
     {
       "id": "object-crud-0132",
+      "group": "object-crud",
       "kind": "api",
       "title": "Single-byte ranges bytes=0-0 and bytes=99-99 return exactly one byte",
       "tags": [
@@ -10994,6 +11101,7 @@
     },
     {
       "id": "object-crud-0134",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject with Range on a directory-style key ('dir/') returns 206 partial content",
       "tags": [
@@ -11051,6 +11159,7 @@
     },
     {
       "id": "object-crud-0135",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject on 'key' returns 404 when only 'key/' exists",
       "tags": [
@@ -11106,6 +11215,7 @@
     },
     {
       "id": "object-crud-0136",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject on a key nested under an existing file key returns 404",
       "tags": [
@@ -11147,6 +11257,7 @@
     },
     {
       "id": "object-crud-0137",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject on 'key/' returns 404 when only 'key' exists",
       "tags": [
@@ -11202,6 +11313,7 @@
     },
     {
       "id": "object-crud-0138",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject returns ContentType, ContentEncoding, ContentLanguage and ContentDisposition",
       "tags": [
@@ -11263,6 +11375,7 @@
     },
     {
       "id": "object-crud-0140",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject returns a LastModified timestamp",
       "tags": [
@@ -11317,6 +11430,7 @@
     },
     {
       "id": "object-crud-0141",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject on a missing key returns 404",
       "tags": [
@@ -11350,6 +11464,7 @@
     },
     {
       "id": "object-crud-0142",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject returns length, content type, ETag, metadata and LastModified",
       "tags": [
@@ -11419,6 +11534,7 @@
     },
     {
       "id": "object-crud-0143",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject returns user-defined metadata",
       "tags": [
@@ -11480,6 +11596,7 @@
     },
     {
       "id": "object-crud-0144",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject Range extending beyond object size is trimmed to the object",
       "tags": [
@@ -11566,6 +11683,7 @@
     },
     {
       "id": "object-crud-0145",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject with malformed Range headers returns the full object",
       "tags": [
@@ -11679,6 +11797,7 @@
     },
     {
       "id": "object-crud-0146",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject with unsatisfiable Range returns 416",
       "tags": [
@@ -11770,6 +11889,7 @@
     },
     {
       "id": "object-crud-0147",
+      "group": "object-crud",
       "kind": "api",
       "title": "HeadObject with valid Range headers returns correct Content-Range and Content-Length",
       "tags": [
@@ -11978,6 +12098,7 @@
     },
     {
       "id": "object-crud-0148",
+      "group": "object-crud",
       "kind": "api",
       "title": "Standard response headers set at PutObject are returned by HeadObject",
       "description": "ContentEncoding 'identity' is sent but not asserted: the original test only required 4 of 5 headers to be preserved. The original also sent an Expires timestamp without asserting it; it is omitted here.",
@@ -12032,6 +12153,7 @@
     },
     {
       "id": "object-crud-0150",
+      "group": "object-crud",
       "kind": "api",
       "title": "Mixed-case metadata keys are handled case-insensitively and returned lowercased",
       "tags": [
@@ -12089,6 +12211,7 @@
     },
     {
       "id": "object-crud-0151",
+      "group": "object-crud",
       "kind": "api",
       "title": "ASCII metadata values with spaces, quotes and punctuation are preserved",
       "description": "The original also sent a non-ASCII (unicode) metadata value but only required 4 of 6 values to survive; the unicode value is omitted here because non-ASCII metadata handling is undefined in S3.",
@@ -12149,6 +12272,7 @@
     },
     {
       "id": "object-crud-0153",
+      "group": "object-crud",
       "kind": "api",
       "title": "ETag is quoted hex and consistent between PutObject and HeadObject; LastModified is returned",
       "tags": [
@@ -12207,6 +12331,7 @@
     },
     {
       "id": "object-crud-0155",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject accepts user metadata just under the 2KB limit",
       "tags": [
@@ -12241,6 +12366,7 @@
     },
     {
       "id": "object-crud-0156",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject rejects user metadata over the 2KB limit",
       "description": "AWS S3 returns MetadataTooLarge; the original test also accepted RequestHeaderSectionTooLarge.",
@@ -12281,6 +12407,7 @@
     },
     {
       "id": "object-crud-0157",
+      "group": "object-crud",
       "kind": "api",
       "title": "100 user metadata headers round-trip through PutObject and HeadObject",
       "tags": [
@@ -12529,6 +12656,7 @@
     },
     {
       "id": "object-crud-0158",
+      "group": "object-crud",
       "kind": "api",
       "title": "Special-character user metadata values round-trip unchanged",
       "tags": [
@@ -12588,6 +12716,7 @@
     },
     {
       "id": "object-crud-0159",
+      "group": "object-crud",
       "kind": "api",
       "title": "User metadata named after system headers does not override system values",
       "tags": [
@@ -12638,6 +12767,7 @@
     },
     {
       "id": "object-crud-0160",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject accepts a 200-character user metadata key name",
       "description": "Original test also tolerated an InvalidArgument rejection; AWS S3 accepts long metadata key names within the aggregate 2KB metadata limit.",
@@ -12673,6 +12803,7 @@
     },
     {
       "id": "object-crud-0161",
+      "group": "object-crud",
       "kind": "api",
       "title": "Object keys are case-sensitive",
       "description": "Puts four case variations of the same name and lists to confirm four distinct objects (keys in UTF-8 byte order).",
@@ -12761,6 +12892,7 @@
     },
     {
       "id": "object-crud-0162",
+      "group": "object-crud",
       "kind": "api",
       "title": "Keys with consecutive slashes are distinct objects",
       "description": "Puts keys differing only in the number of consecutive slashes, then lists to confirm all are distinct (AWS behavior; keys in UTF-8 byte order). Source test also tolerated vendor-specific rejection.",
@@ -12836,6 +12968,7 @@
     },
     {
       "id": "object-crud-0163",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject directory-style key with non-empty body is readable",
       "tags": [
@@ -12878,6 +13011,7 @@
     },
     {
       "id": "object-crud-0164",
+      "group": "object-crud",
       "kind": "api",
       "title": "Keys with dot segments are stored literally",
       "description": "Puts keys containing '.' and '..' segments and lists to confirm all four exist as literal keys (AWS behavior; keys in UTF-8 byte order). Source test also tolerated vendor-specific rejection.",
@@ -12966,6 +13100,7 @@
     },
     {
       "id": "object-crud-0165",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject with empty key segments (a//b//c) round-trips",
       "description": "AWS stores the key literally. Source test also tolerated vendor-specific rejection (XMinioInvalidObjectName etc.).",
@@ -13018,6 +13153,7 @@
     },
     {
       "id": "object-crud-0166",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject and GetObject with a leading-slash key",
       "description": "AWS treats a leading slash as part of the literal key. Source test also tolerated vendor-specific rejection (XMinioInvalidResourceName/InvalidObjectName).",
@@ -13061,6 +13197,7 @@
     },
     {
       "id": "object-crud-0167",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject creates file key alongside existing directory-style key",
       "description": "Creates 'foo/' then 'foo' and verifies both exist as separate objects (AWS behavior). Source test also tolerated vendor-specific rejection (ExistingObjectIsDirectory/InvalidRequest) on filesystem-backed implementations.",
@@ -13120,6 +13257,7 @@
     },
     {
       "id": "object-crud-0168",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject creates directory-style key alongside existing file key",
       "description": "Creates 'foo' then 'foo/' and verifies both exist as separate objects (AWS behavior). Source test also tolerated vendor-specific rejection (ObjectParentIsFile/InvalidRequest) on filesystem-backed implementations.",
@@ -13179,6 +13317,7 @@
     },
     {
       "id": "object-crud-0169",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject creates nested key under an existing file key",
       "description": "Creates 'foo' then 'foo/bar'; keys are independent on AWS. Source test also tolerated vendor-specific rejection (ObjectParentIsFile/InvalidRequest) on filesystem-backed implementations.",
@@ -13238,6 +13377,7 @@
     },
     {
       "id": "object-crud-0170",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject overwrite changes content and ETag",
       "description": "Source test asserted the two PutObject ETags differ; expressed here as each ETag equaling the MD5 of its distinct body.",
@@ -13321,6 +13461,7 @@
     },
     {
       "id": "object-crud-0171",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject accepts keys with normal, trailing, doubled and leading slashes",
       "description": "AWS accepts all of these keys literally. Source test also tolerated vendor-specific rejection (XMinioInvalidObjectName etc.) of the double/leading-slash keys.",
@@ -13410,6 +13551,7 @@
     },
     {
       "id": "object-crud-0172",
+      "group": "object-crud",
       "kind": "api",
       "title": "Zero-byte object: GET returns empty body and HEAD reports ContentLength 0",
       "tags": [
@@ -13468,6 +13610,7 @@
     },
     {
       "id": "object-crud-0174",
+      "group": "object-crud",
       "kind": "api",
       "title": "Small object sizes 1 B to 1 KiB report correct ContentLength",
       "tags": [
@@ -13874,6 +14017,7 @@
     },
     {
       "id": "object-crud-0175",
+      "group": "object-crud",
       "kind": "api",
       "title": "Power-of-two object sizes 1 KiB to 1 MiB report correct ContentLength",
       "description": "The source loop reuses the single key 'power-20' for every size (a loop-variable artifact), so each PUT overwrites the previous object and HEAD is checked immediately after each PUT; that request sequence is preserved here.",
@@ -14249,6 +14393,7 @@
     },
     {
       "id": "object-crud-0176",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject preserves ContentLanguage, visible via HeadObject",
       "tags": [
@@ -14294,6 +14439,7 @@
     },
     {
       "id": "object-crud-0179",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject preserves WebsiteRedirectLocation, visible via HeadObject",
       "tags": [
@@ -14339,6 +14485,7 @@
     },
     {
       "id": "object-crud-0180",
+      "group": "object-crud",
       "kind": "api",
       "title": "Five sequential overwrites of the same key leave the last-written body",
       "description": "The source test performs five blocking sequential PutObject calls (not concurrent) writing version-0..version-4, then reads back and accepts any of the five. Under strong read-after-write consistency the deterministic result is version-4 (last write wins).",
@@ -14422,6 +14569,7 @@
     },
     {
       "id": "object-crud-0181",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject replacing an object updates its Content-Type",
       "tags": [
@@ -14476,6 +14624,7 @@
     },
     {
       "id": "object-crud-0182",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject stores a 1 KB metadata value",
       "tags": [
@@ -14537,6 +14686,7 @@
     },
     {
       "id": "object-crud-0186",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject stores Content-Disposition retrievable via HeadObject",
       "tags": [
@@ -14592,6 +14742,7 @@
     },
     {
       "id": "object-crud-0188",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject preserves explicit Content-Type across various media types",
       "tags": [
@@ -14755,6 +14906,7 @@
     },
     {
       "id": "object-crud-0190",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject with StorageClass STANDARD stores the object",
       "description": "The original test only verifies the object was created (ContentLength) since HeadObject may omit StorageClass for STANDARD.",
@@ -14811,6 +14963,7 @@
     },
     {
       "id": "object-crud-0191",
+      "group": "object-crud",
       "kind": "api",
       "title": "Zero-length PutObject creates a retrievable empty object",
       "tags": [
@@ -14869,6 +15022,7 @@
     },
     {
       "id": "object-crud-0193",
+      "group": "object-crud",
       "kind": "api",
       "title": "Explicit Content-Type on PutObject is preserved and returned by HeadObject",
       "description": "Eight common Content-Type values set explicitly on PutObject must be returned unchanged by HeadObject.",
@@ -15092,6 +15246,7 @@
     },
     {
       "id": "object-crud-0194",
+      "group": "object-crud",
       "kind": "api",
       "title": "PutObject preserves Content-Type together with Content-Encoding",
       "tags": [
@@ -15139,6 +15294,7 @@
     },
     {
       "id": "object-crud-0196",
+      "group": "object-crud",
       "kind": "api",
       "title": "Batch DeleteObjects removes a nested prefix completely with no orphans",
       "description": "Recursive delete of a nested prefix via a single DeleteObjects batch. Object count reduced from the source's 1000 to a representative sample.",
@@ -15240,6 +15396,7 @@
     },
     {
       "id": "object-crud-0197",
+      "group": "object-crud",
       "kind": "api",
       "title": "GetObject returns exact bytes for checksum verification; overwrite replaces content",
       "tags": [
@@ -15323,6 +15480,7 @@
     },
     {
       "id": "object-crud-0198",
+      "group": "object-crud",
       "kind": "api",
       "title": "Object ETag reflects content and changes on overwrite",
       "tags": [

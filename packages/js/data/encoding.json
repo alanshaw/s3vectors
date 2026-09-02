@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "encoding",
   "vectors": [
     {
       "id": "encoding-0001",
+      "group": "encoding",
       "kind": "api",
       "title": "Keys with special characters list correctly, read back their bodies and accept ACLs",
       "tags": [
@@ -435,6 +435,7 @@
     },
     {
       "id": "encoding-0002",
+      "group": "encoding",
       "kind": "api",
       "title": "Keys containing URL-encoding-like characters round-trip literally",
       "description": "Keys that look percent-encoded or contain '+', '?' and '#' must be stored and retrieved literally, not decoded.",
@@ -588,6 +589,7 @@
     },
     {
       "id": "encoding-0003",
+      "group": "encoding",
       "kind": "api",
       "title": "Path-traversal-like keys and Windows reserved names round-trip",
       "description": "Keys containing ../ or ..\\ sequences must be stored literally (no path normalization); Windows reserved device names are ordinary keys.",
@@ -763,6 +765,7 @@
     },
     {
       "id": "encoding-0004",
+      "group": "encoding",
       "kind": "api",
       "title": "Keys containing CR/LF and escape control characters round-trip",
       "description": "The original also tried a key containing a NUL (0x00) byte, accepting either success or InvalidArgument rejection; that case is omitted because the accept-or-reject disjunction is not expressible.",
@@ -828,6 +831,7 @@
     },
     {
       "id": "encoding-0005",
+      "group": "encoding",
       "kind": "api",
       "title": "Slash-only keys and a 1024-byte maximum-length key round-trip",
       "tags": [
@@ -936,6 +940,7 @@
     },
     {
       "id": "encoding-0006",
+      "group": "encoding",
       "kind": "api",
       "title": "Key longer than 1024 bytes is rejected",
       "description": "The original accepted KeyTooLong* or InvalidRequest; AWS returns KeyTooLongError.",
@@ -972,6 +977,7 @@
     },
     {
       "id": "encoding-0007",
+      "group": "encoding",
       "kind": "api",
       "title": "Unicode object key round-trip",
       "tags": [
@@ -1015,6 +1021,7 @@
     },
     {
       "id": "encoding-0008",
+      "group": "encoding",
       "kind": "api",
       "title": "Object key containing '+' is listable by literal '+' prefix and HEADable",
       "description": "The source test branches on an SDK capability flag for legacy '+'-as-space URL encoding; the correct S3 behavior (default branch) is that '+' in a key is a literal plus sign.",
@@ -1074,6 +1081,7 @@
     },
     {
       "id": "encoding-0009",
+      "group": "encoding",
       "kind": "api",
       "title": "Real-world object keys mixing paths, dates, '@', parentheses, colons, '#' and brackets round-trip",
       "description": "Listing order assertion relies on S3's guaranteed ascending UTF-8 binary key order.",
@@ -1260,6 +1268,7 @@
     },
     {
       "id": "encoding-0010",
+      "group": "encoding",
       "kind": "api",
       "title": "Path-like object keys (nested, leading/trailing/double slashes, directory markers) list correctly",
       "description": "Listing order assertion relies on S3's guaranteed ascending UTF-8 binary key order.",
@@ -1374,6 +1383,7 @@
     },
     {
       "id": "encoding-0011",
+      "group": "encoding",
       "kind": "api",
       "title": "Object keys with 24 common special characters can be created, listed and read back",
       "description": "Listing order assertion relies on S3's guaranteed ascending UTF-8 binary key order.",
@@ -2010,6 +2020,7 @@
     },
     {
       "id": "encoding-0012",
+      "group": "encoding",
       "kind": "api",
       "title": "Object keys with non-ASCII Unicode characters (CJK, accents, Cyrillic, emoji) list correctly",
       "description": "Listing order assertion relies on S3's guaranteed ascending UTF-8 binary key order.",
@@ -2138,6 +2149,7 @@
     },
     {
       "id": "encoding-0013",
+      "group": "encoding",
       "kind": "api",
       "title": "Object keys requiring URL encoding round-trip through put, get and list",
       "tags": [
@@ -2326,6 +2338,7 @@
     },
     {
       "id": "encoding-0014",
+      "group": "encoding",
       "kind": "api",
       "title": "Keys with URL-special ASCII characters round-trip through PutObject/GetObject",
       "description": "Space, plus, percent, question mark, hash, ampersand, equals and at-sign in object keys. The original accepted InvalidArgument rejection as an alternative outcome for lenient vendors; AWS S3 accepts all of these keys, so the vector asserts the round-trip.",
@@ -2523,6 +2536,7 @@
     },
     {
       "id": "encoding-0015",
+      "group": "encoding",
       "kind": "api",
       "title": "Path-separator variations in keys are stored as-is and listable by prefix",
       "description": "Double/triple slashes, leading slash, dot and dot-dot segments must not be normalized: each key appears verbatim in a prefix listing (prefixes are the first five characters of the key, as in the original test).",
@@ -2741,6 +2755,7 @@
     },
     {
       "id": "encoding-0016",
+      "group": "encoding",
       "kind": "api",
       "title": "A raw space and a percent-encoded space are distinct object keys",
       "description": "'test space.txt' and 'test%20space.txt' are two different objects. The original also tolerated normalization to a single form; AWS S3 stores both distinctly, so the listing asserts exactly the two keys.",
@@ -2804,6 +2819,7 @@
     },
     {
       "id": "encoding-0017",
+      "group": "encoding",
       "kind": "api",
       "title": "UTF-8 international keys round-trip through PutObject/GetObject",
       "description": "Accented Latin, Cyrillic, Chinese, Japanese and Korean keys. The original accepted InvalidArgument rejection as an alternative outcome; AWS S3 accepts any UTF-8 key, so the vector asserts the round-trip.",
@@ -2980,6 +2996,7 @@
     },
     {
       "id": "encoding-0018",
+      "group": "encoding",
       "kind": "api",
       "title": "Spaces and percent sequences in directory and file parts are accepted",
       "description": "PutObject with reserved characters at different path positions, then ListObjectsV2 with the directory part as Prefix and '/' Delimiter. The original recorded the listing outcome without failing on absence, so the converted steps assert only that both operations succeed.",
@@ -3102,6 +3119,7 @@
     },
     {
       "id": "encoding-0019",
+      "group": "encoding",
       "kind": "api",
       "title": "Query-string-like characters in keys are accepted and retrievable",
       "description": "Keys containing '?', '&', '=' and '#' sequences that resemble query strings or fragments must not be interpreted as such. The original accepted InvalidArgument rejection as an alternative outcome; AWS S3 accepts these keys.",
@@ -3199,6 +3217,7 @@
     },
     {
       "id": "encoding-0020",
+      "group": "encoding",
       "kind": "api",
       "title": "Object keys are case-sensitive",
       "description": "GetObject with the case-swapped form of each stored key must fail. The original accepted any error; AWS S3 returns 404 NoSuchKey since the case-swapped key does not exist.",
@@ -3305,6 +3324,7 @@
     },
     {
       "id": "encoding-0021",
+      "group": "encoding",
       "kind": "api",
       "title": "An 819-character key round-trips",
       "description": "A long key approaching URL length limits (within the 1024-byte S3 key limit). The original accepted KeyTooLong/RequestURITooLong as an alternative outcome; AWS S3 accepts keys up to 1024 bytes, so the vector asserts the round-trip.",
@@ -3348,6 +3368,7 @@
     },
     {
       "id": "encoding-0022",
+      "group": "encoding",
       "kind": "api",
       "title": "CreateMultipartUpload preserves keys with non-ASCII (Greek, Chinese) characters",
       "tags": [

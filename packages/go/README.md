@@ -1,7 +1,7 @@
 # s3vectors (Go)
 
 Language-independent [S3 API compatibility test vectors](https://github.com/cloud-portable/s3vectors),
-embedded and parsed, importable per feature area or all at once, plus the
+embedded and parsed, importable per feature group or all at once, plus the
 deterministic test-data generator. The module version identifies the corpus
 snapshot — the same version ships for JS, Python, Go and Rust.
 
@@ -20,8 +20,8 @@ import (
 // everything
 files, err := s3vectors.All()
 
-// a single area (lazy-parsed, cached — treat results as read-only)
-mp, err := s3vectors.Area("multipart")
+// a single group (lazy-parsed, cached — treat results as read-only)
+mp, err := s3vectors.Group("multipart")
 
 // deterministic payloads + the digest values ${data.<name>.<field>} resolve to
 v := &mp.Vectors[0]
@@ -29,7 +29,7 @@ part1, err := datagen.Generate(v.Data, "part1")        // []byte
 etag, err := datagen.Derived(v.Data, "big", "etag")    // "\"<md5hex>\""
 ```
 
-`s3vectors.Manifest()` reports the embedded corpus version, per-area counts and
+`s3vectors.Manifest()` reports the embedded corpus version, per-group counts and
 the schema checksum.
 
 ## Notes
@@ -40,7 +40,7 @@ the schema checksum.
 - Matcher-valued fields (`Expect.Response`, `Expect.Headers` values, step
   `Params` values, …) are `json.RawMessage`: their evaluation semantics belong
   to runners, not this module.
-- The `signing` area embeds the **published dummy credentials from the AWS SigV4
+- The `signing` group embeds the **published dummy credentials from the AWS SigV4
   test suite** (`AKIDEXAMPLE` / `wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY`) —
   public documentation constants, not secrets.
 - Stdlib-only; no dependencies.
