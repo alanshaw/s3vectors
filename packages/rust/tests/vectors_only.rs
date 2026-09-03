@@ -11,3 +11,12 @@ fn corpus_loads_without_datagen() {
     }
     assert_eq!(total, m.total);
 }
+
+/// Vector files carry `"$schema": "../schema/vector.schema.json"` — the schema
+/// must ship at that location relative to vectors/.
+#[test]
+fn shipped_schema_exists() {
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/schema/vector.schema.json");
+    let schema = std::fs::read_to_string(path).expect("shipped schema missing");
+    assert!(!schema.is_empty());
+}

@@ -2,11 +2,27 @@ package s3vectors
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"os"
 	"regexp"
 	"strings"
 	"testing"
 )
+
+// Vector files carry "$schema": "../schema/vector.schema.json" — the schema
+// must ship at that location relative to vectors/, matching the manifest hash.
+func TestShippedSchemaMatchesManifest(t *testing.T) {
+	raw, err := os.ReadFile("schema/vector.schema.json")
+	if err != nil {
+		t.Fatalf("shipped schema missing: %v", err)
+	}
+	sum := sha256.Sum256(raw)
+	if got := hex.EncodeToString(sum[:]); got != Manifest().SchemaSHA256 {
+		t.Errorf("schema sha256 %s != manifest %s", got, Manifest().SchemaSHA256)
+	}
+}
 
 func TestManifestAgreement(t *testing.T) {
 	m := Manifest()

@@ -14,6 +14,7 @@
     "datagen.js",
     "datagen.d.ts",
     "data",
+    "schema",
     "LICENSE.md"
   ],
   "scripts": {

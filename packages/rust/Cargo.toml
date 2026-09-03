@@ -8,7 +8,7 @@ license = "Apache-2.0 OR MIT"
 repository = "https://github.com/cloud-portable/s3vectors"
 keywords = ["s3", "test-vectors", "compatibility", "conformance", "sigv4"]
 categories = ["development-tools::testing"]
-include = ["src/**", "vectors/**", "README.md", "LICENSE.md"]
+include = ["src/**", "vectors/**", "schema/**", "README.md", "LICENSE.md"]
 
 [features]
 default = ["datagen"]
@@ -26,6 +26,7 @@ base64 = { version = "0.22", optional = true }
 [dev-dependencies]
 base64 = "0.22"
 serde_json = "1"
+sha2 = "0.10"
 
 # The corpus datagen test hashes ~2 GiB; unoptimized crypto makes it crawl.
 [profile.test]
