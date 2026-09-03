@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "conditional",
   "vectors": [
     {
       "id": "conditional-0001",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObject with If-Match ETag precondition against the current version on a versioned bucket",
       "tags": [
@@ -140,6 +140,7 @@
     },
     {
       "id": "conditional-0002",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObject with last-modified-time precondition against the current version on a versioned bucket",
       "tags": [
@@ -228,6 +229,7 @@
     },
     {
       "id": "conditional-0003",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObject with size precondition against the current version on a versioned bucket",
       "tags": [
@@ -306,6 +308,7 @@
     },
     {
       "id": "conditional-0004",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObject with If-Match ETag precondition on an unversioned bucket",
       "tags": [
@@ -409,6 +412,7 @@
     },
     {
       "id": "conditional-0005",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObject with last-modified-time precondition on an unversioned bucket",
       "tags": [
@@ -489,6 +493,7 @@
     },
     {
       "id": "conditional-0006",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObject with size precondition on an unversioned bucket",
       "tags": [
@@ -557,6 +562,7 @@
     },
     {
       "id": "conditional-0007",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObject with If-Match ETag precondition on a specific version",
       "tags": [
@@ -672,6 +678,7 @@
     },
     {
       "id": "conditional-0008",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObject with last-modified-time precondition on a specific version",
       "tags": [
@@ -768,6 +775,7 @@
     },
     {
       "id": "conditional-0009",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObject with size precondition on a specific version",
       "tags": [
@@ -851,6 +859,7 @@
     },
     {
       "id": "conditional-0010",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObjects with per-key ETag precondition against the current version on a versioned bucket",
       "tags": [
@@ -963,6 +972,7 @@
     },
     {
       "id": "conditional-0011",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObjects with per-key last-modified-time precondition against the current version on a versioned bucket",
       "tags": [
@@ -1084,6 +1094,7 @@
     },
     {
       "id": "conditional-0012",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObjects with per-key ETag precondition on an unversioned bucket",
       "tags": [
@@ -1187,6 +1198,7 @@
     },
     {
       "id": "conditional-0013",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObjects with per-key last-modified-time precondition on an unversioned bucket",
       "tags": [
@@ -1299,6 +1311,7 @@
     },
     {
       "id": "conditional-0014",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObjects with per-key size precondition on an unversioned bucket",
       "tags": [
@@ -1399,6 +1412,7 @@
     },
     {
       "id": "conditional-0015",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObjects with per-key ETag precondition on a specific version",
       "tags": [
@@ -1511,6 +1525,7 @@
     },
     {
       "id": "conditional-0016",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObjects with per-key last-modified-time precondition on a specific noncurrent version",
       "tags": [
@@ -1641,6 +1656,7 @@
     },
     {
       "id": "conditional-0017",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject If-Match is evaluated against the current version on a versioned bucket",
       "tags": [
@@ -1767,6 +1783,7 @@
     },
     {
       "id": "conditional-0018",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject If-None-Match is evaluated against the current version on a versioned bucket",
       "tags": [
@@ -1880,6 +1897,7 @@
     },
     {
       "id": "conditional-0019",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject preconditions treat a delete marker as a nonexistent current object",
       "tags": [
@@ -2006,6 +2024,7 @@
     },
     {
       "id": "conditional-0020",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject If-Match/If-None-Match precondition matrix on an unversioned bucket",
       "tags": [
@@ -2181,6 +2200,7 @@
     },
     {
       "id": "conditional-0021",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with non-matching If-Match ETag fails with PreconditionFailed and leaves object intact",
       "tags": [
@@ -2249,6 +2269,7 @@
     },
     {
       "id": "conditional-0022",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with matching If-Match ETag overwrites the object",
       "tags": [
@@ -2313,6 +2334,7 @@
     },
     {
       "id": "conditional-0023",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with If-Match: * on a nonexistent key fails with NoSuchKey and creates nothing",
       "tags": [
@@ -2363,6 +2385,7 @@
     },
     {
       "id": "conditional-0024",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with If-Match: * overwrites an existing object",
       "tags": [
@@ -2427,6 +2450,7 @@
     },
     {
       "id": "conditional-0025",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with matching If-None-Match ETag fails with PreconditionFailed and leaves object intact",
       "tags": [
@@ -2496,6 +2520,7 @@
     },
     {
       "id": "conditional-0026",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with non-matching If-None-Match ETag overwrites the object",
       "tags": [
@@ -2560,6 +2585,7 @@
     },
     {
       "id": "conditional-0027",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with If-None-Match: * creates a nonexistent key",
       "tags": [
@@ -2604,6 +2630,7 @@
     },
     {
       "id": "conditional-0028",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with If-None-Match: * on an existing key fails with PreconditionFailed and leaves object intact",
       "tags": [
@@ -2673,6 +2700,7 @@
     },
     {
       "id": "conditional-0029",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObjects Size precondition on current version: mismatch errors, match creates delete marker, then delete marker blocks further match",
       "tags": [
@@ -2781,6 +2809,7 @@
     },
     {
       "id": "conditional-0030",
+      "group": "conditional",
       "kind": "api",
       "title": "DeleteObjects by VersionId with Size precondition: mismatch errors, match deletes the version, repeat on gone version returns 200",
       "tags": [
@@ -2885,6 +2914,7 @@
     },
     {
       "id": "conditional-0031",
+      "group": "conditional",
       "kind": "api",
       "title": "Conditional DeleteObject with matching IfMatch ETag succeeds with 204",
       "tags": [
@@ -2926,6 +2956,7 @@
     },
     {
       "id": "conditional-0032",
+      "group": "conditional",
       "kind": "api",
       "title": "Conditional DeleteObject with a wrong IfMatch ETag returns PreconditionFailed",
       "description": "Original tolerated implementations that ignore IfMatch on DeleteObject (MinIO) or return InvalidArgument; AWS enforces the precondition.",
@@ -2970,6 +3001,7 @@
     },
     {
       "id": "conditional-0033",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with a non-matching If-Match returns 412 and leaves the object unchanged",
       "tags": [
@@ -3027,6 +3059,7 @@
     },
     {
       "id": "conditional-0034",
+      "group": "conditional",
       "kind": "api",
       "title": "GetObject with If-Unmodified-Since in the past returns 412 PreconditionFailed",
       "description": "The source used utcnow() minus one day; a fixed date guaranteed to precede any object creation preserves the semantics.",
@@ -3070,6 +3103,7 @@
     },
     {
       "id": "conditional-0035",
+      "group": "conditional",
       "kind": "api",
       "title": "GetObject with non-matching If-Match ETag returns PreconditionFailed",
       "tags": [
@@ -3113,6 +3147,7 @@
     },
     {
       "id": "conditional-0036",
+      "group": "conditional",
       "kind": "api",
       "title": "GetObject with matching If-Match ETag returns the object",
       "tags": [
@@ -3154,6 +3189,7 @@
     },
     {
       "id": "conditional-0037",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with If-None-Match on a non-existent key succeeds",
       "description": "The original test also sends If-Match on a non-existent key but accepts either success (AWS) or PreconditionFailed/NoSuchKey (MinIO); that either-or expectation is not expressible and is omitted here.",
@@ -3193,6 +3229,7 @@
     },
     {
       "id": "conditional-0038",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with matching If-Match plus matching If-None-Match returns PreconditionFailed",
       "description": "When both conditional headers are sent and both match the current ETag, the If-None-Match condition fails and the write is rejected.",
@@ -3238,6 +3275,7 @@
     },
     {
       "id": "conditional-0039",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with non-matching If-Match returns PreconditionFailed",
       "tags": [
@@ -3281,6 +3319,7 @@
     },
     {
       "id": "conditional-0040",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with If-Match matching the current ETag succeeds and returns a new ETag",
       "tags": [
@@ -3327,6 +3366,7 @@
     },
     {
       "id": "conditional-0041",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with If-None-Match matching the current ETag returns PreconditionFailed",
       "tags": [
@@ -3370,6 +3410,7 @@
     },
     {
       "id": "conditional-0042",
+      "group": "conditional",
       "kind": "api",
       "title": "PutObject with non-matching If-None-Match on an existing object succeeds",
       "tags": [
@@ -3416,6 +3457,7 @@
     },
     {
       "id": "conditional-0043",
+      "group": "conditional",
       "kind": "api",
       "title": "CompleteMultipartUpload with non-matching If-Match returns PreconditionFailed",
       "tags": [
@@ -3506,6 +3548,7 @@
     },
     {
       "id": "conditional-0044",
+      "group": "conditional",
       "kind": "api",
       "title": "CompleteMultipartUpload with If-Match matching the existing object's ETag succeeds",
       "tags": [
@@ -3598,6 +3641,7 @@
     },
     {
       "id": "conditional-0045",
+      "group": "conditional",
       "kind": "api",
       "title": "CopyObject with a non-matching CopySourceIfMatch returns 412 PreconditionFailed",
       "tags": [
@@ -3653,6 +3697,7 @@
     },
     {
       "id": "conditional-0046",
+      "group": "conditional",
       "kind": "api",
       "title": "CopyObject with a matching CopySourceIfMatch copies the object",
       "tags": [
@@ -3726,6 +3771,7 @@
     },
     {
       "id": "conditional-0047",
+      "group": "conditional",
       "kind": "api",
       "title": "CopyObject with a past CopySourceIfModifiedSince copies the object",
       "description": "The source used now-1h; a fixed past date guaranteed to precede the object's LastModified preserves the semantics.",
@@ -3786,6 +3832,7 @@
     },
     {
       "id": "conditional-0048",
+      "group": "conditional",
       "kind": "api",
       "title": "CopyObject with a matching CopySourceIfNoneMatch returns 412 PreconditionFailed",
       "tags": [
@@ -3841,6 +3888,7 @@
     },
     {
       "id": "conditional-0049",
+      "group": "conditional",
       "kind": "api",
       "title": "CopyObject with a past CopySourceIfUnmodifiedSince returns 412 PreconditionFailed",
       "description": "The source used now-1h; a fixed past date guaranteed to precede the object's LastModified preserves the semantics.",
@@ -3897,6 +3945,7 @@
     },
     {
       "id": "conditional-0052",
+      "group": "conditional",
       "kind": "api",
       "title": "GetObject with a future If-Modified-Since returns 304 Not Modified",
       "description": "The source used now+1h; a fixed far-future date guaranteed to postdate the object's LastModified preserves the semantics.",
@@ -3949,6 +3998,7 @@
     },
     {
       "id": "conditional-0053",
+      "group": "conditional",
       "kind": "api",
       "title": "GetObject with a matching If-None-Match returns 304 Not Modified",
       "description": "The source accepted error code NotModified or the bare '304'.",
@@ -4001,6 +4051,7 @@
     },
     {
       "id": "conditional-0054",
+      "group": "conditional",
       "kind": "api",
       "title": "HeadObject with a non-matching If-Match returns 412 PreconditionFailed",
       "tags": [
@@ -4054,6 +4105,7 @@
     },
     {
       "id": "conditional-0055",
+      "group": "conditional",
       "kind": "api",
       "title": "HeadObject with a matching If-Match returns the object metadata",
       "tags": [
@@ -4108,6 +4160,7 @@
     },
     {
       "id": "conditional-0056",
+      "group": "conditional",
       "kind": "api",
       "title": "HeadObject with a future If-Modified-Since returns 304 Not Modified",
       "description": "The source used now+1h; a fixed far-future date guaranteed to postdate the object's LastModified preserves the semantics.",
@@ -4160,6 +4213,7 @@
     },
     {
       "id": "conditional-0057",
+      "group": "conditional",
       "kind": "api",
       "title": "HeadObject with a matching If-None-Match returns 304 Not Modified",
       "description": "The source accepted error code NotModified or the bare '304'.",
@@ -4212,6 +4266,7 @@
     },
     {
       "id": "conditional-0058",
+      "group": "conditional",
       "kind": "api",
       "title": "HeadObject with a future If-Unmodified-Since succeeds",
       "description": "The source used now+1h; a fixed far-future date guaranteed to postdate the object's LastModified preserves the semantics.",
@@ -4267,6 +4322,7 @@
     },
     {
       "id": "conditional-0059",
+      "group": "conditional",
       "kind": "api",
       "title": "Conditional DeleteObject with If-Match rejects stale ETag, succeeds on match",
       "tags": [

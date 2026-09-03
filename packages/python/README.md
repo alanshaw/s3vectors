@@ -1,7 +1,7 @@
 # cloud-portable-s3vectors
 
 Language-independent [S3 API compatibility test vectors](https://github.com/cloud-portable/s3vectors),
-parsed and importable per feature area, plus the deterministic test-data
+parsed and importable per feature group, plus the deterministic test-data
 generator. The package version identifies the corpus snapshot — the same
 version ships for JS, Python, Go and Rust.
 
@@ -19,7 +19,7 @@ for file in s3v.load_all():
     for vector in file["vectors"]:
         ...
 
-# a single area (lazy-loaded, cached — treat results as read-only)
+# a single group (lazy-loaded, cached — treat results as read-only)
 mp = s3v.load("multipart")
 
 # deterministic payloads + the digest values ${data.<name>.<field>} resolve to
@@ -30,7 +30,7 @@ part1 = datagen.generate(v["data"], "part1")       # bytes
 etag = datagen.derived(v["data"], "big", "etag")   # '"<md5hex>"'
 ```
 
-`s3v.manifest()` reports the corpus version, per-area counts and the schema
+`s3v.manifest()` reports the corpus version, per-group counts and the schema
 checksum. The package is fully typed (`py.typed`, TypedDicts).
 
 ## Notes
@@ -41,7 +41,7 @@ checksum. The package is fully typed (`py.typed`, TypedDicts).
 - Zero dependencies. CRC-32C and CRC-64/NVME use pure-Python tables, which are
   slow on multi-megabyte datasets — fine for test fixtures, but don't put them
   in a hot loop.
-- The `signing` area embeds the **published dummy credentials from the AWS SigV4
+- The `signing` group embeds the **published dummy credentials from the AWS SigV4
   test suite** (`AKIDEXAMPLE` / `wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY`) —
   public documentation constants, not secrets.
 

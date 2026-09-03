@@ -109,33 +109,35 @@ fn shipped_schema_matches_manifest() {
 fn manifest_agreement() {
     let m = s3v::manifest();
     assert!(!m.version.is_empty());
-    assert_eq!(m.areas.len(), s3v::areas().count());
+    assert_eq!(m.groups.len(), s3v::groups().count());
     let mut total = 0;
-    for entry in &m.areas {
-        let f = s3v::area(&entry.area).expect("manifest area loads");
-        assert_eq!(f.area, entry.area);
-        assert_eq!(f.vectors.len(), entry.count, "{}", entry.area);
+    for entry in &m.groups {
+        let f = s3v::group(&entry.group).expect("manifest group loads");
+        for v in &f.vectors {
+            assert_eq!(v.group(), entry.group, "{}", v.id());
+        }
+        assert_eq!(f.vectors.len(), entry.count, "{}", entry.group);
         total += f.vectors.len();
     }
     assert_eq!(total, m.total);
-    assert!(s3v::area("no-such-area").is_none());
+    assert!(s3v::group("no-such-group").is_none());
 }
 
 #[test]
-fn root_equals_union_of_areas() {
-    let names: Vec<&str> = s3v::areas().collect();
+fn root_equals_union_of_groups() {
+    let names: Vec<&str> = s3v::groups().collect();
     let files: Vec<_> = s3v::all().collect();
     assert_eq!(files.len(), names.len());
     let mut ids = BTreeSet::new();
     for (file, name) in files.iter().zip(&names) {
-        assert_eq!(&file.area, name);
         for v in &file.vectors {
+            assert_eq!(&v.group(), name, "{}", v.id());
             assert!(ids.insert(v.id().to_string()), "duplicate id {}", v.id());
             assert!(
-                v.id().starts_with(&format!("{}-", file.area)),
+                v.id().starts_with(&format!("{}-", v.group())),
                 "{} not prefixed with {}",
                 v.id(),
-                file.area
+                v.group()
             );
         }
     }

@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "checksums",
   "vectors": [
     {
       "id": "checksums-0001",
+      "group": "checksums",
       "kind": "api",
       "title": "GetObjectAttributes on a SHA256-checksummed single-part object reports size, ETag, storage class and checksum with no ObjectParts",
       "tags": [
@@ -81,6 +81,7 @@
     },
     {
       "id": "checksums-0002",
+      "group": "checksums",
       "kind": "api",
       "title": "GetObjectAttributes on a SHA256-checksummed 13-part multipart object reports size, composite checksum and per-part checksums",
       "tags": [
@@ -624,6 +625,7 @@
     },
     {
       "id": "checksums-0003",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with CRC64NVME checksum: echoed on put, hidden on plain HEAD, shown with ChecksumMode, bad digest rejected",
       "tags": [
@@ -721,6 +723,7 @@
     },
     {
       "id": "checksums-0004",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with SHA256 checksum: echoed on put, hidden on plain HEAD, shown with ChecksumMode, bad digest rejected",
       "tags": [
@@ -818,6 +821,7 @@
     },
     {
       "id": "checksums-0005",
+      "group": "checksums",
       "kind": "api",
       "title": "Object uploaded with ChecksumAlgorithm SHA256 is retrievable with intact body",
       "tags": [
@@ -862,6 +866,7 @@
     },
     {
       "id": "checksums-0009",
+      "group": "checksums",
       "kind": "api",
       "title": "HeadObject with ChecksumMode=ENABLED returns the CRC32 checksum from PutObject",
       "tags": [
@@ -912,6 +917,7 @@
     },
     {
       "id": "checksums-0010",
+      "group": "checksums",
       "kind": "api",
       "title": "HeadObject with ChecksumMode=ENABLED returns the SHA1 checksum from PutObject",
       "tags": [
@@ -972,6 +978,7 @@
     },
     {
       "id": "checksums-0011",
+      "group": "checksums",
       "kind": "api",
       "title": "HeadObject with ChecksumMode=ENABLED returns the SHA256 checksum from PutObject",
       "tags": [
@@ -1032,6 +1039,7 @@
     },
     {
       "id": "checksums-0012",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with an incorrect ChecksumSHA256 returns BadDigest",
       "description": "The supplied checksum is a valid base64 32-byte value that does not match the body. The original test accepts several codes (InvalidRequest, BadDigest, XAmzContentSHA256Mismatch, XAmzContentChecksumMismatch); AWS returns BadDigest.",
@@ -1070,6 +1078,7 @@
     },
     {
       "id": "checksums-0013",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with a correct ChecksumCRC32 succeeds and echoes the checksum",
       "tags": [
@@ -1117,6 +1126,7 @@
     },
     {
       "id": "checksums-0014",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with a correct ChecksumSHA256 succeeds and echoes the checksum",
       "tags": [
@@ -1164,6 +1174,7 @@
     },
     {
       "id": "checksums-0015",
+      "group": "checksums",
       "kind": "api",
       "title": "UploadPart with ChecksumAlgorithm CRC32 but a CRC32C checksum header is rejected",
       "description": "The multipart upload and the part both declare CRC32, but the part carries an x-amz-checksum-crc32c value instead. The source test accepted InvalidRequest or InvalidArgument; both are HTTP 400.",
@@ -1216,6 +1227,7 @@
     },
     {
       "id": "checksums-0016",
+      "group": "checksums",
       "kind": "api",
       "title": "UploadPart declaring a checksum algorithm different from the multipart upload's is rejected",
       "description": "The multipart upload was initialized with CRC32 but the part declares ChecksumAlgorithm SHA1. The source test accepted InvalidRequest or InvalidArgument; both are HTTP 400.",
@@ -1267,6 +1279,7 @@
     },
     {
       "id": "checksums-0017",
+      "group": "checksums",
       "kind": "api",
       "title": "UploadPart with a checksum value of a different algorithm than the upload's is rejected",
       "description": "The multipart upload was initialized with CRC32 but the part carries an x-amz-checksum-sha256 value. The source test accepted InvalidRequest or InvalidArgument; both are HTTP 400.",
@@ -1318,6 +1331,7 @@
     },
     {
       "id": "checksums-0018",
+      "group": "checksums",
       "kind": "api",
       "title": "UploadPartCopy succeeds when source and multipart upload use different checksum algorithms",
       "description": "The source object carries a SHA1 checksum while the multipart upload declares SHA256; the copy must succeed and return a CopyPartResult with an ETag. The source test skipped on InvalidArgument/NotImplemented (MinIO tolerance); on AWS the copy succeeds.",
@@ -1396,6 +1410,7 @@
     },
     {
       "id": "checksums-0019",
+      "group": "checksums",
       "kind": "api",
       "title": "UploadPartCopy from a CRC32-checksummed source into a CRC32 multipart upload succeeds",
       "description": "Source object and multipart upload use the same checksum algorithm; the copy must succeed and return a CopyPartResult with an ETag. The source test skipped on NotImplemented/InvalidArgument (MinIO tolerance); on AWS the copy succeeds.",
@@ -1474,6 +1489,7 @@
     },
     {
       "id": "checksums-0020",
+      "group": "checksums",
       "kind": "api",
       "title": "UploadPartCopy into a checksum-less multipart upload returns no checksums in CopyPartResult",
       "description": "The source object was uploaded with a SHA1 checksum but the multipart upload declares no checksum algorithm, so the CopyPartResult must not contain any checksum members.",
@@ -1560,6 +1576,7 @@
     },
     {
       "id": "checksums-0021",
+      "group": "checksums",
       "kind": "api",
       "title": "UploadPart with two different checksum headers is rejected",
       "description": "The part carries both an x-amz-checksum-sha1 and an x-amz-checksum-crc32c value. The source test accepted InvalidRequest or InvalidArgument; both are HTTP 400.",
@@ -1612,6 +1629,7 @@
     },
     {
       "id": "checksums-0022",
+      "group": "checksums",
       "kind": "api",
       "title": "UploadPart with ChecksumAlgorithm CRC32 succeeds and returns an ETag",
       "tags": [
@@ -1666,6 +1684,7 @@
     },
     {
       "id": "checksums-0023",
+      "group": "checksums",
       "kind": "api",
       "title": "UploadPart with ChecksumAlgorithm SHA1 succeeds and returns an ETag",
       "tags": [
@@ -1720,6 +1739,7 @@
     },
     {
       "id": "checksums-0024",
+      "group": "checksums",
       "kind": "api",
       "title": "UploadPart with ChecksumAlgorithm SHA256 succeeds and returns an ETag",
       "tags": [
@@ -1774,6 +1794,7 @@
     },
     {
       "id": "checksums-0025",
+      "group": "checksums",
       "kind": "api",
       "title": "GetObjectAttributes checksum matches PutObject checksum (CRC32)",
       "description": "One of four per-algorithm cases from the source loop.",
@@ -1838,6 +1859,7 @@
     },
     {
       "id": "checksums-0026",
+      "group": "checksums",
       "kind": "api",
       "title": "GetObjectAttributes checksum matches PutObject checksum (CRC32C)",
       "description": "One of four per-algorithm cases from the source loop.",
@@ -1902,6 +1924,7 @@
     },
     {
       "id": "checksums-0027",
+      "group": "checksums",
       "kind": "api",
       "title": "GetObjectAttributes checksum matches PutObject checksum (SHA1)",
       "description": "One of four per-algorithm cases from the source loop.",
@@ -1966,6 +1989,7 @@
     },
     {
       "id": "checksums-0030",
+      "group": "checksums",
       "kind": "api",
       "title": "ListObjectsV2 lists all objects uploaded with checksum algorithms",
       "description": "Uploads four objects with CRC32/CRC32C/SHA1/SHA256 checksum algorithms and lists the bucket. The source test's per-entry ChecksumAlgorithm shape check was conditional on the field being present and is not asserted here.",
@@ -2073,6 +2097,7 @@
     },
     {
       "id": "checksums-0031",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject of an empty body with ChecksumAlgorithm CRC32 returns a CRC32 checksum",
       "description": "One of four per-algorithm cases from the source loop; this iteration's body size is 200 * 0 = 0 bytes.",
@@ -2112,6 +2137,7 @@
     },
     {
       "id": "checksums-0032",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with ChecksumAlgorithm CRC32C returns a CRC32C checksum",
       "description": "One of four per-algorithm cases from the source loop.",
@@ -2161,6 +2187,7 @@
     },
     {
       "id": "checksums-0033",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with ChecksumAlgorithm SHA1 returns a SHA1 checksum",
       "description": "One of four per-algorithm cases from the source loop.",
@@ -2210,6 +2237,7 @@
     },
     {
       "id": "checksums-0034",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with ChecksumAlgorithm SHA256 returns a SHA256 checksum (600-byte body)",
       "description": "One of four per-algorithm cases from the source loop.",
@@ -2259,6 +2287,7 @@
     },
     {
       "id": "checksums-0035",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with ChecksumAlgorithm CRC32 returns a CRC32 checksum",
       "description": "The source test also asserted ChecksumType == FULL_OBJECT only when the field was present; that conditional check is omitted.",
@@ -2308,6 +2337,7 @@
     },
     {
       "id": "checksums-0037",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with an incorrect client-provided CRC32 checksum is rejected",
       "description": "AWS returns 400 BadDigest for an x-amz-checksum-crc32 mismatch. The source test also accepted InvalidRequest, InvalidDigest and XAmzContentChecksumMismatch from other implementations.",
@@ -2355,6 +2385,7 @@
     },
     {
       "id": "checksums-0038",
+      "group": "checksums",
       "kind": "api",
       "title": "PutObject with a correct client-provided CRC32 checksum succeeds and echoes it",
       "tags": [
@@ -2401,6 +2432,7 @@
     },
     {
       "id": "checksums-0039",
+      "group": "checksums",
       "kind": "api",
       "title": "Multipart upload with CRC32 part checksums completes successfully",
       "tags": [
@@ -2510,6 +2542,7 @@
     },
     {
       "id": "checksums-0040",
+      "group": "checksums",
       "kind": "api",
       "title": "Multipart upload with SHA256 part checksums completes successfully",
       "tags": [
@@ -2619,6 +2652,7 @@
     },
     {
       "id": "checksums-0041",
+      "group": "checksums",
       "kind": "api",
       "title": "CopyObject across buckets preserves the source SHA256 checksum",
       "tags": [
@@ -2693,6 +2727,7 @@
     },
     {
       "id": "checksums-0042",
+      "group": "checksums",
       "kind": "api",
       "title": "CopyObject with MetadataDirective=COPY preserves the source checksum",
       "tags": [
@@ -2754,6 +2789,7 @@
     },
     {
       "id": "checksums-0044",
+      "group": "checksums",
       "kind": "api",
       "title": "CopyObject with ChecksumAlgorithm=CRC32 computes a CRC32 checksum for the destination",
       "tags": [
@@ -2811,6 +2847,7 @@
     },
     {
       "id": "checksums-0045",
+      "group": "checksums",
       "kind": "api",
       "title": "CopyObject with ChecksumAlgorithm=SHA256 computes a checksum for the destination",
       "description": "Source object has no checksum; copying with ChecksumAlgorithm=SHA256 returns the computed SHA256 in CopyObjectResult.",
@@ -2878,6 +2915,7 @@
     },
     {
       "id": "checksums-0046",
+      "group": "checksums",
       "kind": "api",
       "title": "CopyObject with ChecksumAlgorithm=SHA1 computes a SHA1 checksum",
       "tags": [
@@ -2935,6 +2973,7 @@
     },
     {
       "id": "checksums-0047",
+      "group": "checksums",
       "kind": "api",
       "title": "CopyObject with ChecksumAlgorithm=SHA256 computes a SHA256 checksum",
       "tags": [
@@ -2992,6 +3031,7 @@
     },
     {
       "id": "checksums-0048",
+      "group": "checksums",
       "kind": "api",
       "title": "CopyObject preserves the source object's existing SHA256 checksum",
       "tags": [
@@ -3061,6 +3101,7 @@
     },
     {
       "id": "checksums-0049",
+      "group": "checksums",
       "kind": "api",
       "title": "CopyObject with ChecksumAlgorithm=SHA256 replaces the source's CRC32 checksum",
       "tags": [
@@ -3131,6 +3172,7 @@
     },
     {
       "id": "checksums-0050",
+      "group": "checksums",
       "kind": "api",
       "title": "CopyObject onto itself with MetadataDirective=REPLACE adds a SHA256 checksum",
       "tags": [
@@ -3198,6 +3240,7 @@
     },
     {
       "id": "checksums-0051",
+      "group": "checksums",
       "kind": "api",
       "title": "CreateMultipartUpload with ChecksumAlgorithm CRC32 echoes the algorithm",
       "tags": [

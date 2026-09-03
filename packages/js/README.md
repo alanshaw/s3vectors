@@ -1,7 +1,7 @@
 # @cloud-portable/s3vectors
 
 Language-independent [S3 API compatibility test vectors](https://github.com/cloud-portable/s3vectors),
-parsed and importable per feature area, plus the deterministic test-data generator.
+parsed and importable per feature group, plus the deterministic test-data generator.
 The package version identifies the corpus snapshot — the same version number ships
 for JS, Python, Go and Rust.
 
@@ -13,16 +13,16 @@ npm install @cloud-portable/s3vectors
 
 ```js
 // everything
-import { all, load, areas, manifest } from '@cloud-portable/s3vectors'
+import { all, load, groups, manifest } from '@cloud-portable/s3vectors'
 for (const file of all()) {
   for (const vector of file.vectors) { /* ... */ }
 }
 
-// a single area (lazy-loaded, cached)
+// a single group (lazy-loaded, cached)
 const multipart = load('multipart')
 
 // or the raw JSON directly
-import signing from '@cloud-portable/s3vectors/areas/signing.json' with { type: 'json' }
+import signing from '@cloud-portable/s3vectors/groups/signing.json' with { type: 'json' }
 ```
 
 Vectors that need large payloads declare deterministic datasets instead of inlining
@@ -46,7 +46,7 @@ TypeScript types for the full vector model are included.
   runner-outcome rules — live in the
   [repository README](https://github.com/cloud-portable/s3vectors#readme). This
   package intentionally does not restate them.
-- The `signing` area embeds the **published dummy credentials from the AWS SigV4
+- The `signing` group embeds the **published dummy credentials from the AWS SigV4
   test suite** (`AKIDEXAMPLE` / `wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY`). They
   are public documentation constants, not secrets — allowlist them in secret
   scanners.

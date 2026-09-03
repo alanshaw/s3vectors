@@ -16,7 +16,7 @@ it). Emit **one `<testcase>` per vector** using this mapping:
 | Vectors concept | JUnit XML |
 |---|---|
 | vector `id` | `<testcase name="multipart-0007" ...>` |
-| area | `classname="multipart"` — per-area grouping in every JUnit UI for free |
+| vector `group` | `classname="multipart"` — per-group grouping in every JUnit UI for free |
 | `pass` | testcase with no child element |
 | `fail` | `<failure message="step 2: expected 404 NoSuchKey, got 200"/>` |
 | `blocked` | `<skipped message="blocked: prerequisite bucket(versioning) failed"/>` |

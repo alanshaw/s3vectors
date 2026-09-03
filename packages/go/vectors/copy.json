@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "copy",
   "vectors": [
     {
       "id": "copy-0001",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with non-matching x-amz-copy-source-if-match returns PreconditionFailed",
       "tags": [
@@ -49,6 +49,7 @@
     },
     {
       "id": "copy-0002",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with matching x-amz-copy-source-if-match succeeds",
       "tags": [
@@ -101,6 +102,7 @@
     },
     {
       "id": "copy-0003",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with non-matching x-amz-copy-source-if-none-match succeeds",
       "tags": [
@@ -153,6 +155,7 @@
     },
     {
       "id": "copy-0004",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with matching x-amz-copy-source-if-none-match returns PreconditionFailed",
       "tags": [
@@ -198,6 +201,7 @@
     },
     {
       "id": "copy-0005",
+      "group": "copy",
       "kind": "api",
       "title": "Copy a 16 MiB object within a bucket",
       "tags": [
@@ -260,6 +264,7 @@
     },
     {
       "id": "copy-0006",
+      "group": "copy",
       "kind": "api",
       "title": "Copy from a non-existent source bucket returns 404",
       "tags": [
@@ -294,6 +299,7 @@
     },
     {
       "id": "copy-0007",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject applies a canned public-read ACL to the destination",
       "tags": [
@@ -374,6 +380,7 @@
     },
     {
       "id": "copy-0008",
+      "group": "copy",
       "kind": "api",
       "title": "Copy an object to a different bucket",
       "tags": [
@@ -430,6 +437,7 @@
     },
     {
       "id": "copy-0010",
+      "group": "copy",
       "kind": "api",
       "title": "Copy from another user's private object into own bucket is denied",
       "tags": [
@@ -487,6 +495,7 @@
     },
     {
       "id": "copy-0011",
+      "group": "copy",
       "kind": "api",
       "title": "Grantee with FULL_CONTROL on object and bucket can copy within the owner's bucket",
       "tags": [
@@ -613,6 +622,7 @@
     },
     {
       "id": "copy-0012",
+      "group": "copy",
       "kind": "api",
       "title": "Copy with REPLACE directive overwrites metadata and content type (3-byte object)",
       "tags": [
@@ -686,6 +696,7 @@
     },
     {
       "id": "copy-0014",
+      "group": "copy",
       "kind": "api",
       "title": "Copy retains metadata and content type (3-byte object)",
       "tags": [
@@ -750,6 +761,7 @@
     },
     {
       "id": "copy-0017",
+      "group": "copy",
       "kind": "api",
       "title": "Copy an object onto itself without changes returns InvalidRequest",
       "tags": [
@@ -794,6 +806,7 @@
     },
     {
       "id": "copy-0018",
+      "group": "copy",
       "kind": "api",
       "title": "Copy an object onto itself with the REPLACE metadata directive",
       "tags": [
@@ -852,6 +865,7 @@
     },
     {
       "id": "copy-0019",
+      "group": "copy",
       "kind": "api",
       "title": "Copy preserves the source object's Content-Type",
       "tags": [
@@ -907,6 +921,7 @@
     },
     {
       "id": "copy-0020",
+      "group": "copy",
       "kind": "api",
       "title": "Copy specific versions across versioned and non-versioned buckets",
       "tags": [
@@ -1088,6 +1103,7 @@
     },
     {
       "id": "copy-0021",
+      "group": "copy",
       "kind": "api",
       "title": "Copy a specific version of an object whose key needs URL encoding",
       "tags": [
@@ -1147,6 +1163,7 @@
     },
     {
       "id": "copy-0022",
+      "group": "copy",
       "kind": "api",
       "title": "Copy versions of a multipart object across versioned and non-versioned buckets, retaining body, metadata and content type",
       "tags": [
@@ -1562,6 +1579,7 @@
     },
     {
       "id": "copy-0023",
+      "group": "copy",
       "kind": "api",
       "title": "Copy a zero-length object",
       "tags": [
@@ -1624,6 +1642,7 @@
     },
     {
       "id": "copy-0024",
+      "group": "copy",
       "kind": "api",
       "title": "Checksums are preserved across overwrite and server-side copy",
       "description": "Reduced to the firm assertions of the source test: STANDARD upload ETag equals MD5, overwrite keeps content identical, and a server-side copy has identical content. Vendor-tolerant storage-class transition loops are omitted.",
@@ -1748,6 +1767,7 @@
     },
     {
       "id": "copy-0025",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject to a new key within the same bucket succeeds",
       "tags": [
@@ -1786,6 +1806,7 @@
     },
     {
       "id": "copy-0028",
+      "group": "copy",
       "kind": "api",
       "title": "CopySource with a leading slash is accepted",
       "tags": [
@@ -1857,6 +1878,7 @@
     },
     {
       "id": "copy-0029",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject onto itself with an invalid MetadataDirective is rejected",
       "description": "Original test accepts InvalidArgument or InvalidRequest; both are HTTP 400, so only the status is asserted.",
@@ -1901,6 +1923,7 @@
     },
     {
       "id": "copy-0030",
+      "group": "copy",
       "kind": "api",
       "title": "CopySource without a bucket/key slash separator is rejected",
       "description": "Original test accepts InvalidArgument, InvalidRequest, NoSuchKey or NoSuchBucket; AWS returns 400 InvalidArgument for a copy source lacking a slash, which is asserted here.",
@@ -1973,6 +1996,7 @@
     },
     {
       "id": "copy-0031",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with an invalid TaggingDirective is rejected",
       "description": "Original test accepts InvalidArgument or InvalidRequest; both are HTTP 400, so only the status is asserted.",
@@ -2018,6 +2042,7 @@
     },
     {
       "id": "copy-0032",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with MetadataDirective=COPY preserves metadata and Content-Type",
       "tags": [
@@ -2080,6 +2105,7 @@
     },
     {
       "id": "copy-0033",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with MetadataDirective=REPLACE applies new metadata and Content-Type",
       "tags": [
@@ -2149,6 +2175,7 @@
     },
     {
       "id": "copy-0034",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject of a non-existent directory-style key returns NoSuchKey",
       "tags": [
@@ -2184,6 +2211,7 @@
     },
     {
       "id": "copy-0035",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with MetadataDirective=REPLACE updates content headers",
       "tags": [
@@ -2250,6 +2278,7 @@
     },
     {
       "id": "copy-0036",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with spaces in the source key",
       "tags": [
@@ -2301,6 +2330,7 @@
     },
     {
       "id": "copy-0037",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with TaggingDirective=COPY preserves source tags",
       "tags": [
@@ -2383,6 +2413,7 @@
     },
     {
       "id": "copy-0038",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with TaggingDirective=REPLACE applies new tags",
       "tags": [
@@ -2466,6 +2497,7 @@
     },
     {
       "id": "copy-0039",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with a malformed x-amz-copy-source (no bucket/key separator) is rejected",
       "description": "The original test accepted InvalidArgument or InvalidRequest; AWS returns InvalidArgument for a copy source without a bucket/key separator. Expressed as a raw-HTTP step so the malformed header bypasses SDK client-side validation.",
@@ -2501,6 +2533,7 @@
     },
     {
       "id": "copy-0041",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject to a non-existing destination bucket returns NoSuchBucket",
       "tags": [
@@ -2554,6 +2587,7 @@
     },
     {
       "id": "copy-0042",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with a non-existing source key returns NoSuchKey",
       "tags": [
@@ -2590,6 +2624,7 @@
     },
     {
       "id": "copy-0043",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject preserves the source ContentType by default",
       "tags": [
@@ -2653,6 +2688,7 @@
     },
     {
       "id": "copy-0044",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject response includes a CopyObjectResult and the copy has an ETag",
       "tags": [
@@ -2724,6 +2760,7 @@
     },
     {
       "id": "copy-0047",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with default tagging directive copies the source tags",
       "tags": [
@@ -2795,6 +2832,7 @@
     },
     {
       "id": "copy-0048",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with TaggingDirective REPLACE replaces the source tags",
       "tags": [
@@ -2869,6 +2907,7 @@
     },
     {
       "id": "copy-0049",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject between buckets preserves ContentType and custom metadata",
       "tags": [
@@ -2943,6 +2982,7 @@
     },
     {
       "id": "copy-0051",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject preserves all content headers and custom metadata by default",
       "description": "The original test set Expires to a dynamic now+10h timestamp; a fixed future HTTP-date is used instead (Expires is not asserted here).",
@@ -3029,6 +3069,7 @@
     },
     {
       "id": "copy-0053",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject onto itself with REPLACE sets the new metadata map",
       "tags": [
@@ -3102,6 +3143,7 @@
     },
     {
       "id": "copy-0054",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject preserves CacheControl and Expires headers",
       "description": "The original test set Expires to a dynamic now+24h timestamp; a fixed future HTTP-date is used instead, and only the presence of Expires is asserted (as in the original).",
@@ -3172,6 +3214,7 @@
     },
     {
       "id": "copy-0055",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject preserves the CRC32 checksum of the source object",
       "tags": [
@@ -3243,6 +3286,7 @@
     },
     {
       "id": "copy-0056",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject tagging directives: default copies tags, REPLACE substitutes them",
       "tags": [
@@ -3346,6 +3390,7 @@
     },
     {
       "id": "copy-0063",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject with CopySourceIfMatch: matching ETag succeeds, wrong ETag fails",
       "description": "Original test accepted any error for the wrong-ETag copy (bare except); the canonical S3 behavior of 412 PreconditionFailed is asserted here.",
@@ -3405,6 +3450,7 @@
     },
     {
       "id": "copy-0064",
+      "group": "copy",
       "kind": "api",
       "title": "CopyObject of a 6 MiB object preserves its size",
       "tags": [
@@ -3472,6 +3518,7 @@
     },
     {
       "id": "copy-0065",
+      "group": "copy",
       "kind": "api",
       "title": "Prefix rename via CopyObject + DeleteObject leaves old prefix empty and content intact",
       "description": "Directory rename emulated as copy-to-new-prefix then delete-from-old. Object count reduced from the source's 1000 to a representative sample.",

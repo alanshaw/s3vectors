@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "tagging",
   "vectors": [
     {
       "id": "tagging-0001",
+      "group": "tagging",
       "kind": "api",
       "title": "GetObjectTagging allowed only when s3:ExistingObjectTag condition matches the object's tag",
       "tags": [
@@ -180,6 +180,7 @@
     },
     {
       "id": "tagging-0002",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging allowed only while s3:ExistingObjectTag condition matches, and replacing the matching tag revokes access",
       "tags": [
@@ -380,6 +381,7 @@
     },
     {
       "id": "tagging-0003",
+      "group": "tagging",
       "kind": "api",
       "title": "Bucket policy allowing s3:DeleteObjectTagging to everyone lets another account delete object tags",
       "tags": [
@@ -506,6 +508,7 @@
     },
     {
       "id": "tagging-0004",
+      "group": "tagging",
       "kind": "api",
       "title": "HeadObject reports the number of tags in the x-amz-tagging-count header",
       "tags": [
@@ -573,6 +576,7 @@
     },
     {
       "id": "tagging-0006",
+      "group": "tagging",
       "kind": "api",
       "title": "Bucket policy allowing s3:GetObjectTagging to everyone lets another account read object tags",
       "tags": [
@@ -728,6 +732,7 @@
     },
     {
       "id": "tagging-0007",
+      "group": "tagging",
       "kind": "api",
       "title": "DeleteObjectTagging returns 204 and removes all tags",
       "tags": [
@@ -829,6 +834,7 @@
     },
     {
       "id": "tagging-0008",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging with 129-char tag keys fails with InvalidTag and stores no tags",
       "tags": [
@@ -929,6 +935,7 @@
     },
     {
       "id": "tagging-0009",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging with 11 tags fails with InvalidTag and stores no tags",
       "tags": [
@@ -1033,6 +1040,7 @@
     },
     {
       "id": "tagging-0010",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging with 257-char tag values fails with InvalidTag and stores no tags",
       "tags": [
@@ -1133,6 +1141,7 @@
     },
     {
       "id": "tagging-0011",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging accepts 10 tags with maximum-size 128-char keys and 256-char values",
       "description": "The original test used random strings and only asserted each returned pair was among the input pairs; this vector uses deterministic strings and asserts one representative pair round-trips and the count is 10.",
@@ -1238,6 +1247,7 @@
     },
     {
       "id": "tagging-0012",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging accepts the maximum of 10 tags and returns them all",
       "tags": [
@@ -1377,6 +1387,7 @@
     },
     {
       "id": "tagging-0013",
+      "group": "tagging",
       "kind": "api",
       "title": "A second PutObjectTagging replaces the previous tag set entirely",
       "tags": [
@@ -1491,6 +1502,7 @@
     },
     {
       "id": "tagging-0014",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObject with an x-amz-tagging header (including a valueless tag) stores tags readable via GetObjectTagging",
       "tags": [
@@ -1557,6 +1569,7 @@
     },
     {
       "id": "tagging-0015",
+      "group": "tagging",
       "kind": "api",
       "title": "Bucket policy allowing s3:PutObjectTagging to everyone lets another account write object tags",
       "tags": [
@@ -1712,6 +1725,7 @@
     },
     {
       "id": "tagging-0016",
+      "group": "tagging",
       "kind": "api",
       "title": "Bucket tagging lifecycle: NoSuchTagSet before set, tag readable after put, NoSuchTagSet again after delete",
       "tags": [
@@ -1803,6 +1817,7 @@
     },
     {
       "id": "tagging-0017",
+      "group": "tagging",
       "kind": "api",
       "title": "Tagging supplied on CreateMultipartUpload is readable after complete and removable via DeleteObjectTagging",
       "tags": [
@@ -1922,6 +1937,7 @@
     },
     {
       "id": "tagging-0018",
+      "group": "tagging",
       "kind": "api",
       "title": "Object tagging: set at upload, update, special characters, 10-tag maximum, and delete",
       "tags": [
@@ -2207,6 +2223,7 @@
     },
     {
       "id": "tagging-0019",
+      "group": "tagging",
       "kind": "api",
       "title": "Tags supplied at CreateMultipartUpload are present on the completed object",
       "tags": [
@@ -2303,6 +2320,7 @@
     },
     {
       "id": "tagging-0020",
+      "group": "tagging",
       "kind": "api",
       "title": "DeleteObjectTagging on a missing key returns NoSuchKey",
       "tags": [
@@ -2337,6 +2355,7 @@
     },
     {
       "id": "tagging-0021",
+      "group": "tagging",
       "kind": "api",
       "title": "DeleteObjectTagging removes all tags",
       "description": "AWS behavior after deletion: 200 with an empty TagSet. The source test also tolerated a NoSuchTagSet/NoSuchTagSetError error from some implementations; the AWS path is asserted.",
@@ -2420,6 +2439,7 @@
     },
     {
       "id": "tagging-0022",
+      "group": "tagging",
       "kind": "api",
       "title": "DeleteObjectTagging succeeds on a tagged object",
       "description": "The source test accepted HTTP 200 or 204; alternative statuses are not expressible, so generic success (2xx) is asserted (AWS returns 204).",
@@ -2475,6 +2495,7 @@
     },
     {
       "id": "tagging-0023",
+      "group": "tagging",
       "kind": "api",
       "title": "GetObjectTagging for a key nested under an existing file-like key returns NoSuchKey",
       "tags": [
@@ -2517,6 +2538,7 @@
     },
     {
       "id": "tagging-0024",
+      "group": "tagging",
       "kind": "api",
       "title": "GetObjectTagging on a missing key returns NoSuchKey",
       "tags": [
@@ -2551,6 +2573,7 @@
     },
     {
       "id": "tagging-0025",
+      "group": "tagging",
       "kind": "api",
       "title": "GetObjectTagging returns exactly the three tags that were set",
       "tags": [
@@ -2672,6 +2695,7 @@
     },
     {
       "id": "tagging-0026",
+      "group": "tagging",
       "kind": "api",
       "title": "GetObjectTagging on an untagged object returns an empty TagSet",
       "description": "AWS behavior: 200 with an empty TagSet. The source test also tolerated a NoSuchTagSet/NoSuchTagSetError error from some implementations; that alternative is not expressible and the AWS path is asserted.",
@@ -2725,6 +2749,7 @@
     },
     {
       "id": "tagging-0027",
+      "group": "tagging",
       "kind": "api",
       "title": "Tags can be set, updated and deleted repeatedly on one object",
       "description": "After deletion the source test tolerated NoSuchTagSet/NoSuchTagSetError from some implementations; the AWS behavior (200 with empty TagSet) is asserted.",
@@ -2863,6 +2888,7 @@
     },
     {
       "id": "tagging-0028",
+      "group": "tagging",
       "kind": "api",
       "title": "Tag values may contain slashes, at-signs and spaces",
       "tags": [
@@ -2983,6 +3009,7 @@
     },
     {
       "id": "tagging-0029",
+      "group": "tagging",
       "kind": "api",
       "title": "Duplicate tag keys in one TagSet are rejected",
       "description": "The source test accepted any of InvalidTag/DuplicateTagKeys/InvalidArgument; alternative codes are not expressible, so only the 400 status is asserted (AWS returns InvalidTag).",
@@ -3045,6 +3072,7 @@
     },
     {
       "id": "tagging-0030",
+      "group": "tagging",
       "kind": "api",
       "title": "Tag key over 128 chars or tag value over 256 chars is rejected",
       "description": "The source test accepted any of InvalidTagKey/InvalidTag/InvalidArgument (key) and InvalidTagValue/InvalidTag/InvalidArgument (value); alternative codes are not expressible, so only the 400 status is asserted (AWS returns InvalidTag).",
@@ -3115,6 +3143,7 @@
     },
     {
       "id": "tagging-0031",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging on a missing key returns NoSuchKey",
       "tags": [
@@ -3157,6 +3186,7 @@
     },
     {
       "id": "tagging-0032",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging replaces the entire existing tag set",
       "tags": [
@@ -3249,6 +3279,7 @@
     },
     {
       "id": "tagging-0033",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging sets tags retrievable via GetObjectTagging",
       "tags": [
@@ -3346,6 +3377,7 @@
     },
     {
       "id": "tagging-0034",
+      "group": "tagging",
       "kind": "api",
       "title": "More than 10 tags on an object is rejected",
       "description": "The source test accepted any of BadRequest/InvalidTag/InvalidArgument; alternative codes are not expressible, so only the 400 status is asserted (AWS returns BadRequest).",
@@ -3436,6 +3468,7 @@
     },
     {
       "id": "tagging-0035",
+      "group": "tagging",
       "kind": "api",
       "title": "DeleteBucketTagging removes all bucket tags",
       "tags": [
@@ -3507,6 +3540,7 @@
     },
     {
       "id": "tagging-0036",
+      "group": "tagging",
       "kind": "api",
       "title": "GetBucketTagging on a bucket with no tags returns NoSuchTagSet",
       "tags": [
@@ -3540,6 +3574,7 @@
     },
     {
       "id": "tagging-0037",
+      "group": "tagging",
       "kind": "api",
       "title": "GetBucketTagging on a non-existent bucket returns NoSuchBucket",
       "tags": [
@@ -3566,6 +3601,7 @@
     },
     {
       "id": "tagging-0038",
+      "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging with duplicate tag keys returns InvalidTag",
       "tags": [
@@ -3619,6 +3655,7 @@
     },
     {
       "id": "tagging-0039",
+      "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging rejects a 200-char tag key and a 300-char tag value with InvalidTag",
       "description": "Tag keys are limited to 128 characters and tag values to 256 characters.",
@@ -3681,6 +3718,7 @@
     },
     {
       "id": "tagging-0040",
+      "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging on a non-existent bucket returns NoSuchBucket",
       "tags": [
@@ -3710,6 +3748,7 @@
     },
     {
       "id": "tagging-0041",
+      "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging with two valid tags succeeds and GetBucketTagging returns exactly those tags",
       "tags": [
@@ -3787,6 +3826,7 @@
     },
     {
       "id": "tagging-0042",
+      "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging with a valid tag succeeds",
       "description": "The original test accepts HTTP 200 or 204; that disjunction is expressed as the step simply succeeding (2xx).",
@@ -3825,6 +3865,7 @@
     },
     {
       "id": "tagging-0043",
+      "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging with 51 tags is rejected with a 400 error",
       "description": "Buckets allow at most 50 tags. The original test accepts several error codes (InvalidTag, BadRequest, InvalidArgument, MalformedXML), so only the 400 status is asserted.",
@@ -4066,6 +4107,7 @@
     },
     {
       "id": "tagging-0044",
+      "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging replaces the entire existing tag set",
       "tags": [
@@ -4159,6 +4201,7 @@
     },
     {
       "id": "tagging-0045",
+      "group": "tagging",
       "kind": "api",
       "title": "PutObject with Tagging sets tags readable via GetObjectTagging",
       "description": "Two GetObjectTagging steps assert membership of each tag independently, mirroring the original's unordered dict comparison.",

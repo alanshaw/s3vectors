@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "errors",
   "vectors": [
     {
       "id": "errors-0001",
+      "group": "errors",
       "kind": "api",
       "title": "GetObject on a missing key returns 404 NoSuchKey",
       "tags": [
@@ -37,6 +37,7 @@
     },
     {
       "id": "errors-0002",
+      "group": "errors",
       "kind": "api",
       "title": "GetObject in a non-existent bucket returns 404 NoSuchBucket",
       "tags": [
@@ -63,6 +64,7 @@
     },
     {
       "id": "errors-0003",
+      "group": "errors",
       "kind": "api",
       "title": "HeadObject with negative PartNumber returns 400",
       "tags": [
@@ -96,6 +98,7 @@
     },
     {
       "id": "errors-0004",
+      "group": "errors",
       "kind": "api",
       "title": "PutObject with a key longer than 1024 bytes returns KeyTooLongError",
       "description": "Key is 1025 bytes of 'a'. The original test also tolerated InvalidRequest; AWS returns KeyTooLongError.",
@@ -130,6 +133,7 @@
     },
     {
       "id": "errors-0005",
+      "group": "errors",
       "kind": "api",
       "title": "PutObject to a non-existent bucket returns NoSuchBucket",
       "tags": [
@@ -156,6 +160,7 @@
     },
     {
       "id": "errors-0006",
+      "group": "errors",
       "kind": "api",
       "title": "1000-byte object key is accepted; 1025-byte key is rejected",
       "description": "S3 keys are limited to 1024 bytes. The source test accepted KeyTooLongError or InvalidRequest; AWS returns KeyTooLongError.",
@@ -214,6 +219,7 @@
     },
     {
       "id": "errors-0007",
+      "group": "errors",
       "kind": "api",
       "title": "CreateMultipartUpload on a nonexistent bucket returns NoSuchBucket",
       "tags": [
@@ -241,6 +247,7 @@
     },
     {
       "id": "errors-0008",
+      "group": "errors",
       "kind": "api",
       "title": "CreateMultipartUpload with a 1025-byte key returns KeyTooLongError",
       "description": "The source test accepts KeyTooLongError or InvalidArgument; KeyTooLongError is the AWS S3 error code.",

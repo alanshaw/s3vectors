@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "sse",
   "vectors": [
     {
       "id": "sse-0001",
+      "group": "sse",
       "kind": "api",
       "title": "Copy an SSE-S3 encrypted object to an SSE-S3 encrypted destination",
       "description": "Covers the sse-s3 -> sse-s3, STANDARD -> STANDARD, 8 MiB parametrization of test_copy_enc; KMS and non-STANDARD storage-class combinations need server-side provisioning and are not expressible.",
@@ -91,6 +91,7 @@
     },
     {
       "id": "sse-0002",
+      "group": "sse",
       "kind": "api",
       "title": "Copy an SSE-C encrypted object to an SSE-C destination with a different key",
       "description": "Covers the sse-c -> sse-c, STANDARD -> STANDARD, 8 MiB parametrization of test_copy_enc; KMS and non-STANDARD storage-class combinations need server-side provisioning and are not expressible.",
@@ -185,6 +186,7 @@
     },
     {
       "id": "sse-0003",
+      "group": "sse",
       "kind": "api",
       "title": "UploadPartCopy from an SSE-S3 source into an SSE-S3 multipart upload",
       "description": "Covers the sse-s3 -> sse-s3, STANDARD -> STANDARD, 8 MiB parametrization of test_copy_part_enc; KMS and non-STANDARD storage-class combinations need server-side provisioning and are not expressible.",
@@ -350,6 +352,7 @@
     },
     {
       "id": "sse-0004",
+      "group": "sse",
       "kind": "api",
       "title": "UploadPartCopy from an SSE-C source into an SSE-C multipart upload enforces SSE-C headers",
       "description": "Covers the sse-c -> sse-c, STANDARD -> STANDARD, 8 MiB parametrization of test_copy_part_enc; KMS and non-STANDARD storage-class combinations need server-side provisioning and are not expressible.",
@@ -643,6 +646,7 @@
     },
     {
       "id": "sse-0005",
+      "group": "sse",
       "kind": "api",
       "title": "SSE-C write and read-back of a 13-byte object",
       "tags": [
@@ -691,6 +695,7 @@
     },
     {
       "id": "sse-0009",
+      "group": "sse",
       "kind": "api",
       "title": "DeleteBucketEncryption is idempotent and removes the SSE-S3 configuration",
       "tags": [
@@ -765,6 +770,7 @@
     },
     {
       "id": "sse-0010",
+      "group": "sse",
       "kind": "api",
       "title": "GetBucketEncryption before and after configuring SSE-S3 default encryption",
       "tags": [
@@ -839,6 +845,7 @@
     },
     {
       "id": "sse-0011",
+      "group": "sse",
       "kind": "api",
       "title": "GetObjectAttributes on an SSE-C object requires the customer key headers",
       "description": "The source also asserts the attributes ETag equals the PutObject ETag; that exact equality is not expressible here (the source strips the quotes before comparing and the SSE-C ETag value is not derivable), so the ETag is asserted as present.",
@@ -940,6 +947,7 @@
     },
     {
       "id": "sse-0012",
+      "group": "sse",
       "kind": "api",
       "title": "PutBucketEncryption with SSE-S3 default encryption succeeds",
       "tags": [
@@ -980,6 +988,7 @@
     },
     {
       "id": "sse-0013",
+      "group": "sse",
       "kind": "api",
       "title": "PutObject with an invalid server-side encryption algorithm returns 400 InvalidArgument",
       "description": "x-amz-server-side-encryption: 'aes:kms' (aes, not aws) is not a valid algorithm. The source injects it as a raw header before signing; expressed as a raw-HTTP PUT so no SDK enum validation intervenes. Empty object body.",
@@ -1017,6 +1026,7 @@
     },
     {
       "id": "sse-0014",
+      "group": "sse",
       "kind": "api",
       "title": "PutObject with both SSE-KMS and SSE-C headers returns 400 InvalidArgument",
       "description": "The source test injects the conflicting raw headers before signing, using a dummy KMS key id ('fool-me-once') and the ceph s3-tests public dummy SSE-C fixture. Empty object body.",
@@ -1058,6 +1068,7 @@
     },
     {
       "id": "sse-0015",
+      "group": "sse",
       "kind": "api",
       "title": "PutObject with both SSE-S3 and SSE-C headers returns 400 InvalidArgument",
       "description": "The source test injects the conflicting raw headers before signing; the SSE-C key is the ceph s3-tests public dummy fixture. Empty object body.",
@@ -1098,6 +1109,7 @@
     },
     {
       "id": "sse-0016",
+      "group": "sse",
       "kind": "api",
       "title": "PutObject with SSE-S3 AES256 plus a KMS key id returns 400 InvalidArgument",
       "description": "x-amz-server-side-encryption: AES256 conflicts with x-amz-server-side-encryption-aws-kms-key-id; the key id is a dummy value ('fool-me-once'). Empty object body.",
@@ -1135,6 +1147,7 @@
     },
     {
       "id": "sse-0017",
+      "group": "sse",
       "kind": "api",
       "title": "PutObject with SSE-C key and key-MD5 but no algorithm header returns 400",
       "description": "Raw-HTTP step: the request deliberately omits the customer-algorithm header.",
@@ -1182,6 +1195,7 @@
     },
     {
       "id": "sse-0018",
+      "group": "sse",
       "kind": "api",
       "title": "Bucket policy denying non-AES256 SSE-C algorithms: AES192 PutObject gets 403, AES256 succeeds",
       "tags": [
@@ -1240,6 +1254,7 @@
     },
     {
       "id": "sse-0019",
+      "group": "sse",
       "kind": "api",
       "title": "Bucket policy denying unencrypted uploads: plain PutObject gets 403, SSE-C PutObject succeeds",
       "tags": [
@@ -1298,6 +1313,7 @@
     },
     {
       "id": "sse-0020",
+      "group": "sse",
       "kind": "api",
       "title": "PutObject with SSE-C key and a non-matching key MD5 returns 400",
       "tags": [
@@ -1346,6 +1362,7 @@
     },
     {
       "id": "sse-0021",
+      "group": "sse",
       "kind": "api",
       "title": "SSE-C object: HEAD without the key returns 400, HEAD with the key succeeds",
       "tags": [
@@ -1418,6 +1435,7 @@
     },
     {
       "id": "sse-0022",
+      "group": "sse",
       "kind": "api",
       "title": "Completed SSE-C multipart object: readable with the upload key, GET with a different key returns 400",
       "tags": [
@@ -1726,6 +1744,7 @@
     },
     {
       "id": "sse-0023",
+      "group": "sse",
       "kind": "api",
       "title": "UploadPart with a different SSE-C key than the multipart initiation returns 400",
       "tags": [
@@ -1796,6 +1815,7 @@
     },
     {
       "id": "sse-0024",
+      "group": "sse",
       "kind": "api",
       "title": "UploadPart with the multipart SSE-C key but a non-matching key MD5 returns 400",
       "tags": [
@@ -1866,6 +1886,7 @@
     },
     {
       "id": "sse-0025",
+      "group": "sse",
       "kind": "api",
       "title": "SSE-C multipart upload (6 aligned 5MiB parts): complete, list size, full read-back and boundary-sampling ranged reads",
       "description": "The source test range-reads the whole object at step sizes 1000000, 10000000 and partlen-1/partlen/partlen+1; this vector samples the boundary-relevant chunks of each pass (first chunk, part-boundary-crossing chunk, tail chunk).",
@@ -2485,6 +2506,7 @@
     },
     {
       "id": "sse-0026",
+      "group": "sse",
       "kind": "api",
       "title": "PutObject with SSE-C algorithm header but no key is rejected",
       "description": "Raw-HTTP step: the request deliberately sends only the customer-algorithm header with no key material.",
@@ -2531,6 +2553,7 @@
     },
     {
       "id": "sse-0027",
+      "group": "sse",
       "kind": "api",
       "title": "PutObject with SSE-C algorithm and key but no key-MD5 header is rejected",
       "description": "The source test injects the headers at the wire level to bypass the SDK's automatic key-MD5 computation, so this is a raw-HTTP step.",
@@ -2578,6 +2601,7 @@
     },
     {
       "id": "sse-0028",
+      "group": "sse",
       "kind": "api",
       "title": "SSE-C object read with a different key returns 400",
       "tags": [
@@ -2638,6 +2662,7 @@
     },
     {
       "id": "sse-0029",
+      "group": "sse",
       "kind": "api",
       "title": "SSE-C object cannot be read without supplying the key",
       "tags": [
@@ -2695,6 +2720,7 @@
     },
     {
       "id": "sse-0030",
+      "group": "sse",
       "kind": "api",
       "title": "SSE-C multipart upload with parts not aligned to the 4k encryption block size: complete, list size, full and ranged read-back",
       "description": "Parts are 5MiB+1 bytes (not a multiple of the 4k encryption block size). The source test range-reads the whole object at several step sizes; this vector samples the boundary-relevant chunks of each pass.",
@@ -3286,6 +3312,7 @@
     },
     {
       "id": "sse-0031",
+      "group": "sse",
       "kind": "api",
       "title": "PutObject with a KMS key id but without declaring aws:kms encryption returns 400",
       "tags": [
@@ -3332,6 +3359,7 @@
     },
     {
       "id": "sse-0032",
+      "group": "sse",
       "kind": "api",
       "title": "GetObject with SSE-KMS request headers returns 400",
       "description": "Raw-HTTP step: the GetObject API has no server-side-encryption request members, so the source test injects the x-amz-server-side-encryption headers at the wire level.",
@@ -3376,6 +3404,7 @@
     },
     {
       "id": "sse-0033",
+      "group": "sse",
       "kind": "api",
       "title": "Bucket default SSE-S3 encryption: 1-byte upload and read-back report x-amz-server-side-encryption: AES256",
       "tags": [
@@ -3448,6 +3477,7 @@
     },
     {
       "id": "sse-0035",
+      "group": "sse",
       "kind": "api",
       "title": "Bucket default SSE-S3 encryption: HEAD reports AES256; HEAD carrying an x-amz-server-side-encryption request header returns 400",
       "tags": [
@@ -3537,6 +3567,7 @@
     },
     {
       "id": "sse-0036",
+      "group": "sse",
       "kind": "api",
       "title": "Bucket default SSE-S3 encryption: multipart upload (6 aligned 5MiB parts) completes, lists at full size, and reads back AES256-encrypted with metadata and ranged reads",
       "description": "The source test range-reads the whole object at step sizes 1000000 and 10000000; this vector samples the boundary-relevant chunks of each pass (first chunk, part-boundary-crossing chunk, tail chunk).",
@@ -3954,6 +3985,7 @@
     },
     {
       "id": "sse-0039",
+      "group": "sse",
       "kind": "api",
       "title": "Explicit SSE-S3 (ServerSideEncryption=AES256): 1-byte upload and read-back report x-amz-server-side-encryption: AES256",
       "tags": [
@@ -4007,6 +4039,7 @@
     },
     {
       "id": "sse-0043",
+      "group": "sse",
       "kind": "api",
       "title": "SSE-S3 (AES256) round-trip on PutObject, CopyObject and multipart upload",
       "description": "SSE-C portion of the source test is omitted: its customer key is 34 bytes, which AWS rejects, so the test self-skips that branch.",
@@ -4166,6 +4199,7 @@
     },
     {
       "id": "sse-0044",
+      "group": "sse",
       "kind": "api",
       "title": "Bucket default encryption (AES256) is applied to objects uploaded without SSE parameters",
       "tags": [
@@ -4248,6 +4282,7 @@
     },
     {
       "id": "sse-0045",
+      "group": "sse",
       "kind": "api",
       "title": "GetObject with a mismatched SSE-C key is denied",
       "description": "SSE-C keys are the well-known test bytes '0'*32 (upload) and '1'*32 (mismatched read). The source accepted BadRequest, InvalidRequest or 403; converted to the AWS behavior of 403 AccessDenied.",
@@ -4299,6 +4334,7 @@
     },
     {
       "id": "sse-0046",
+      "group": "sse",
       "kind": "api",
       "title": "PutObject with SSE-S3 (AES256) reports the encryption in PutObject and HeadObject responses",
       "tags": [
@@ -4349,6 +4385,7 @@
     },
     {
       "id": "sse-0047",
+      "group": "sse",
       "kind": "api",
       "title": "CreateMultipartUpload with SSE-S3 echoes ServerSideEncryption AES256",
       "tags": [
@@ -4401,6 +4438,7 @@
     },
     {
       "id": "sse-0049",
+      "group": "sse",
       "kind": "api",
       "title": "SSE-C object is readable only with the customer key",
       "tags": [
@@ -4471,6 +4509,7 @@
     },
     {
       "id": "sse-0050",
+      "group": "sse",
       "kind": "api",
       "title": "Bucket default encryption applies SSE-S3 to uploads that specify none",
       "tags": [
@@ -4523,6 +4562,7 @@
     },
     {
       "id": "sse-0051",
+      "group": "sse",
       "kind": "api",
       "title": "Invalid SSE algorithm and undersized SSE-C key are rejected",
       "tags": [
@@ -4575,6 +4615,7 @@
     },
     {
       "id": "sse-0052",
+      "group": "sse",
       "kind": "api",
       "title": "SSE-S3 bucket encryption configuration round-trips",
       "tags": [
@@ -4633,6 +4674,7 @@
     },
     {
       "id": "sse-0053",
+      "group": "sse",
       "kind": "api",
       "title": "CopyObject can add SSE-S3 encryption to an unencrypted object",
       "tags": [
@@ -4690,6 +4732,7 @@
     },
     {
       "id": "sse-0054",
+      "group": "sse",
       "kind": "api",
       "title": "Multipart upload initiated with SSE-S3 produces an encrypted object",
       "tags": [

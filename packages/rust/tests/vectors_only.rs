@@ -6,8 +6,8 @@ use cloud_portable_s3vectors as s3v;
 fn corpus_loads_without_datagen() {
     let m = s3v::manifest();
     let mut total = 0;
-    for entry in &m.areas {
-        total += s3v::area(&entry.area).expect("area loads").vectors.len();
+    for entry in &m.groups {
+        total += s3v::group(&entry.group).expect("group loads").vectors.len();
     }
     assert_eq!(total, m.total);
 }

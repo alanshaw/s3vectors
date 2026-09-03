@@ -37,21 +37,21 @@ const license = fs.readFileSync(path.join(ROOT, 'LICENSE.md'))
 const schema = fs.readFileSync(path.join(ROOT, 'schema', 'vector.schema.json'))
 const schemaSha256 = crypto.createHash('sha256').update(schema).digest('hex')
 
-const areaFiles = fs.readdirSync(path.join(ROOT, 'vectors')).filter(f => f.endsWith('.json')).sort()
-const areas = []
+const groupFiles = fs.readdirSync(path.join(ROOT, 'vectors')).filter(f => f.endsWith('.json')).sort()
+const groups = []
 let total = 0
-for (const f of areaFiles) {
+for (const f of groupFiles) {
   const doc = JSON.parse(fs.readFileSync(path.join(ROOT, 'vectors', f), 'utf8'))
-  areas.push({ area: doc.area, file: f, count: doc.vectors.length })
+  groups.push({ group: path.basename(f, '.json'), file: f, count: doc.vectors.length })
   total += doc.vectors.length
 }
-const manifest = Buffer.from(JSON.stringify({ version, total, schemaSha256, areas }, null, 2) + '\n')
+const manifest = Buffer.from(JSON.stringify({ version, total, schemaSha256, groups }, null, 2) + '\n')
 
 // desired state: dir -> { fileName -> Buffer }
 const desired = new Map()
 for (const dir of DATA_DIRS) {
   const files = { 'manifest.json': manifest }
-  for (const f of areaFiles) files[f] = fs.readFileSync(path.join(ROOT, 'vectors', f))
+  for (const f of groupFiles) files[f] = fs.readFileSync(path.join(ROOT, 'vectors', f))
   desired.set(dir, files)
 }
 for (const dir of PACKAGE_ROOTS) {
@@ -112,5 +112,5 @@ if (CHECK && drift > 0) {
   process.exit(1)
 }
 console.log(CHECK
-  ? `sync check OK: version ${version}, ${total} vectors, ${areaFiles.length} areas`
-  : `synced version ${version}: ${total} vectors, ${areaFiles.length} areas -> ${DATA_DIRS.length} packages (${drift} file(s) updated)`)
+  ? `sync check OK: version ${version}, ${total} vectors, ${groupFiles.length} groups`
+  : `synced version ${version}: ${total} vectors, ${groupFiles.length} groups -> ${DATA_DIRS.length} packages (${drift} file(s) updated)`)

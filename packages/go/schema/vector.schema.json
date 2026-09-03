@@ -6,18 +6,13 @@
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
-    "area": {
-      "description": "Feature area of this file. Every vector id in the file must be prefixed '<area>-'.",
-      "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]*$"
-    },
     "vectors": {
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#/$defs/vector" }
     }
   },
-  "required": ["area", "vectors"],
+  "required": ["vectors"],
   "additionalProperties": false,
 
   "$defs": {
@@ -29,9 +24,15 @@
     },
 
     "vectorId": {
-      "description": "Stable identifier: '<area>-<NNNN>'. Numbers are assigned monotonically per file and never reused or renumbered.",
+      "description": "Stable identifier: '<group>-<NNNN>'. Numbers are assigned monotonically per group and never reused or renumbered.",
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]*-[0-9]{4}$"
+    },
+
+    "group": {
+      "description": "Feature group of this vector; the vector id is prefixed '<group>-' and the vector lives in '<group>.json'.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
     },
 
     "tags": {
@@ -62,6 +63,7 @@
       "type": "object",
       "properties": {
         "id": { "$ref": "#/$defs/vectorId" },
+        "group": { "$ref": "#/$defs/group" },
         "kind": { "const": "api" },
         "title": { "type": "string", "minLength": 1 },
         "description": { "type": "string" },
@@ -87,7 +89,7 @@
           "items": { "$ref": "#/$defs/step" }
         }
       },
-      "required": ["id", "kind", "title", "tags", "steps"],
+      "required": ["id", "group", "kind", "title", "tags", "steps"],
       "additionalProperties": false
     },
 
@@ -415,6 +417,7 @@
       "type": "object",
       "properties": {
         "id": { "$ref": "#/$defs/vectorId" },
+        "group": { "$ref": "#/$defs/group" },
         "kind": { "const": "signing" },
         "title": { "type": "string", "minLength": 1 },
         "description": { "type": "string" },
@@ -454,7 +457,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["id", "kind", "title", "tags", "request", "credentials", "scope", "expect"],
+      "required": ["id", "group", "kind", "title", "tags", "request", "credentials", "scope", "expect"],
       "additionalProperties": false
     },
 

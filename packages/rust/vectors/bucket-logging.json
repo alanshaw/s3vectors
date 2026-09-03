@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "bucket-logging",
   "vectors": [
     {
       "id": "bucket-logging-0001",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "Only the bucket owner may set or remove bucket logging, even with a permissive bucket policy",
       "description": "The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format). The source-bucket policy is written exactly as in the source test (no Resource element).",
@@ -109,6 +109,7 @@
     },
     {
       "id": "bucket-logging-0002",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "PutBucketLogging round-trips minimal, simple-prefix and partitioned-prefix configurations",
       "description": "Converted from ceph s3-tests test_put_bucket_logging. The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format). The TargetGrants portion of the source test is omitted for the same reason. The ceph-extension fields (ObjectRollTime, LoggingType, RecordsBatchSize) are omitted.",
@@ -272,6 +273,7 @@
     },
     {
       "id": "bucket-logging-0003",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "PutBucketLogging with a missing source or target bucket returns NoSuchBucket / NoSuchKey",
       "tags": [
@@ -332,6 +334,7 @@
     },
     {
       "id": "bucket-logging-0004",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "PutBucketLogging targeting a bucket that itself has logging enabled returns InvalidArgument",
       "description": "The log-bucket policies use a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format).",
@@ -422,6 +425,7 @@
     },
     {
       "id": "bucket-logging-0005",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "PutBucketLogging with an invalid PartitionDateSource returns MalformedXML",
       "description": "The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format).",
@@ -483,6 +487,7 @@
     },
     {
       "id": "bucket-logging-0006",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "PutBucketLogging with the source bucket as its own target returns InvalidArgument",
       "description": "The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format).",
@@ -534,6 +539,7 @@
     },
     {
       "id": "bucket-logging-0007",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "PutBucketLogging targeting a bucket with default encryption returns InvalidArgument",
       "description": "The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format).",
@@ -610,6 +616,7 @@
     },
     {
       "id": "bucket-logging-0008",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "PutBucketLogging targeting a requester-pays bucket returns InvalidArgument",
       "description": "The log-bucket policy uses a wildcard aws:SourceAccount (the source test uses the main user id, which is not expressible in the vector format).",
@@ -680,6 +687,7 @@
     },
     {
       "id": "bucket-logging-0009",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "PutBucketLogging is denied unless the target bucket policy grants the logging service principal correctly",
       "description": "Each stage sets a log-bucket policy with exactly one invalid element (principal, action, resource, source ARN, or source account) and asserts PutBucketLogging returns AccessDenied. Where the source test uses the main user id for a valid aws:SourceAccount, a wildcard StringLike condition is used instead (the main account id is not expressible in the vector format); the tenant-qualified invalid-account variant is omitted for the same reason.",
@@ -899,6 +907,7 @@
     },
     {
       "id": "bucket-logging-0010",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "Wildcard source account and source-bucket ARN in the log bucket policy allow logging from any source",
       "description": "A second identity creates its own source bucket. With per-bucket statements both owners can enable logging; after removing the second statement the alt owner is denied; with wildcard aws:SourceAccount and aws:SourceArn both succeed again. The main-account statement uses a wildcard aws:SourceAccount throughout (the main account id is not expressible in the vector format); the alt statement uses the alt credential's canonical id.",
@@ -1065,6 +1074,7 @@
     },
     {
       "id": "bucket-logging-0011",
+      "group": "bucket-logging",
       "kind": "api",
       "title": "Disable bucket logging with an empty BucketLoggingStatus",
       "description": "Grant the S3 logging service PutObject on the target bucket via bucket policy, enable logging on the source bucket, then disable it by putting an empty BucketLoggingStatus; GetBucketLogging must succeed and no longer return LoggingEnabled. The source test's policy also carries an aws:SourceAccount condition on the caller's account id, which is not expressible in the vector format and is omitted here.",

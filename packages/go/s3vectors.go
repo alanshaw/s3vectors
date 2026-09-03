@@ -1,5 +1,5 @@
 // Package s3vectors embeds the cloud-portable S3 API compatibility test-vector
-// corpus and exposes it parsed, per feature area or all at once.
+// corpus and exposes it parsed, per feature group or all at once.
 //
 // Normative semantics (placeholder grammar, matcher semantics, generated data,
 // runner outcomes) are defined in the repository README:
@@ -27,7 +27,7 @@ var (
 	cache = map[string]*VectorFile{}
 )
 
-// Manifest describes the embedded corpus snapshot (version, totals, areas).
+// Manifest describes the embedded corpus snapshot (version, totals, groups).
 func Manifest() ManifestInfo {
 	manifestOnce.Do(func() {
 		raw, err := files.ReadFile("vectors/manifest.json")
@@ -41,33 +41,33 @@ func Manifest() ManifestInfo {
 	return manifest
 }
 
-// Areas returns the area names in manifest order.
-func Areas() []string {
+// Groups returns the group names in manifest order.
+func Groups() []string {
 	m := Manifest()
-	names := make([]string, len(m.Areas))
-	for i, a := range m.Areas {
-		names[i] = a.Area
+	names := make([]string, len(m.Groups))
+	for i, g := range m.Groups {
+		names[i] = g.Group
 	}
 	return names
 }
 
-// Area returns one area's vectors. Lazy; parsed once and cached (read-only).
-func Area(name string) (*VectorFile, error) {
+// Group returns one group's vectors. Lazy; parsed once and cached (read-only).
+func Group(name string) (*VectorFile, error) {
 	mu.Lock()
 	defer mu.Unlock()
 	if f, ok := cache[name]; ok {
 		return f, nil
 	}
-	var entry *AreaInfo
+	var entry *GroupInfo
 	m := Manifest()
-	for i := range m.Areas {
-		if m.Areas[i].Area == name {
-			entry = &m.Areas[i]
+	for i := range m.Groups {
+		if m.Groups[i].Group == name {
+			entry = &m.Groups[i]
 			break
 		}
 	}
 	if entry == nil {
-		return nil, fmt.Errorf("s3vectors: unknown area %q", name)
+		return nil, fmt.Errorf("s3vectors: unknown group %q", name)
 	}
 	raw, err := files.ReadFile("vectors/" + entry.File)
 	if err != nil {
@@ -81,12 +81,12 @@ func Area(name string) (*VectorFile, error) {
 	return f, nil
 }
 
-// All returns every area's vectors in manifest order.
+// All returns every group's vectors in manifest order.
 func All() ([]*VectorFile, error) {
 	m := Manifest()
-	out := make([]*VectorFile, 0, len(m.Areas))
-	for _, a := range m.Areas {
-		f, err := Area(a.Area)
+	out := make([]*VectorFile, 0, len(m.Groups))
+	for _, g := range m.Groups {
+		f, err := Group(g.Group)
 		if err != nil {
 			return nil, err
 		}

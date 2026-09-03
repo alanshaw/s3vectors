@@ -6,7 +6,7 @@
   "exports": {
     ".": { "types": "./index.d.ts", "default": "./index.js" },
     "./datagen": { "types": "./datagen.d.ts", "default": "./datagen.js" },
-    "./areas/*.json": "./data/*.json"
+    "./groups/*.json": "./data/*.json"
   },
   "files": [
     "index.js",

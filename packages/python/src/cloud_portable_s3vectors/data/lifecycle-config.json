@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "lifecycle-config",
   "vectors": [
     {
       "id": "lifecycle-config-0001",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "DeleteBucketLifecycle returns 204 with or without a configuration and removes it",
       "tags": [
@@ -118,6 +118,7 @@
     },
     {
       "id": "lifecycle-config-0002",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle expiration rule with Days of 0 is rejected with InvalidArgument",
       "tags": [
@@ -178,6 +179,7 @@
     },
     {
       "id": "lifecycle-config-0003",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "No x-amz-expiration header when object tags do not match an And tag-filtered rule",
       "tags": [
@@ -280,6 +282,7 @@
     },
     {
       "id": "lifecycle-config-0004",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "HeadObject response carries x-amz-expiration header for a matching lifecycle rule",
       "tags": [
@@ -353,6 +356,7 @@
     },
     {
       "id": "lifecycle-config-0005",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "PutObject response carries x-amz-expiration header for a matching lifecycle rule",
       "tags": [
@@ -414,6 +418,7 @@
     },
     {
       "id": "lifecycle-config-0006",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "x-amz-expiration header follows tag-filtered lifecycle rule matches on HeadObject",
       "tags": [
@@ -550,6 +555,7 @@
     },
     {
       "id": "lifecycle-config-0007",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "GetBucketLifecycleConfiguration returns the rules that were put",
       "tags": [
@@ -628,6 +634,7 @@
     },
     {
       "id": "lifecycle-config-0008",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle rules stored without an ID are returned with a generated ID",
       "tags": [
@@ -708,6 +715,7 @@
     },
     {
       "id": "lifecycle-config-0009",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle rule ID longer than 255 characters is rejected with InvalidArgument",
       "tags": [
@@ -753,6 +761,7 @@
     },
     {
       "id": "lifecycle-config-0010",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle rule with invalid Status casing or value is rejected with MalformedXML",
       "tags": [
@@ -846,6 +855,7 @@
     },
     {
       "id": "lifecycle-config-0011",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle configuration with duplicate rule IDs is rejected with InvalidArgument",
       "tags": [
@@ -899,6 +909,7 @@
     },
     {
       "id": "lifecycle-config-0012",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "PutBucketLifecycleConfiguration with two prefix rules succeeds",
       "tags": [
@@ -950,6 +961,7 @@
     },
     {
       "id": "lifecycle-config-0013",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle expiration rule with an absolute Date succeeds",
       "tags": [
@@ -993,6 +1005,7 @@
     },
     {
       "id": "lifecycle-config-0014",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "PutBucketLifecycleConfiguration with ExpiredObjectDeleteMarker rule succeeds",
       "tags": [
@@ -1036,6 +1049,7 @@
     },
     {
       "id": "lifecycle-config-0015",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "PutBucketLifecycleConfiguration with an empty Filter succeeds",
       "tags": [
@@ -1079,6 +1093,7 @@
     },
     {
       "id": "lifecycle-config-0016",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "PutBucketLifecycleConfiguration with a Filter Prefix succeeds",
       "tags": [
@@ -1124,6 +1139,7 @@
     },
     {
       "id": "lifecycle-config-0017",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle expiration Date not in ISO 8601 extended format is rejected",
       "tags": [
@@ -1163,6 +1179,7 @@
     },
     {
       "id": "lifecycle-config-0018",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "PutBucketLifecycleConfiguration with NoncurrentVersionExpiration rules succeeds",
       "tags": [
@@ -1230,6 +1247,7 @@
     },
     {
       "id": "lifecycle-config-0019",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Set lifecycle configuration with AbortIncompleteMultipartUpload rules",
       "tags": [
@@ -1281,6 +1299,7 @@
     },
     {
       "id": "lifecycle-config-0020",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Set lifecycle transition with a malformed date is rejected with 400",
       "tags": [
@@ -1331,6 +1350,7 @@
     },
     {
       "id": "lifecycle-config-0021",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle configuration: put, replace with multiple rules, disabled rules, and delete",
       "tags": [
@@ -1518,6 +1538,7 @@
     },
     {
       "id": "lifecycle-config-0022",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Basic lifecycle configuration with prefix filter, expiration and transition round-trips",
       "tags": [
@@ -1583,6 +1604,7 @@
     },
     {
       "id": "lifecycle-config-0023",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle rule with multiple correctly ordered storage-class transitions is accepted",
       "tags": [
@@ -1634,6 +1656,7 @@
     },
     {
       "id": "lifecycle-config-0024",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle rule with out-of-order transition days is rejected",
       "tags": [
@@ -1685,6 +1708,7 @@
     },
     {
       "id": "lifecycle-config-0025",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle rule with And filter combining prefix and tags is accepted",
       "tags": [
@@ -1740,6 +1764,7 @@
     },
     {
       "id": "lifecycle-config-0026",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle rule with AbortIncompleteMultipartUpload is accepted",
       "tags": [
@@ -1781,6 +1806,7 @@
     },
     {
       "id": "lifecycle-config-0027",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle rule with date-based expiration is accepted",
       "description": "The source computed now+30 days; a fixed far-future midnight-UTC date preserves the assertion (a Date expiration is accepted) without time dependence.",
@@ -1824,6 +1850,7 @@
     },
     {
       "id": "lifecycle-config-0028",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "Lifecycle configuration with 100 rules is accepted",
       "tags": [
@@ -2856,6 +2883,7 @@
     },
     {
       "id": "lifecycle-config-0029",
+      "group": "lifecycle-config",
       "kind": "api",
       "title": "DeleteBucketLifecycle removes configuration; subsequent get returns NoSuchLifecycleConfiguration",
       "tags": [

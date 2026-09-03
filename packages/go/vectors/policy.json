@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "policy",
   "vectors": [
     {
       "id": "policy-0001",
+      "group": "policy",
       "kind": "api",
       "title": "GetBucketPolicyStatus reports IsPublic true after an authenticated-read canned ACL",
       "tags": [
@@ -49,6 +49,7 @@
     },
     {
       "id": "policy-0002",
+      "group": "policy",
       "kind": "api",
       "title": "GetBucketPolicyStatus on a fresh private bucket reports IsPublic false",
       "tags": [
@@ -84,6 +85,7 @@
     },
     {
       "id": "policy-0003",
+      "group": "policy",
       "kind": "api",
       "title": "GetBucketPolicyStatus stays IsPublic false after attaching a policy restricted by source IP",
       "tags": [
@@ -143,6 +145,7 @@
     },
     {
       "id": "policy-0004",
+      "group": "policy",
       "kind": "api",
       "title": "GetBucketPolicyStatus reports IsPublic true after a public-read canned ACL",
       "tags": [
@@ -188,6 +191,7 @@
     },
     {
       "id": "policy-0005",
+      "group": "policy",
       "kind": "api",
       "title": "GetBucketPolicyStatus flips to IsPublic true after attaching a public bucket policy",
       "tags": [
@@ -247,6 +251,7 @@
     },
     {
       "id": "policy-0006",
+      "group": "policy",
       "kind": "api",
       "title": "Put, get and delete a bucket policy; get after delete returns NoSuchBucketPolicy",
       "tags": [
@@ -317,6 +322,7 @@
     },
     {
       "id": "policy-0007",
+      "group": "policy",
       "kind": "api",
       "title": "Allow policy restricted to a specific principal reports non-public policy status",
       "tags": [
@@ -361,6 +367,7 @@
     },
     {
       "id": "policy-0008",
+      "group": "policy",
       "kind": "api",
       "title": "Deny bucket policy blocks GetPublicAccessBlock",
       "tags": [
@@ -434,6 +441,7 @@
     },
     {
       "id": "policy-0009",
+      "group": "policy",
       "kind": "api",
       "title": "HeadObject under a prefix-conditioned ListBucket policy: 404 inside the prefix, 403 outside",
       "tags": [
@@ -495,6 +503,7 @@
     },
     {
       "id": "policy-0010",
+      "group": "policy",
       "kind": "api",
       "title": "IgnorePublicAcls makes public-read ACLs behave as private",
       "tags": [
@@ -612,6 +621,7 @@
     },
     {
       "id": "policy-0011",
+      "group": "policy",
       "kind": "api",
       "title": "Delete public access block, then get returns NoSuchPublicAccessBlockConfiguration",
       "tags": [
@@ -687,6 +697,7 @@
     },
     {
       "id": "policy-0012",
+      "group": "policy",
       "kind": "api",
       "title": "PutPublicAccessBlock round-trips the configuration",
       "tags": [
@@ -739,6 +750,7 @@
     },
     {
       "id": "policy-0013",
+      "group": "policy",
       "kind": "api",
       "title": "GetPublicAccessBlock after deleting the configuration returns NoSuchPublicAccessBlockConfiguration",
       "tags": [
@@ -782,6 +794,7 @@
     },
     {
       "id": "policy-0014",
+      "group": "policy",
       "kind": "api",
       "title": "BlockPublicAcls rejects PutObject with public canned ACLs but allows private",
       "tags": [
@@ -871,6 +884,7 @@
     },
     {
       "id": "policy-0015",
+      "group": "policy",
       "kind": "api",
       "title": "BlockPublicPolicy rejects putting a public bucket policy",
       "tags": [
@@ -918,6 +932,7 @@
     },
     {
       "id": "policy-0016",
+      "group": "policy",
       "kind": "api",
       "title": "BlockPublicAcls rejects PutBucketAcl with public and authenticated-read canned ACLs",
       "tags": [
@@ -1006,6 +1021,7 @@
     },
     {
       "id": "policy-0017",
+      "group": "policy",
       "kind": "api",
       "title": "Bucket policy allowing s3:ListBucket to everyone grants list access to another account (ListObjects)",
       "tags": [
@@ -1064,6 +1080,7 @@
     },
     {
       "id": "policy-0018",
+      "group": "policy",
       "kind": "api",
       "title": "Deny s3:ListBucket bucket policy overrides authenticated-read bucket ACL (ListObjects)",
       "tags": [
@@ -1130,6 +1147,7 @@
     },
     {
       "id": "policy-0019",
+      "group": "policy",
       "kind": "api",
       "title": "Bucket policy combining Allow effect with NotPrincipal is rejected",
       "description": "The source accepts either InvalidArgument or MalformedPolicy as the error code (AWS returns MalformedPolicy); only the 400 status is asserted here.",
@@ -1164,6 +1182,7 @@
     },
     {
       "id": "policy-0020",
+      "group": "policy",
       "kind": "api",
       "title": "Wildcard-resource policy fetched via GetBucketPolicy can be applied to another bucket (ListObjects)",
       "tags": [
@@ -1271,6 +1290,7 @@
     },
     {
       "id": "policy-0021",
+      "group": "policy",
       "kind": "api",
       "title": "GetObjectAcl allowed only when s3:ExistingObjectTag condition matches; other operations stay denied",
       "tags": [
@@ -1448,6 +1468,7 @@
     },
     {
       "id": "policy-0022",
+      "group": "policy",
       "kind": "api",
       "title": "GetObject allowed only when s3:ExistingObjectTag condition matches the object's tag",
       "tags": [
@@ -1611,6 +1632,7 @@
     },
     {
       "id": "policy-0023",
+      "group": "policy",
       "kind": "api",
       "title": "CreateMultipartUpload requires s3:PutObject on the object ARN, not the bucket ARN",
       "tags": [
@@ -1692,6 +1714,7 @@
     },
     {
       "id": "policy-0024",
+      "group": "policy",
       "kind": "api",
       "title": "Deny statement on s3:x-amz-acl public* blocks PutObject with a public canned ACL but not a plain put",
       "tags": [
@@ -1757,6 +1780,7 @@
     },
     {
       "id": "policy-0025",
+      "group": "policy",
       "kind": "api",
       "title": "PutObject conditioned on s3:x-amz-copy-source restricts which sources may be copied",
       "tags": [
@@ -1893,6 +1917,7 @@
     },
     {
       "id": "policy-0026",
+      "group": "policy",
       "kind": "api",
       "title": "PutObject conditioned on s3:x-amz-metadata-directive allows COPY and denies copies without it",
       "tags": [
@@ -2001,6 +2026,7 @@
     },
     {
       "id": "policy-0027",
+      "group": "policy",
       "kind": "api",
       "title": "Policy requiring aws:kms denies PutObject requesting AES256 encryption",
       "tags": [
@@ -2046,6 +2072,7 @@
     },
     {
       "id": "policy-0028",
+      "group": "policy",
       "kind": "api",
       "title": "PutObject allowed only when s3:RequestObjectTag condition matches the request tagging",
       "description": "The source test intends the second put to carry the x-amz-tagging header (its event hook is registered on the wrong client); expressed here via the Tagging parameter.",
@@ -2109,6 +2136,7 @@
     },
     {
       "id": "policy-0029",
+      "group": "policy",
       "kind": "api",
       "title": "StringNotEquals deny on s3:x-amz-server-side-encryption rejects wrong SSE algorithm and accepts AES256",
       "tags": [
@@ -2169,6 +2197,7 @@
     },
     {
       "id": "policy-0030",
+      "group": "policy",
       "kind": "api",
       "title": "Policy requiring AES256 denies PutObject requesting aws:kms encryption",
       "description": "The KMS key id does not need to exist: the request is denied by the bucket policy before any KMS use.",
@@ -2216,6 +2245,7 @@
     },
     {
       "id": "policy-0031",
+      "group": "policy",
       "kind": "api",
       "title": "Deny unencrypted PutObject via Null condition on s3:x-amz-server-side-encryption",
       "tags": [
@@ -2275,6 +2305,7 @@
     },
     {
       "id": "policy-0032",
+      "group": "policy",
       "kind": "api",
       "title": "StringLikeIfExists condition on aws:Referer allows matching referers and denies non-matching ones",
       "tags": [
@@ -2358,6 +2389,7 @@
     },
     {
       "id": "policy-0033",
+      "group": "policy",
       "kind": "api",
       "title": "Bucket policy allowing s3:ListBucket to everyone grants list access to another account (ListObjectsV2)",
       "tags": [
@@ -2416,6 +2448,7 @@
     },
     {
       "id": "policy-0034",
+      "group": "policy",
       "kind": "api",
       "title": "Deny s3:ListBucket bucket policy overrides authenticated-read bucket ACL (ListObjectsV2)",
       "tags": [
@@ -2482,6 +2515,7 @@
     },
     {
       "id": "policy-0035",
+      "group": "policy",
       "kind": "api",
       "title": "Wildcard-resource policy fetched via GetBucketPolicy can be applied to another bucket (ListObjectsV2)",
       "tags": [
@@ -2589,6 +2623,7 @@
     },
     {
       "id": "policy-0036",
+      "group": "policy",
       "kind": "api",
       "title": "RestrictPublicBuckets public access block revokes anonymous access granted by a public bucket policy",
       "tags": [
@@ -2701,6 +2736,7 @@
     },
     {
       "id": "policy-0037",
+      "group": "policy",
       "kind": "api",
       "title": "Public access block configuration round-trips full, partial and all-false settings and can be deleted",
       "tags": [
@@ -2825,6 +2861,7 @@
     },
     {
       "id": "policy-0038",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy accepts Action and Resource as arrays",
       "tags": [
@@ -2869,6 +2906,7 @@
     },
     {
       "id": "policy-0039",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy accepts a policy with multiple Allow and Deny statements",
       "tags": [
@@ -2913,6 +2951,7 @@
     },
     {
       "id": "policy-0040",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy accepts an AWS service Principal",
       "description": "The source test skipped when MinIO rejected the Service principal with MalformedPolicy; AWS accepts service principals such as logging.s3.amazonaws.com.",
@@ -2958,6 +2997,7 @@
     },
     {
       "id": "policy-0041",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy accepts wildcard Resource patterns including a prefix wildcard",
       "tags": [
@@ -3002,6 +3042,7 @@
     },
     {
       "id": "policy-0042",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy accepts the s3:* wildcard Action",
       "tags": [
@@ -3046,6 +3087,7 @@
     },
     {
       "id": "policy-0043",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy replaces an existing bucket policy",
       "tags": [
@@ -3099,6 +3141,7 @@
     },
     {
       "id": "policy-0045",
+      "group": "policy",
       "kind": "api",
       "title": "DeleteBucketPolicy removes the policy; subsequent GetBucketPolicy returns NoSuchBucketPolicy",
       "tags": [
@@ -3164,6 +3207,7 @@
     },
     {
       "id": "policy-0046",
+      "group": "policy",
       "kind": "api",
       "title": "GetBucketPolicy on a bucket without a policy returns NoSuchBucketPolicy",
       "tags": [
@@ -3197,6 +3241,7 @@
     },
     {
       "id": "policy-0047",
+      "group": "policy",
       "kind": "api",
       "title": "GetBucketPolicy on a non-existent bucket returns NoSuchBucket",
       "description": "The source test also tolerated NoSuchBucketPolicy (MinIO); AWS returns NoSuchBucket when the bucket itself does not exist.",
@@ -3224,6 +3269,7 @@
     },
     {
       "id": "policy-0048",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy with syntactically invalid JSON returns MalformedPolicy",
       "description": "The source test also tolerated InvalidArgument and InvalidJSON; AWS returns MalformedPolicy for a policy document that is not valid JSON.",
@@ -3259,6 +3305,7 @@
     },
     {
       "id": "policy-0049",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy on a non-existent bucket returns NoSuchBucket",
       "tags": [
@@ -3286,6 +3333,7 @@
     },
     {
       "id": "policy-0051",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy with a Deny statement succeeds and is retrievable",
       "tags": [
@@ -3330,6 +3378,7 @@
     },
     {
       "id": "policy-0052",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy accepts an IpAddress condition block and GetBucketPolicy returns it",
       "tags": [
@@ -3374,6 +3423,7 @@
     },
     {
       "id": "policy-0053",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy accepts a StringLike condition block and GetBucketPolicy returns it",
       "tags": [
@@ -3418,6 +3468,7 @@
     },
     {
       "id": "policy-0054",
+      "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy stores a policy that GetBucketPolicy returns",
       "tags": [
@@ -3463,6 +3514,7 @@
     },
     {
       "id": "policy-0056",
+      "group": "policy",
       "kind": "api",
       "title": "DeleteBucketPolicy removes the policy so GetBucketPolicy returns NoSuchBucketPolicy",
       "tags": [

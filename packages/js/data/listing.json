@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "listing",
   "vectors": [
     {
       "id": "listing-0001",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 KeyCount matches the number of keys in the bucket",
       "tags": [
@@ -77,6 +77,7 @@
     },
     {
       "id": "listing-0002",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with letter delimiter groups keys into common prefixes",
       "tags": [
@@ -156,6 +157,7 @@
     },
     {
       "id": "listing-0003",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with slash delimiter rolls keys up into common prefixes",
       "tags": [
@@ -236,6 +238,7 @@
     },
     {
       "id": "listing-0004",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with dot delimiter groups keys into common prefixes",
       "tags": [
@@ -315,6 +318,7 @@
     },
     {
       "id": "listing-0005",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with empty delimiter behaves as no delimiter and echoes none",
       "tags": [
@@ -400,6 +404,7 @@
     },
     {
       "id": "listing-0006",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects without a delimiter returns all keys and echoes no delimiter",
       "tags": [
@@ -485,6 +490,7 @@
     },
     {
       "id": "listing-0007",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with percent delimiter groups keys into common prefixes",
       "tags": [
@@ -564,6 +570,7 @@
     },
     {
       "id": "listing-0008",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects delimiter and prefix pagination with Marker and NextMarker",
       "tags": [
@@ -844,6 +851,7 @@
     },
     {
       "id": "listing-0009",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with prefix ending in the delimiter returns the exact-match key",
       "tags": [
@@ -900,6 +908,7 @@
     },
     {
       "id": "listing-0011",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with newline delimiter matches no keys and returns all objects",
       "tags": [
@@ -983,6 +992,7 @@
     },
     {
       "id": "listing-0012",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with whitespace delimiter groups keys into common prefixes",
       "tags": [
@@ -1062,6 +1072,7 @@
     },
     {
       "id": "listing-0013",
+      "group": "listing",
       "kind": "api",
       "title": "Objects in one bucket do not appear when listing a different bucket",
       "tags": [
@@ -1110,6 +1121,7 @@
     },
     {
       "id": "listing-0015",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with url encoding-type URL-encodes keys and common prefixes",
       "tags": [
@@ -1194,6 +1206,7 @@
     },
     {
       "id": "listing-0016",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects paginates with MaxKeys and Marker",
       "tags": [
@@ -1280,6 +1293,7 @@
     },
     {
       "id": "listing-0017",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with letter delimiter groups keys into common prefixes",
       "tags": [
@@ -1359,6 +1373,7 @@
     },
     {
       "id": "listing-0018",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with slash delimiter rolls keys up into common prefixes and counts them in KeyCount",
       "tags": [
@@ -1439,6 +1454,7 @@
     },
     {
       "id": "listing-0019",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with dot delimiter groups keys into common prefixes",
       "tags": [
@@ -1518,6 +1534,7 @@
     },
     {
       "id": "listing-0020",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with empty delimiter behaves as no delimiter and echoes none",
       "tags": [
@@ -1603,6 +1620,7 @@
     },
     {
       "id": "listing-0021",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 without a delimiter returns all keys and echoes no delimiter",
       "tags": [
@@ -1687,6 +1705,7 @@
     },
     {
       "id": "listing-0022",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with percent delimiter groups keys into common prefixes",
       "tags": [
@@ -1766,6 +1785,7 @@
     },
     {
       "id": "listing-0023",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 delimiter and prefix pagination with continuation tokens",
       "tags": [
@@ -2054,6 +2074,7 @@
     },
     {
       "id": "listing-0024",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with prefix ending in the delimiter returns the exact-match key",
       "tags": [
@@ -2110,6 +2131,7 @@
     },
     {
       "id": "listing-0026",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with newline delimiter matches no keys and returns all objects",
       "tags": [
@@ -2193,6 +2215,7 @@
     },
     {
       "id": "listing-0027",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with whitespace delimiter groups keys into common prefixes",
       "tags": [
@@ -2272,6 +2295,7 @@
     },
     {
       "id": "listing-0028",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with url encoding-type URL-encodes keys and common prefixes",
       "tags": [
@@ -2356,6 +2380,7 @@
     },
     {
       "id": "listing-0029",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with FetchOwner=true includes Owner in listed objects",
       "tags": [
@@ -2422,6 +2447,7 @@
     },
     {
       "id": "listing-0030",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 paginates with MaxKeys and StartAfter",
       "tags": [
@@ -2508,6 +2534,7 @@
     },
     {
       "id": "listing-0031",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with a delimiter matching no keys returns all keys and no common prefixes",
       "tags": [
@@ -2591,6 +2618,7 @@
     },
     {
       "id": "listing-0032",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with MaxKeys=1 truncates after the first key and Marker resumes the listing",
       "tags": [
@@ -2687,6 +2715,7 @@
     },
     {
       "id": "listing-0033",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with MaxKeys=0 returns no keys and is not truncated",
       "tags": [
@@ -2756,6 +2785,7 @@
     },
     {
       "id": "listing-0034",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects prefix filtering works on non-slash prefixes",
       "tags": [
@@ -2825,6 +2855,7 @@
     },
     {
       "id": "listing-0035",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with a directory prefix returns only keys under that prefix",
       "tags": [
@@ -2894,6 +2925,7 @@
     },
     {
       "id": "listing-0036",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects prefix and delimiter logic works with non-slash delimiter",
       "tags": [
@@ -2972,6 +3004,7 @@
     },
     {
       "id": "listing-0037",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with prefix and delimiter returns direct keys and rolls up deeper keys",
       "tags": [
@@ -3051,6 +3084,7 @@
     },
     {
       "id": "listing-0038",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with a matching prefix but non-matching delimiter returns all prefixed keys uncollapsed",
       "tags": [
@@ -3131,6 +3165,7 @@
     },
     {
       "id": "listing-0039",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with non-matching prefix and non-matching delimiter returns an empty listing",
       "tags": [
@@ -3203,6 +3238,7 @@
     },
     {
       "id": "listing-0041",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with an empty prefix returns all keys",
       "tags": [
@@ -3275,6 +3311,7 @@
     },
     {
       "id": "listing-0043",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with a prefix matching no keys returns an empty listing",
       "tags": [
@@ -3339,6 +3376,7 @@
     },
     {
       "id": "listing-0044",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with an unprintable (newline) prefix returns an empty listing and echoes the prefix",
       "tags": [
@@ -3403,6 +3441,7 @@
     },
     {
       "id": "listing-0045",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with a delimiter matching no keys returns all keys and no common prefixes",
       "tags": [
@@ -3486,6 +3525,7 @@
     },
     {
       "id": "listing-0046",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 without FetchOwner omits Owner from listed objects",
       "tags": [
@@ -3551,6 +3591,7 @@
     },
     {
       "id": "listing-0047",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with FetchOwner=false omits Owner from listed objects",
       "tags": [
@@ -3617,6 +3658,7 @@
     },
     {
       "id": "listing-0048",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with MaxKeys=1 truncates after the first key and StartAfter resumes the listing",
       "tags": [
@@ -3713,6 +3755,7 @@
     },
     {
       "id": "listing-0049",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 prefix filtering works on non-slash prefixes",
       "tags": [
@@ -3782,6 +3825,7 @@
     },
     {
       "id": "listing-0050",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with a directory prefix returns only keys under that prefix",
       "tags": [
@@ -3851,6 +3895,7 @@
     },
     {
       "id": "listing-0051",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 prefix and delimiter logic works with non-slash delimiter",
       "tags": [
@@ -3929,6 +3974,7 @@
     },
     {
       "id": "listing-0052",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with prefix and delimiter returns direct keys and rolls up deeper keys",
       "tags": [
@@ -4008,6 +4054,7 @@
     },
     {
       "id": "listing-0053",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with a matching prefix but non-matching delimiter returns all prefixed keys uncollapsed",
       "tags": [
@@ -4088,6 +4135,7 @@
     },
     {
       "id": "listing-0054",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with non-matching prefix and non-matching delimiter returns an empty listing",
       "tags": [
@@ -4160,6 +4208,7 @@
     },
     {
       "id": "listing-0056",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with an empty prefix returns all keys",
       "tags": [
@@ -4232,6 +4281,7 @@
     },
     {
       "id": "listing-0058",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with a prefix matching no keys returns an empty listing",
       "tags": [
@@ -4296,6 +4346,7 @@
     },
     {
       "id": "listing-0059",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with an unprintable (newline) prefix returns an empty listing and echoes the prefix",
       "tags": [
@@ -4360,6 +4411,7 @@
     },
     {
       "id": "listing-0060",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects marker past the last key returns no keys",
       "tags": [
@@ -4430,6 +4482,7 @@
     },
     {
       "id": "listing-0061",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with an empty marker returns all keys",
       "tags": [
@@ -4511,6 +4564,7 @@
     },
     {
       "id": "listing-0062",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects without a marker echoes an empty Marker",
       "tags": [
@@ -4576,6 +4630,7 @@
     },
     {
       "id": "listing-0063",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects marker between keys starts listing after its sort position",
       "tags": [
@@ -4650,6 +4705,7 @@
     },
     {
       "id": "listing-0064",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with an unprintable marker echoes it and returns all keys",
       "tags": [
@@ -4731,6 +4787,7 @@
     },
     {
       "id": "listing-0065",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with non-numeric max-keys returns InvalidArgument",
       "tags": [
@@ -4798,6 +4855,7 @@
     },
     {
       "id": "listing-0066",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects default MaxKeys is 1000 and returns all keys",
       "tags": [
@@ -4878,6 +4936,7 @@
     },
     {
       "id": "listing-0067",
+      "group": "listing",
       "kind": "api",
       "title": "Anonymous ListObjects succeeds on a public-read bucket",
       "tags": [
@@ -4918,6 +4977,7 @@
     },
     {
       "id": "listing-0068",
+      "group": "listing",
       "kind": "api",
       "title": "Anonymous ListObjects on a private bucket returns AccessDenied",
       "tags": [
@@ -4953,6 +5013,7 @@
     },
     {
       "id": "listing-0069",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects entries carry the per-object ETag, Size and Owner",
       "description": "The source test also compares LastModified (truncated to whole seconds) between HeadObject and the listing; that sub-second-tolerant comparison is not expressible and is omitted.",
@@ -5114,6 +5175,7 @@
     },
     {
       "id": "listing-0070",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectVersions entries carry the per-object ETag, Size, Owner and VersionId",
       "description": "The source test also compares LastModified (truncated to whole seconds) between HeadObject and the listing; that sub-second-tolerant comparison is not expressible and is omitted.",
@@ -5283,6 +5345,7 @@
     },
     {
       "id": "listing-0071",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects with an underscore-prefixed key prefix returns the matching keys",
       "tags": [
@@ -5374,6 +5437,7 @@
     },
     {
       "id": "listing-0072",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with both ContinuationToken and StartAfter resumes from the token",
       "tags": [
@@ -5464,6 +5528,7 @@
     },
     {
       "id": "listing-0073",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 resumes listing from NextContinuationToken",
       "tags": [
@@ -5554,6 +5619,7 @@
     },
     {
       "id": "listing-0074",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with an empty ContinuationToken returns all keys",
       "tags": [
@@ -5635,6 +5701,7 @@
     },
     {
       "id": "listing-0075",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 default MaxKeys is 1000 and returns all keys",
       "tags": [
@@ -5715,6 +5782,7 @@
     },
     {
       "id": "listing-0076",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with MaxKeys=0 returns no keys and is not truncated",
       "tags": [
@@ -5784,6 +5852,7 @@
     },
     {
       "id": "listing-0077",
+      "group": "listing",
       "kind": "api",
       "title": "Anonymous ListObjectsV2 succeeds on a public-read bucket",
       "tags": [
@@ -5824,6 +5893,7 @@
     },
     {
       "id": "listing-0078",
+      "group": "listing",
       "kind": "api",
       "title": "Anonymous ListObjectsV2 on a private bucket returns AccessDenied",
       "tags": [
@@ -5859,6 +5929,7 @@
     },
     {
       "id": "listing-0079",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 StartAfter past the last key returns no keys",
       "tags": [
@@ -5929,6 +6000,7 @@
     },
     {
       "id": "listing-0080",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 StartAfter between keys starts listing after its sort position",
       "tags": [
@@ -6003,6 +6075,7 @@
     },
     {
       "id": "listing-0081",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with an unprintable StartAfter echoes it and returns all keys",
       "tags": [
@@ -6084,6 +6157,7 @@
     },
     {
       "id": "listing-0082",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with a prefix returns all 10 seeded objects",
       "tags": [
@@ -6201,6 +6275,7 @@
     },
     {
       "id": "listing-0083",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 accepts an empty Prefix and an empty Delimiter",
       "tags": [
@@ -6239,6 +6314,7 @@
     },
     {
       "id": "listing-0085",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects (v1) on an empty bucket returns no contents and is not truncated",
       "description": "The original test accepts an absent or empty Contents list; absence (AWS behavior) is asserted here.",
@@ -6277,6 +6353,7 @@
     },
     {
       "id": "listing-0086",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects (v1) with negative MaxKeys is rejected",
       "description": "The original test only asserts that some error is raised for MaxKeys=-1; AWS returns 400 InvalidArgument, but only the 400 status is asserted here.",
@@ -6311,6 +6388,7 @@
     },
     {
       "id": "listing-0088",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects (v1) Marker need not be an existing key",
       "tags": [
@@ -6376,6 +6454,7 @@
     },
     {
       "id": "listing-0089",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects (v1) with MaxKeys=0 returns no objects and is not truncated",
       "description": "The original test accepts an absent or empty Contents list; absence (AWS behavior) is asserted here.",
@@ -6438,6 +6517,7 @@
     },
     {
       "id": "listing-0090",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects (v1) Prefix on a nested hierarchy returns only keys under the prefix",
       "tags": [
@@ -6511,6 +6591,7 @@
     },
     {
       "id": "listing-0091",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects (v1) on a non-existing bucket returns NoSuchBucket",
       "tags": [
@@ -6537,6 +6618,7 @@
     },
     {
       "id": "listing-0093",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects (v1) sets IsTruncated when MaxKeys is smaller than the object count",
       "tags": [
@@ -6630,6 +6712,7 @@
     },
     {
       "id": "listing-0094",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects (v1) with Prefix returns only matching keys and echoes the prefix",
       "tags": [
@@ -6715,6 +6798,7 @@
     },
     {
       "id": "listing-0095",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 returns empty results for an empty bucket and a non-matching prefix",
       "description": "The original test accepts an absent or empty Contents list; absence (AWS behavior) is asserted here. The object is created mid-test, so PutObject is a step.",
@@ -6778,6 +6862,7 @@
     },
     {
       "id": "listing-0096",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with negative MaxKeys is rejected",
       "description": "The original test accepts error code InvalidArgument or InvalidRequest; code alternation is not expressible, so only the 400 status is asserted.",
@@ -6812,6 +6897,7 @@
     },
     {
       "id": "listing-0097",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 accepts MaxKeys above the 1000 cap",
       "description": "MaxKeys=2000 must succeed; with 10 objects in the bucket all 10 are returned (the original test asserted at most 1000).",
@@ -6929,6 +7015,7 @@
     },
     {
       "id": "listing-0098",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with MaxKeys=0 returns no objects",
       "description": "The original test accepts an absent or empty Contents list; absence (AWS behavior) is asserted here.",
@@ -7006,6 +7093,7 @@
     },
     {
       "id": "listing-0099",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with Delimiter navigates a nested hierarchy level by level",
       "tags": [
@@ -7113,6 +7201,7 @@
     },
     {
       "id": "listing-0100",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 paginates 25 objects in three pages via NextContinuationToken",
       "tags": [
@@ -7470,6 +7559,7 @@
     },
     {
       "id": "listing-0101",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 StartAfter beyond all keys returns an empty result",
       "description": "The original test accepts an absent or empty Contents list; absence (AWS behavior) is asserted here.",
@@ -7532,6 +7622,7 @@
     },
     {
       "id": "listing-0102",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 StartAfter need not be an existing key",
       "tags": [
@@ -7597,6 +7688,7 @@
     },
     {
       "id": "listing-0103",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 truncates when common prefixes exceed MaxKeys",
       "description": "15 single-object folders listed with Delimiter and MaxKeys=10: response is truncated and common prefixes are capped at MaxKeys (the original test asserted <= 10; the deterministic count is 10).",
@@ -7756,6 +7848,7 @@
     },
     {
       "id": "listing-0105",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with FetchOwner returns the single object listing",
       "description": "The original test only checks Owner sub-fields conditionally when Owner is present, so only the Contents count is asserted.",
@@ -7801,6 +7894,7 @@
     },
     {
       "id": "listing-0106",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 Prefix filter returns only keys under each prefix",
       "tags": [
@@ -7903,6 +7997,7 @@
     },
     {
       "id": "listing-0107",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 StartAfter returns only keys strictly after the given key",
       "tags": [
@@ -8033,6 +8128,7 @@
     },
     {
       "id": "listing-0108",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 MaxKeys limits the page and sets IsTruncated",
       "tags": [
@@ -8188,6 +8284,7 @@
     },
     {
       "id": "listing-0109",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 continuation tokens page through all 15 objects in 5 pages",
       "description": "Original test looped with ContinuationToken until IsTruncated was false and checked all 15 keys were returned; unrolled here as 5 pages of 3.",
@@ -8420,6 +8517,7 @@
     },
     {
       "id": "listing-0110",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with delimiter rolls directories into CommonPrefixes",
       "description": "Original test asserted at least the 3 expected directory prefixes; AWS returns exactly dir1/, dir2/ and special/ sorted.",
@@ -8585,6 +8683,7 @@
     },
     {
       "id": "listing-0111",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with Prefix returns only matching keys",
       "tags": [
@@ -8741,6 +8840,7 @@
     },
     {
       "id": "listing-0112",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with Prefix and Delimiter returns subdirectory CommonPrefixes",
       "description": "Original test asserted dir1/subdir1/ and dir1/subdir2/ both appear in CommonPrefixes.",
@@ -8904,6 +9004,7 @@
     },
     {
       "id": "listing-0113",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 StartAfter skips keys up to and including the marker",
       "description": "Original test asserted dir1/file1.txt is excluded and dir1/file2.txt is included; KeyCount 13 is the 13 keys sorting after the marker, which implies the exclusion.",
@@ -9064,6 +9165,7 @@
     },
     {
       "id": "listing-0114",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 on an empty bucket returns KeyCount 0 and no Contents",
       "tags": [
@@ -9100,6 +9202,7 @@
     },
     {
       "id": "listing-0115",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with a prefix lists keys containing special characters",
       "tags": [
@@ -9259,6 +9362,7 @@
     },
     {
       "id": "listing-0116",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjects (v1) and ListObjectsV2 return the same count for MaxKeys 5",
       "tags": [
@@ -9429,6 +9533,7 @@
     },
     {
       "id": "listing-0117",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with FetchOwner includes Owner in Contents entries",
       "tags": [
@@ -9590,6 +9695,7 @@
     },
     {
       "id": "listing-0118",
+      "group": "listing",
       "kind": "api",
       "title": "100 small objects in one bucket are all reported by ListObjectsV2",
       "description": "Source asserted KeyCount >= 100; the bucket contains exactly 100 objects so KeyCount 100 is the equivalent assertion.",
@@ -10624,6 +10730,7 @@
     },
     {
       "id": "listing-0119",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 pagination returns every key exactly once in order",
       "description": "Listing with a small MaxKeys and following ContinuationToken returns all keys across pages with no duplicates or omissions, in lexical order.",
@@ -10759,6 +10866,7 @@
     },
     {
       "id": "listing-0120",
+      "group": "listing",
       "kind": "api",
       "title": "Deleted objects do not appear in ListObjectsV2 (no phantoms)",
       "description": "Read-after-delete for listings: after deleting every key under a prefix an immediate list is empty. Object count reduced from the source's 50 to a representative sample.",
@@ -10900,6 +11008,7 @@
     },
     {
       "id": "listing-0121",
+      "group": "listing",
       "kind": "api",
       "title": "Objects are immediately visible in ListObjectsV2 after PUT",
       "description": "Read-after-write for listings: keys PUT under a prefix appear in an immediate list. Object count reduced from the source's 100 to a representative sample; no pagination boundary is crossed.",
@@ -11004,6 +11113,7 @@
     },
     {
       "id": "listing-0122",
+      "group": "listing",
       "kind": "api",
       "title": "ListObjectsV2 with delimiter groups top-level prefixes; full list returns every object",
       "description": "Lists a multi-level hierarchy with Delimiter=\"/\" (CommonPrefixes) and without a delimiter (all keys). Object count reduced from the source's 1000 to a representative sample.",

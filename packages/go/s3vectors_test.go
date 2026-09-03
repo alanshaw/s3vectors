@@ -26,52 +26,54 @@ func TestShippedSchemaMatchesManifest(t *testing.T) {
 
 func TestManifestAgreement(t *testing.T) {
 	m := Manifest()
-	if m.Version == "" || m.Total == 0 || len(m.Areas) == 0 {
+	if m.Version == "" || m.Total == 0 || len(m.Groups) == 0 {
 		t.Fatalf("manifest incomplete: %+v", m)
 	}
 	total := 0
-	for _, entry := range m.Areas {
-		f, err := Area(entry.Area)
+	for _, entry := range m.Groups {
+		f, err := Group(entry.Group)
 		if err != nil {
-			t.Fatalf("Area(%q): %v", entry.Area, err)
+			t.Fatalf("Group(%q): %v", entry.Group, err)
 		}
-		if f.Area != entry.Area {
-			t.Errorf("area mismatch: %q != %q", f.Area, entry.Area)
+		for i := range f.Vectors {
+			if f.Vectors[i].Group != entry.Group {
+				t.Errorf("%s: group mismatch: %q != %q", f.Vectors[i].ID, f.Vectors[i].Group, entry.Group)
+			}
 		}
 		if len(f.Vectors) != entry.Count {
-			t.Errorf("%s: %d vectors, manifest says %d", entry.Area, len(f.Vectors), entry.Count)
+			t.Errorf("%s: %d vectors, manifest says %d", entry.Group, len(f.Vectors), entry.Count)
 		}
 		total += len(f.Vectors)
 	}
 	if total != m.Total {
 		t.Errorf("total %d != manifest total %d", total, m.Total)
 	}
-	if _, err := Area("no-such-area"); err == nil {
-		t.Error("Area(no-such-area) should error")
+	if _, err := Group("no-such-group"); err == nil {
+		t.Error("Group(no-such-group) should error")
 	}
 }
 
-func TestRootEqualsUnionOfAreas(t *testing.T) {
+func TestRootEqualsUnionOfGroups(t *testing.T) {
 	all, err := All()
 	if err != nil {
 		t.Fatal(err)
 	}
-	names := Areas()
+	names := Groups()
 	if len(all) != len(names) {
-		t.Fatalf("All() %d files, Areas() %d names", len(all), len(names))
+		t.Fatalf("All() %d files, Groups() %d names", len(all), len(names))
 	}
 	ids := map[string]bool{}
 	for i, f := range all {
-		if f.Area != names[i] {
-			t.Errorf("order mismatch at %d: %q != %q", i, f.Area, names[i])
-		}
 		for _, v := range f.Vectors {
+			if v.Group != names[i] {
+				t.Errorf("order mismatch at %d: %q != %q", i, v.Group, names[i])
+			}
 			if ids[v.ID] {
 				t.Errorf("duplicate id %s", v.ID)
 			}
 			ids[v.ID] = true
-			if !strings.HasPrefix(v.ID, f.Area+"-") {
-				t.Errorf("%s not prefixed with %s", v.ID, f.Area)
+			if !strings.HasPrefix(v.ID, v.Group+"-") {
+				t.Errorf("%s not prefixed with %s", v.ID, v.Group)
 			}
 		}
 	}
@@ -151,7 +153,7 @@ func TestVectorShapeSmoke(t *testing.T) {
 // Strict decode of every embedded file: unknown JSON fields mean the Go model
 // has drifted from the corpus/schema.
 func TestStrictDecode(t *testing.T) {
-	for _, entry := range Manifest().Areas {
+	for _, entry := range Manifest().Groups {
 		raw, err := files.ReadFile("vectors/" + entry.File)
 		if err != nil {
 			t.Fatal(err)

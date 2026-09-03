@@ -11,7 +11,7 @@ semantics and runner outcome semantics.
 ├── schema
 │   └── vector.schema.json    the schema
 ├── vectors
-│   └── <area>.json           one file per feature area, each { "area", "vectors": [...] }
+│   └── <group>.json          one file per feature group, each { "vectors": [...] }
 ├── packages
 │   ├── js                    npm  @cloud-portable/s3vectors
 │   ├── python                PyPI cloud-portable-s3vectors
@@ -29,7 +29,7 @@ semantics and runner outcome semantics.
 ## Language packages
 
 The corpus ships as installable packages so runner authors never touch this
-repo's layout: each package exposes the parsed vectors (per area or all at
+repo's layout: each package exposes the parsed vectors (per group or all at
 once) plus a port of the deterministic data generator — and deliberately
 nothing else (no assertions, no matcher engine, no HTTP). See each package's
 README for usage:
@@ -51,8 +51,10 @@ the vector files' relative `$schema` links resolve. Vector JSON inside
 
 Every vector has:
 
-- **`id`** — stable, of the form `<area>-<NNNN>` (e.g. `multipart-0007`). Numbers are
-  monotonic per file and are never reused or renumbered; use ids in runner skip-lists.
+- **`id`** — stable, of the form `<group>-<NNNN>` (e.g. `multipart-0007`). Numbers are
+  monotonic per group and are never reused or renumbered; use ids in runner skip-lists.
+- **`group`** — the feature group this vector belongs to; equals the id prefix and the
+  name of the file (`<group>.json`) that carries it.
 - **`kind`** — `"api"` (a server round-trip test) or `"signing"` (an offline SigV4
   signing-algorithm test, from the AWS SigV4 test suite).
 - **`title`** / optional **`description`** — human-readable, for debugging.
@@ -67,7 +69,7 @@ Every vector has:
   `tier-3`: the tiers are defined over the S3 operation lists and signing is not an
   operation (signing vectors also never execute against the server under test).
 
-  Other conventional tags: the feature area (`multipart`, `versioning`, …), provenance
+  Other conventional tags: the feature group (`multipart`, `versioning`, …), provenance
   (`source:ceph-s3-tests`, `source:msst-s3`, `source:aws-sigv4-suite`,
   `source:storage-test`), quirk markers (`quirk:not-aws` — asserts behavior where AWS
   itself deviates from common S3 semantics), and free-form compliance overlays (`soc2`).
@@ -80,6 +82,7 @@ Every vector has:
 ```jsonc
 {
   "id": "object-crud-0042",
+  "group": "object-crud",
   "kind": "api",
   "title": "GetObject on a missing key returns NoSuchKey",
   "tags": ["tier-1", "object-crud", "errors", "source:storage-test"],
@@ -282,6 +285,7 @@ values — never real secrets.
 ```jsonc
 {
   "id": "signing-0011",
+  "group": "signing",
   "kind": "signing",
   "title": "SigV4: query parameters sorted by key, case-sensitive",
   "tags": ["tier-3", "signing", "source:aws-sigv4-suite"],
@@ -338,6 +342,7 @@ teardown.
 ```json
 {
   "id": "multipart-0001",
+  "group": "multipart",
   "kind": "api",
   "title": "Two-part multipart upload with full and ranged read-back",
   "tags": ["tier-1", "multipart", "source:msst-s3"],

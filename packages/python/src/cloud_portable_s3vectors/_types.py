@@ -111,6 +111,7 @@ Step = Union[OperationStepWrapper, HttpStepWrapper]
 
 class ApiVector(TypedDict, total=False):
     id: Required[str]
+    group: Required[str]
     kind: Required[Literal["api"]]
     title: Required[str]
     description: str
@@ -149,6 +150,7 @@ class SigningExpect(TypedDict, total=False):
 
 class SigningVector(TypedDict, total=False):
     id: Required[str]
+    group: Required[str]
     kind: Required[Literal["signing"]]
     title: Required[str]
     description: str
@@ -164,12 +166,11 @@ Vector = Union[ApiVector, SigningVector]
 
 
 class VectorFile(TypedDict, total=False):
-    area: Required[str]
     vectors: Required[list[Vector]]
 
 
-class AreaInfo(TypedDict):
-    area: str
+class GroupInfo(TypedDict):
+    group: str
     file: str
     count: int
 
@@ -178,4 +179,4 @@ class Manifest(TypedDict):
     version: str
     total: int
     schemaSha256: str
-    areas: list[AreaInfo]
+    groups: list[GroupInfo]

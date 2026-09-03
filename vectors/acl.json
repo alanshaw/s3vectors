@@ -1,9 +1,9 @@
 {
   "$schema": "../schema/vector.schema.json",
-  "area": "acl",
   "vectors": [
     {
       "id": "acl-0001",
+      "group": "acl",
       "kind": "api",
       "title": "Canned ACL public-read at create then PutBucketAcl private resets grants to owner FULL_CONTROL only",
       "tags": [
@@ -126,6 +126,7 @@
     },
     {
       "id": "acl-0002",
+      "group": "acl",
       "kind": "api",
       "title": "Canned ACL authenticated-read at create grants READ to AuthenticatedUsers plus owner FULL_CONTROL",
       "tags": [
@@ -211,6 +212,7 @@
     },
     {
       "id": "acl-0003",
+      "group": "acl",
       "kind": "api",
       "title": "CreateBucket with canned ACL public-read grants READ to AllUsers plus owner FULL_CONTROL",
       "tags": [
@@ -297,6 +299,7 @@
     },
     {
       "id": "acl-0004",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl private on an already-private bucket succeeds with 200",
       "tags": [
@@ -330,6 +333,7 @@
     },
     {
       "id": "acl-0005",
+      "group": "acl",
       "kind": "api",
       "title": "Canned ACL public-read-write at create grants READ and WRITE to AllUsers plus owner FULL_CONTROL",
       "tags": [
@@ -445,6 +449,7 @@
     },
     {
       "id": "acl-0006",
+      "group": "acl",
       "kind": "api",
       "title": "Default bucket ACL is a single FULL_CONTROL grant to the bucket owner",
       "description": "The source test compares Owner/grantee against configured main-user identity; here the owner identity is captured from GetBucketAcl and the grant list is asserted against it.",
@@ -517,6 +522,7 @@
     },
     {
       "id": "acl-0007",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl granting by a nonexistent email address returns UnresolvableGrantByEmailAddress",
       "tags": [
@@ -585,6 +591,7 @@
     },
     {
       "id": "acl-0008",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl granting to a nonexistent canonical user ID returns InvalidArgument",
       "tags": [
@@ -653,6 +660,7 @@
     },
     {
       "id": "acl-0009",
+      "group": "acl",
       "kind": "api",
       "title": "Bucket ACL user grant FULL_CONTROL lets the grantee read, read ACL, write and write ACL; owner is unchanged",
       "tags": [
@@ -834,6 +842,7 @@
     },
     {
       "id": "acl-0010",
+      "group": "acl",
       "kind": "api",
       "title": "Bucket ACL user grant READ lets the grantee read the bucket but not read ACL, write, or write ACL",
       "tags": [
@@ -1009,6 +1018,7 @@
     },
     {
       "id": "acl-0011",
+      "group": "acl",
       "kind": "api",
       "title": "Bucket ACL user grant READ_ACP lets the grantee read the ACL but not read, write, or write ACL",
       "tags": [
@@ -1184,6 +1194,7 @@
     },
     {
       "id": "acl-0012",
+      "group": "acl",
       "kind": "api",
       "title": "Bucket ACL user grant WRITE lets the grantee write objects but not read, read ACL, or write ACL",
       "tags": [
@@ -1359,6 +1370,7 @@
     },
     {
       "id": "acl-0013",
+      "group": "acl",
       "kind": "api",
       "title": "Bucket ACL user grant WRITE_ACP lets the grantee write the ACL but not read, read ACL, or write objects",
       "tags": [
@@ -1534,6 +1546,7 @@
     },
     {
       "id": "acl-0014",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl with an empty grant list revokes all grants including the owner's",
       "description": "The final step restores the owner FULL_CONTROL grant, mirroring the source test's restore so the bucket can be cleaned up.",
@@ -1627,6 +1640,7 @@
     },
     {
       "id": "acl-0015",
+      "group": "acl",
       "kind": "api",
       "title": "PutObjectAcl replacing the owner grant with FULL_CONTROL reads back the same single grant",
       "tags": [
@@ -1723,6 +1737,7 @@
     },
     {
       "id": "acl-0016",
+      "group": "acl",
       "kind": "api",
       "title": "Object canned ACL public-read then PutObjectAcl private resets grants to owner FULL_CONTROL only",
       "tags": [
@@ -1858,6 +1873,7 @@
     },
     {
       "id": "acl-0017",
+      "group": "acl",
       "kind": "api",
       "title": "PutObject with canned ACL authenticated-read grants READ to AuthenticatedUsers plus owner FULL_CONTROL",
       "tags": [
@@ -1954,6 +1970,7 @@
     },
     {
       "id": "acl-0018",
+      "group": "acl",
       "kind": "api",
       "title": "Canned ACL bucket-owner-full-control on an alt-owned object grants FULL_CONTROL to the bucket owner",
       "description": "The source test creates the bucket with ACL=public-read-write; here the ACL is applied to a prerequisite bucket via PutBucketAcl. Bucket-owner identity is captured from GetBucketAcl.",
@@ -2084,6 +2101,7 @@
     },
     {
       "id": "acl-0019",
+      "group": "acl",
       "kind": "api",
       "title": "Canned ACL bucket-owner-read on an alt-owned object grants READ to the bucket owner",
       "description": "The source test creates the bucket with ACL=public-read-write; here the ACL is applied to a prerequisite bucket via PutBucketAcl. Bucket-owner identity is captured from GetBucketAcl.",
@@ -2214,6 +2232,7 @@
     },
     {
       "id": "acl-0020",
+      "group": "acl",
       "kind": "api",
       "title": "PutObject with canned ACL public-read grants READ to AllUsers plus owner FULL_CONTROL",
       "tags": [
@@ -2310,6 +2329,7 @@
     },
     {
       "id": "acl-0021",
+      "group": "acl",
       "kind": "api",
       "title": "PutObject with canned ACL public-read-write grants READ and WRITE to AllUsers plus owner FULL_CONTROL",
       "tags": [
@@ -2437,6 +2457,7 @@
     },
     {
       "id": "acl-0022",
+      "group": "acl",
       "kind": "api",
       "title": "Default object ACL is a single FULL_CONTROL grant to the object owner",
       "tags": [
@@ -2514,6 +2535,7 @@
     },
     {
       "id": "acl-0023",
+      "group": "acl",
       "kind": "api",
       "title": "Replacing an object ACL does not change the object's ContentType or ETag",
       "description": "The source test creates the bucket with ACL=public-read-write (here PutBucketAcl on a prerequisite bucket) and injects an inert x-amz-foo request header via a boto3 event hook, which is dropped here; the asserted behavior is that attributes survive PutObjectAcl.",
@@ -2632,6 +2654,7 @@
     },
     {
       "id": "acl-0024",
+      "group": "acl",
       "kind": "api",
       "title": "Grantee with FULL_CONTROL can replace the object ACL but object ownership stays with the original owner",
       "description": "The source test creates the bucket with ACL=public-read-write; here the ACL is applied to a prerequisite bucket via PutBucketAcl. Owner identity is captured from GetBucketAcl.",
@@ -2756,6 +2779,7 @@
     },
     {
       "id": "acl-0025",
+      "group": "acl",
       "kind": "api",
       "title": "PutObjectAcl replacing the owner grant with READ reads back the same single grant",
       "tags": [
@@ -2852,6 +2876,7 @@
     },
     {
       "id": "acl-0026",
+      "group": "acl",
       "kind": "api",
       "title": "PutObjectAcl replacing the owner grant with READ_ACP reads back the same single grant",
       "tags": [
@@ -2948,6 +2973,7 @@
     },
     {
       "id": "acl-0027",
+      "group": "acl",
       "kind": "api",
       "title": "PutObjectAcl replacing the owner grant with WRITE reads back the same single grant",
       "tags": [
@@ -3044,6 +3070,7 @@
     },
     {
       "id": "acl-0028",
+      "group": "acl",
       "kind": "api",
       "title": "PutObjectAcl replacing the owner grant with WRITE_ACP reads back the same single grant",
       "tags": [
@@ -3140,6 +3167,7 @@
     },
     {
       "id": "acl-0029",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl with an explicit AllUsers group READ grant added to the owner grant is readable back",
       "tags": [
@@ -3262,6 +3290,7 @@
     },
     {
       "id": "acl-0030",
+      "group": "acl",
       "kind": "api",
       "title": "Private bucket with private object denies alt user all object reads, writes and listing",
       "tags": [
@@ -3403,6 +3432,7 @@
     },
     {
       "id": "acl-0031",
+      "group": "acl",
       "kind": "api",
       "title": "Private bucket with public-read object lets alt user read only that object",
       "tags": [
@@ -3544,6 +3574,7 @@
     },
     {
       "id": "acl-0032",
+      "group": "acl",
       "kind": "api",
       "title": "Private bucket with public-read-write object: alt user can only read that object, all writes denied",
       "tags": [
@@ -3685,6 +3716,7 @@
     },
     {
       "id": "acl-0033",
+      "group": "acl",
       "kind": "api",
       "title": "Private bucket with private object denies alt user all object reads, writes and ListObjectsV2",
       "tags": [
@@ -3826,6 +3858,7 @@
     },
     {
       "id": "acl-0034",
+      "group": "acl",
       "kind": "api",
       "title": "Private bucket with public-read object lets alt user read only that object (ListObjectsV2 denied)",
       "tags": [
@@ -3967,6 +4000,7 @@
     },
     {
       "id": "acl-0035",
+      "group": "acl",
       "kind": "api",
       "title": "Private bucket with public-read-write object: alt user can only read that object (ListObjectsV2 denied)",
       "tags": [
@@ -4108,6 +4142,7 @@
     },
     {
       "id": "acl-0036",
+      "group": "acl",
       "kind": "api",
       "title": "Public-read bucket with private objects: alt user can list but not read or write objects",
       "tags": [
@@ -4258,6 +4293,7 @@
     },
     {
       "id": "acl-0037",
+      "group": "acl",
       "kind": "api",
       "title": "Public-read bucket with public-read object: alt user can list and read the ACLed object, no writes",
       "tags": [
@@ -4408,6 +4444,7 @@
     },
     {
       "id": "acl-0038",
+      "group": "acl",
       "kind": "api",
       "title": "Public-read bucket with public-read-write object: alt user can list and read the ACLed object, all writes denied",
       "tags": [
@@ -4558,6 +4595,7 @@
     },
     {
       "id": "acl-0039",
+      "group": "acl",
       "kind": "api",
       "title": "Public-read-write bucket with private objects: alt user can list and write but not read",
       "tags": [
@@ -4699,6 +4737,7 @@
     },
     {
       "id": "acl-0040",
+      "group": "acl",
       "kind": "api",
       "title": "Public-read-write bucket with public-read object: alt user can list, write, and read only the ACLed object",
       "tags": [
@@ -4840,6 +4879,7 @@
     },
     {
       "id": "acl-0041",
+      "group": "acl",
       "kind": "api",
       "title": "Public-read-write bucket with public-read-write object: alt user can list, write, and read only the ACLed object",
       "tags": [
@@ -4981,6 +5021,7 @@
     },
     {
       "id": "acl-0042",
+      "group": "acl",
       "kind": "api",
       "title": "GetBucketOwnershipControls on a bucket created without ownership controls returns OwnershipControlsNotFoundError",
       "tags": [
@@ -5015,6 +5056,7 @@
     },
     {
       "id": "acl-0043",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketOwnershipControls BucketOwnerEnforced: rejected while bucket ACL is public-read, then enforces bucket-owner ownership and rejects non-default ACLs",
       "description": "The source test creates the bucket with ACL=public-read; here the ACL is applied to a prerequisite bucket via PutBucketAcl before setting ownership controls. Bucket-owner identity is captured from GetBucketAcl instead of test configuration.",
@@ -5391,6 +5433,7 @@
     },
     {
       "id": "acl-0044",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketOwnershipControls BucketOwnerPreferred: bucket-owner-full-control ACL transfers ownership to bucket owner, other writes stay owned by writer",
       "description": "Bucket-owner identity is captured from GetBucketAcl; the source test's owner-inequality assertions are expressed as equality with the alt writer's canonical ID.",
@@ -5761,6 +5804,7 @@
     },
     {
       "id": "acl-0045",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketOwnershipControls ObjectWriter: all objects stay owned by the writing identity regardless of ACL",
       "description": "The source test's owner-inequality assertions (owner != bucket owner) are expressed as equality with the alt writer's canonical ID.",
@@ -6116,6 +6160,7 @@
     },
     {
       "id": "acl-0046",
+      "group": "acl",
       "kind": "api",
       "title": "CreateBucket with x-amz-grant headers grants all five permissions to the grantee",
       "tags": [
@@ -6291,6 +6336,7 @@
     },
     {
       "id": "acl-0047",
+      "group": "acl",
       "kind": "api",
       "title": "BucketOwnerEnforced ownership: bucket owner owns all objects and non-default ACLs are rejected",
       "description": "The source compares object owners against the main account's user id from test config; here the bucket owner identity is captured from GetBucketAcl on the newly created bucket.",
@@ -6626,6 +6672,7 @@
     },
     {
       "id": "acl-0048",
+      "group": "acl",
       "kind": "api",
       "title": "BucketOwnerPreferred ownership: bucket-owner-full-control transfers object ownership",
       "description": "The source asserts writer-owned objects have an owner different from the bucket owner; since the writer is the alt credential, this is expressed as equality with the alt identity. The bucket owner identity is captured from GetBucketAcl.",
@@ -6998,6 +7045,7 @@
     },
     {
       "id": "acl-0049",
+      "group": "acl",
       "kind": "api",
       "title": "ObjectWriter ownership: the writer keeps object ownership regardless of ACL",
       "description": "The source asserts written objects have an owner different from the bucket owner; since the writer is the alt credential, this is expressed as equality with the alt identity.",
@@ -7358,6 +7406,7 @@
     },
     {
       "id": "acl-0050",
+      "group": "acl",
       "kind": "api",
       "title": "PutObject with x-amz-grant-* headers grants each permission to a second user",
       "description": "The source test injects five raw x-amz-grant-<perm> headers (read, write, read-acp, write-acp, full-control) for the alt user before signing. x-amz-grant-write has NO PutObject API parameter (AWS rejects object WRITE grants, hence quirk:not-aws), so the PUT must be a raw-HTTP step rather than an operation step. GetObjectAcl must then return all five grants for that user; check_grants compares element-wise, so the ordered array asserts the order READ, WRITE, READ_ACP, WRITE_ACP, FULL_CONTROL.",
@@ -7484,6 +7533,7 @@
     },
     {
       "id": "acl-0051",
+      "group": "acl",
       "kind": "api",
       "title": "PutObject combining a canned ACL with grant headers is rejected with InvalidRequest",
       "tags": [
@@ -7521,6 +7571,7 @@
     },
     {
       "id": "acl-0052",
+      "group": "acl",
       "kind": "api",
       "title": "PutObjectAcl on a non-existent key returns NoSuchKey",
       "tags": [
@@ -7556,6 +7607,7 @@
     },
     {
       "id": "acl-0053",
+      "group": "acl",
       "kind": "api",
       "title": "PutObjectAcl with malformed grantee id or URI is rejected with InvalidArgument",
       "tags": [
@@ -7613,6 +7665,7 @@
     },
     {
       "id": "acl-0054",
+      "group": "acl",
       "kind": "api",
       "title": "PutObjectAcl with an empty grant list is accepted and the owner retains read access",
       "tags": [
@@ -7680,6 +7733,7 @@
     },
     {
       "id": "acl-0055",
+      "group": "acl",
       "kind": "api",
       "title": "Owner can read back an object written with ACL private",
       "tags": [
@@ -7723,6 +7777,7 @@
     },
     {
       "id": "acl-0056",
+      "group": "acl",
       "kind": "api",
       "title": "DeleteBucketOwnershipControls on a non-existing bucket returns NoSuchBucket",
       "tags": [
@@ -7749,6 +7804,7 @@
     },
     {
       "id": "acl-0057",
+      "group": "acl",
       "kind": "api",
       "title": "After DeleteBucketOwnershipControls, GetBucketOwnershipControls returns not-found",
       "description": "Original test accepts OwnershipControlsNotFoundError, OwnershipControlsNotFound or NoSuchOwnershipControls for the final get; all are HTTP 404, so only the status is asserted.",
@@ -7790,6 +7846,7 @@
     },
     {
       "id": "acl-0058",
+      "group": "acl",
       "kind": "api",
       "title": "New bucket has default ObjectOwnership of BucketOwnerEnforced",
       "tags": [
@@ -7829,6 +7886,7 @@
     },
     {
       "id": "acl-0059",
+      "group": "acl",
       "kind": "api",
       "title": "GetBucketOwnershipControls on a non-existing bucket returns NoSuchBucket",
       "tags": [
@@ -7855,6 +7913,7 @@
     },
     {
       "id": "acl-0060",
+      "group": "acl",
       "kind": "api",
       "title": "GetBucketOwnershipControls returns the ownership rule that was set",
       "tags": [
@@ -7909,6 +7968,7 @@
     },
     {
       "id": "acl-0061",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketOwnershipControls with an invalid ObjectOwnership value is rejected",
       "description": "Valid values are BucketOwnerPreferred, BucketOwnerEnforced, ObjectWriter. Original test accepts MalformedXML or InvalidArgument; both are HTTP 400, so only the status is asserted.",
@@ -7949,6 +8009,7 @@
     },
     {
       "id": "acl-0062",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketOwnershipControls with more than one rule is rejected",
       "description": "Only one ownership rule is allowed. Original test accepts MalformedXML or InvalidArgument; both are HTTP 400, so only the status is asserted.",
@@ -7992,6 +8053,7 @@
     },
     {
       "id": "acl-0063",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketOwnershipControls on a non-existing bucket returns NoSuchBucket",
       "tags": [
@@ -8025,6 +8087,7 @@
     },
     {
       "id": "acl-0064",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketOwnershipControls with ObjectWriter succeeds",
       "tags": [
@@ -8060,6 +8123,7 @@
     },
     {
       "id": "acl-0065",
+      "group": "acl",
       "kind": "api",
       "title": "GetBucketAcl on a non-existing bucket returns NoSuchBucket",
       "tags": [
@@ -8086,6 +8150,7 @@
     },
     {
       "id": "acl-0068",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl accepts canned ACL public-read",
       "tags": [
@@ -8115,6 +8180,7 @@
     },
     {
       "id": "acl-0069",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl accepts canned ACL public-read-write",
       "tags": [
@@ -8144,6 +8210,7 @@
     },
     {
       "id": "acl-0070",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl accepts canned ACL authenticated-read",
       "tags": [
@@ -8173,6 +8240,7 @@
     },
     {
       "id": "acl-0071",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl GrantReadACP to owner id produces a READ_ACP grant",
       "tags": [
@@ -8230,6 +8298,7 @@
     },
     {
       "id": "acl-0072",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl GrantWriteACP to owner id produces a WRITE_ACP grant",
       "tags": [
@@ -8287,6 +8356,7 @@
     },
     {
       "id": "acl-0073",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl with an invalid canned ACL value returns InvalidArgument",
       "tags": [
@@ -8321,6 +8391,7 @@
     },
     {
       "id": "acl-0074",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl with both a canned ACL and a grant header returns InvalidRequest",
       "tags": [
@@ -8356,6 +8427,7 @@
     },
     {
       "id": "acl-0075",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl on a non-existing bucket returns NoSuchBucket",
       "tags": [
@@ -8383,6 +8455,7 @@
     },
     {
       "id": "acl-0077",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl canned ACL private succeeds and GetBucketAcl returns Owner and Grants",
       "tags": [
@@ -8430,6 +8503,7 @@
     },
     {
       "id": "acl-0078",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl canned ACL public-read succeeds and GetBucketAcl returns grants",
       "tags": [
@@ -8474,6 +8548,7 @@
     },
     {
       "id": "acl-0079",
+      "group": "acl",
       "kind": "api",
       "title": "Bucket ACL can be updated repeatedly across canned values",
       "tags": [
@@ -8536,6 +8611,7 @@
     },
     {
       "id": "acl-0080",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl with a full AccessControlPolicy granting owner FULL_CONTROL",
       "tags": [
@@ -8604,6 +8680,7 @@
     },
     {
       "id": "acl-0081",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl GrantFullControl to owner id produces a FULL_CONTROL grant",
       "tags": [
@@ -8661,6 +8738,7 @@
     },
     {
       "id": "acl-0082",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl GrantRead to owner id produces a READ grant",
       "tags": [
@@ -8718,6 +8796,7 @@
     },
     {
       "id": "acl-0083",
+      "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl GrantWrite to owner id produces a WRITE grant",
       "tags": [
@@ -8775,6 +8854,7 @@
     },
     {
       "id": "acl-0084",
+      "group": "acl",
       "kind": "api",
       "title": "Default bucket ACL has an owner and a FULL_CONTROL grant",
       "tags": [

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "cloud-portable-s3vectors"
 version = "1.0.0"
-description = "Language-independent S3 API compatibility test vectors, parsed and importable per feature area, plus the deterministic test-data generator"
+description = "Language-independent S3 API compatibility test vectors, parsed and importable per feature group, plus the deterministic test-data generator"
 readme = "README.md"
 license = "Apache-2.0 OR MIT"
 requires-python = ">=3.10"

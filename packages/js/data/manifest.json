@@ -1,120 +1,120 @@
 {
   "version": "1.0.0",
   "total": 1191,
-  "schemaSha256": "6112400431c1f8a0b6bb35aa43f52f12d5459fb5166ec603e15d94bae1208460",
-  "areas": [
+  "schemaSha256": "5bf42eee7982ba136d38bc2667697f3387b0bf1928191e067bcef35707a811b9",
+  "groups": [
     {
-      "area": "acl",
+      "group": "acl",
       "file": "acl.json",
       "count": 81
     },
     {
-      "area": "anon-access",
+      "group": "anon-access",
       "file": "anon-access.json",
       "count": 12
     },
     {
-      "area": "bucket-logging",
+      "group": "bucket-logging",
       "file": "bucket-logging.json",
       "count": 11
     },
     {
-      "area": "bucket",
+      "group": "bucket",
       "file": "bucket.json",
       "count": 49
     },
     {
-      "area": "checksums",
+      "group": "checksums",
       "file": "checksums.json",
       "count": 44
     },
     {
-      "area": "conditional",
+      "group": "conditional",
       "file": "conditional.json",
       "count": 57
     },
     {
-      "area": "copy",
+      "group": "copy",
       "file": "copy.json",
       "count": 48
     },
     {
-      "area": "cors",
+      "group": "cors",
       "file": "cors.json",
       "count": 21
     },
     {
-      "area": "encoding",
+      "group": "encoding",
       "file": "encoding.json",
       "count": 22
     },
     {
-      "area": "errors",
+      "group": "errors",
       "file": "errors.json",
       "count": 8
     },
     {
-      "area": "lifecycle-config",
+      "group": "lifecycle-config",
       "file": "lifecycle-config.json",
       "count": 29
     },
     {
-      "area": "listing",
+      "group": "listing",
       "file": "listing.json",
       "count": 111
     },
     {
-      "area": "misc",
+      "group": "misc",
       "file": "misc.json",
       "count": 11
     },
     {
-      "area": "multipart",
+      "group": "multipart",
       "file": "multipart.json",
       "count": 167
     },
     {
-      "area": "object-crud",
+      "group": "object-crud",
       "file": "object-crud.json",
       "count": 159
     },
     {
-      "area": "object-lock",
+      "group": "object-lock",
       "file": "object-lock.json",
       "count": 68
     },
     {
-      "area": "policy",
+      "group": "policy",
       "file": "policy.json",
       "count": 53
     },
     {
-      "area": "presigned",
+      "group": "presigned",
       "file": "presigned.json",
       "count": 7
     },
     {
-      "area": "signing",
+      "group": "signing",
       "file": "signing.json",
       "count": 31
     },
     {
-      "area": "sse",
+      "group": "sse",
       "file": "sse.json",
       "count": 44
     },
     {
-      "area": "tagging",
+      "group": "tagging",
       "file": "tagging.json",
       "count": 44
     },
     {
-      "area": "versioning",
+      "group": "versioning",
       "file": "versioning.json",
       "count": 93
     },
     {
-      "area": "wire-headers",
+      "group": "wire-headers",
       "file": "wire-headers.json",
       "count": 21
     }
