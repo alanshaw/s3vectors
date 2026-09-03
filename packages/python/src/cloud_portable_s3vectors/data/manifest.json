@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "total": 1191,
+  "total": 1187,
   "schemaSha256": "5bf42eee7982ba136d38bc2667697f3387b0bf1928191e067bcef35707a811b9",
   "groups": [
     {
@@ -49,11 +49,6 @@
       "count": 22
     },
     {
-      "group": "errors",
-      "file": "errors.json",
-      "count": 8
-    },
-    {
       "group": "lifecycle-config",
       "file": "lifecycle-config.json",
       "count": 29
@@ -71,12 +66,12 @@
     {
       "group": "multipart",
       "file": "multipart.json",
-      "count": 167
+      "count": 168
     },
     {
       "group": "object-crud",
       "file": "object-crud.json",
-      "count": 159
+      "count": 162
     },
     {
       "group": "object-lock",

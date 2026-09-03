@@ -4806,7 +4806,8 @@
         "tier-1",
         "object-crud",
         "errors",
-        "source:ceph-s3-tests"
+        "source:ceph-s3-tests",
+        "source:msst-s3"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L1582",
       "steps": [
@@ -15570,6 +15571,128 @@
               "response": {
                 "ETag": "${data.v2.etag}"
               }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-crud-0199",
+      "group": "object-crud",
+      "kind": "api",
+      "title": "GetObject in a non-existent bucket returns 404 NoSuchBucket",
+      "tags": [
+        "tier-1",
+        "object-crud",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_error_handling.py#L15",
+      "steps": [
+        {
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "nonexistent-bucket-a7c3f9e2b1d8",
+              "Key": "any-key"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchBucket"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-crud-0200",
+      "group": "object-crud",
+      "kind": "api",
+      "title": "HeadObject with negative PartNumber returns 400",
+      "tags": [
+        "tier-1",
+        "object-crud",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_head_object_additional.py#L29",
+      "prerequisites": [
+        {
+          "$bucket": {
+            "handle": "b1"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "PartNumber": -3
+            },
+            "expect": {
+              "status": 400
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "object-crud-0201",
+      "group": "object-crud",
+      "kind": "api",
+      "title": "1000-byte object key is accepted; 1025-byte key is rejected",
+      "description": "S3 keys are limited to 1024 bytes. The source test accepted KeyTooLongError or InvalidRequest; AWS returns KeyTooLongError.",
+      "tags": [
+        "tier-1",
+        "errors",
+        "object-crud",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_special_characters.py#L259",
+      "prerequisites": [
+        {
+          "$bucket": {
+            "handle": "b1"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "Body": "long key test"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "expect": {
+              "body": "long key test"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "Body": "long key test"
+            },
+            "expect": {
+              "status": 400,
+              "error": "KeyTooLongError"
             }
           }
         }
