@@ -34,7 +34,6 @@ corpus! {
     "copy" => "copy.json",
     "cors" => "cors.json",
     "encoding" => "encoding.json",
-    "errors" => "errors.json",
     "lifecycle-config" => "lifecycle-config.json",
     "listing" => "listing.json",
     "misc" => "misc.json",
@@ -50,7 +49,7 @@ corpus! {
     "wire-headers" => "wire-headers.json",
 }
 
-const GROUP_COUNT: usize = 23;
+const GROUP_COUNT: usize = 22;
 
 static MANIFEST_JSON: &str = include_str!("../vectors/manifest.json");
 
