@@ -6,15 +6,15 @@ deterministic test-data generator. The module version identifies the corpus
 snapshot — the same version ships for JS, Python, Go and Rust.
 
 ```sh
-go get github.com/cloud-portable/s3vectors/packages/go
+go get github.com/alanshaw/s3vectors/packages/go
 ```
 
 ## Usage
 
 ```go
 import (
-    s3vectors "github.com/cloud-portable/s3vectors/packages/go"
-    "github.com/cloud-portable/s3vectors/packages/go/datagen"
+    s3vectors "github.com/alanshaw/s3vectors/packages/go"
+    "github.com/alanshaw/s3vectors/packages/go/datagen"
 )
 
 // everything

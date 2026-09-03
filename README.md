@@ -15,7 +15,7 @@ semantics and runner outcome semantics.
 ├── packages
 │   ├── js                    npm  @cloud-portable/s3vectors
 │   ├── python                PyPI cloud-portable-s3vectors
-│   ├── go                    github.com/cloud-portable/s3vectors/packages/go
+│   ├── go                    github.com/alanshaw/s3vectors/packages/go
 │   └── rust                  crates.io cloud-portable-s3vectors
 ├── scripts
 │   ├── datagen.js            reference data generator        (node datagen.js --self-test)
@@ -38,7 +38,7 @@ README for usage:
 |---|---|---|
 | JavaScript | `npm i @cloud-portable/s3vectors` | [packages/js](packages/js) |
 | Python | `pip install cloud-portable-s3vectors` | [packages/python](packages/python) |
-| Go | `go get github.com/cloud-portable/s3vectors/packages/go` | [packages/go](packages/go) |
+| Go | `go get github.com/alanshaw/s3vectors/packages/go` | [packages/go](packages/go) |
 | Rust | `cargo add cloud-portable-s3vectors` | [packages/rust](packages/rust) |
 
 The package version identifies the corpus snapshot and is identical across all

@@ -76,7 +76,7 @@ The full checklist, equivalent to what the workflow does:
    Optionally warm the Go module proxy:
 
    ```sh
-   GOPROXY=proxy.golang.org go list -m github.com/cloud-portable/s3vectors/packages/go@vX.Y.Z
+   GOPROXY=proxy.golang.org go list -m github.com/alanshaw/s3vectors/packages/go@vX.Y.Z
    ```
 
 ## Notes

@@ -15,7 +15,7 @@ import (
 	"hash/crc64"
 	"strconv"
 
-	s3vectors "github.com/cloud-portable/s3vectors/packages/go"
+	s3vectors "github.com/alanshaw/s3vectors/packages/go"
 )
 
 // DerivedFields lists the fields available as ${data.<name>.<field>} placeholders.

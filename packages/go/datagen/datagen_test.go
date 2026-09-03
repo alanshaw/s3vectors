@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	s3vectors "github.com/cloud-portable/s3vectors/packages/go"
+	s3vectors "github.com/alanshaw/s3vectors/packages/go"
 )
 
 // Independently computed check values shared by all four language ports.

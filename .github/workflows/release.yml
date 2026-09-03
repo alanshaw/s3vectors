@@ -164,7 +164,7 @@ jobs:
           - npm: [\`@cloud-portable/s3vectors\`](https://www.npmjs.com/package/@cloud-portable/s3vectors/v/$VERSION)
           - PyPI: [\`cloud-portable-s3vectors\`](https://pypi.org/project/cloud-portable-s3vectors/$VERSION/)
           - crates.io: [\`cloud-portable-s3vectors\`](https://crates.io/crates/cloud-portable-s3vectors/$VERSION)
-          - Go: \`go get github.com/cloud-portable/s3vectors/packages/go@v$VERSION\`
+          - Go: \`go get github.com/alanshaw/s3vectors/packages/go@v$VERSION\`
           EOF
         env:
           GH_TOKEN: ${{ github.token }}
