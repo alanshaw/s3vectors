@@ -22,16 +22,16 @@ BLOCK0 = "b8cc3d1fcf7818feab07f224263256110eeb3b576a94ef8e7e439b48fc77998b"
 BLOCK1 = "64a3a04c326aae7efd121f8468df1ac90ead2ece1e952353903cbcb6ae47618d"
 
 SPECS = {
-    "t40": {"kind": "prng", "seed": "test", "size": 40},
-    "t32": {"kind": "prng", "seed": "test", "size": 32},
-    "t10": {"kind": "prng", "seed": "test", "size": 10},
-    "aaa": {"kind": "pattern", "pattern": "A", "size": 5},
-    "abc": {"kind": "pattern", "pattern": "abc", "size": 8},
-    "bin": {"kind": "pattern", "patternBase64": "3q2+7w==", "size": 6},
-    "sl": {"kind": "slice", "of": "t40", "offset": 30, "length": 6},
-    "chain": {"kind": "slice", "of": "sl", "offset": 0, "length": 1},
-    "over": {"kind": "slice", "of": "t10", "offset": 8, "length": 8},
-    "check": {"kind": "pattern", "pattern": "123456789", "size": 9},
+    "t40": {"$prng": {"seed": "test", "size": 40}},
+    "t32": {"$prng": {"seed": "test", "size": 32}},
+    "t10": {"$prng": {"seed": "test", "size": 10}},
+    "aaa": {"$pattern": {"pattern": "A", "size": 5}},
+    "abc": {"$pattern": {"pattern": "abc", "size": 8}},
+    "bin": {"$pattern": {"patternBase64": "3q2+7w==", "size": 6}},
+    "sl": {"$slice": {"of": "t40", "offset": 30, "length": 6}},
+    "chain": {"$slice": {"of": "sl", "offset": 0, "length": 1}},
+    "over": {"$slice": {"of": "t10", "offset": 8, "length": 8}},
+    "check": {"$pattern": {"pattern": "123456789", "size": 9}},
 }
 
 
@@ -105,7 +105,19 @@ class TestCorpus(unittest.TestCase):
                 if v["kind"] == "api":
                     self.assertTrue(v["steps"], v["id"])
                     for s in v["steps"]:
-                        self.assertNotEqual("operation" in s, "http" in s, v["id"])
+                        self.assertNotEqual("$operation" in s, "$http" in s, v["id"])
+                        self.assertEqual(len(s), 1, v["id"])
+                    for p in v.get("prerequisites", []):
+                        self.assertEqual(len(p), 1, v["id"])
+                        self.assertTrue(
+                            "$bucket" in p or "$object" in p or "$credential" in p, v["id"]
+                        )
+                    for name, spec in v.get("data", {}).items():
+                        self.assertEqual(len(spec), 1, f"{v['id']}/{name}")
+                        self.assertTrue(
+                            "$prng" in spec or "$pattern" in spec or "$slice" in spec,
+                            f"{v['id']}/{name}",
+                        )
                 else:
                     self.assertTrue(v["expect"]["authorization"], v["id"])
 
@@ -123,9 +135,14 @@ class TestCorpus(unittest.TestCase):
                     continue
                 data = v["data"]
                 for name, spec in data.items():
-                    parent = data[spec["of"]]["size"] if spec["kind"] == "slice" else spec["size"]
-                    if spec["kind"] != "slice" and spec["size"] <= generate_cap:
-                        self.assertEqual(len(datagen.generate(data, name)), spec["size"], f"{v['id']}/{name}")
+                    if "$slice" in spec:
+                        p = data[spec["$slice"]["of"]]
+                        parent = (p.get("$prng") or p["$pattern"])["size"]
+                    else:
+                        size = (spec.get("$prng") or spec["$pattern"])["size"]
+                        parent = size
+                        if size <= generate_cap:
+                            self.assertEqual(len(datagen.generate(data, name)), size, f"{v['id']}/{name}")
                     if parent <= derived_cap:
                         for field in datagen.DERIVED_FIELDS:
                             datagen.derived(data, name, field)

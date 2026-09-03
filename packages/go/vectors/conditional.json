@@ -17,104 +17,123 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19734",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "*"
-          },
-          "expect": {
-            "status": 204
-          }
-        },
-        {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 204
-          }
-        },
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "version": "VersionId",
-            "etag": "ETag"
-          }
-        },
-        {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
-          }
-        },
-        {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "${cap.etag}"
-          },
-          "expect": {
-            "response": {
-              "DeleteMarker": true
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "*"
+            },
+            "expect": {
+              "status": 204
             }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "*"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 204
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "version": "VersionId",
+              "etag": "ETag"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "*"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "${cap.etag}"
+            },
+            "expect": {
+              "response": {
+                "DeleteMarker": true
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "*"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "*"
+            }
           }
         }
       ]
@@ -134,64 +153,75 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19819",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "mtime": "LastModified"
-          }
-        },
-        {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
-          }
-        },
-        {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchLastModifiedTime": "${cap.mtime}"
-          },
-          "expect": {
-            "response": {
-              "DeleteMarker": true
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
             }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "mtime": "LastModified"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchLastModifiedTime": "${cap.mtime}"
+            },
+            "expect": {
+              "response": {
+                "DeleteMarker": true
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -211,56 +241,65 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19887",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchSize": 9999
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchSize": 9999
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchSize": 0
-          },
-          "expect": {
-            "response": {
-              "DeleteMarker": {
-                "$exists": true
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchSize": 0
+            },
+            "expect": {
+              "response": {
+                "DeleteMarker": {
+                  "$exists": true
+                }
               }
             }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchSize": 9999
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchSize": 9999
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -279,76 +318,91 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19709",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "etag": "ETag"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "etag": "ETag"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "${cap.etag}"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "${cap.etag}"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "*"
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "*"
+            },
+            "expect": {
+              "status": 204
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 204
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "*"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "*"
+            }
           }
         }
       ]
@@ -367,57 +421,68 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19798",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            }
           }
         },
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "mtime": "LastModified"
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "mtime": "LastModified"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchLastModifiedTime": "${cap.mtime}"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchLastModifiedTime": "${cap.mtime}"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+            },
+            "expect": {
+              "status": 204
+            }
           }
         }
       ]
@@ -436,47 +501,56 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19866",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchSize": 9999
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchSize": 9999
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchSize": 0
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchSize": 0
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatchSize": 9999
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatchSize": 9999
+            },
+            "expect": {
+              "status": 204
+            }
           }
         }
       ]
@@ -496,87 +570,102 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19769",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "version": "VersionId",
-            "etag": "ETag"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "version": "VersionId",
+              "etag": "ETag"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}",
-            "IfMatch": "${cap.etag}"
-          },
-          "expect": {
-            "response": {
-              "DeleteMarker": {
-                "$absent": true
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}",
+              "IfMatch": "${cap.etag}"
+            },
+            "expect": {
+              "response": {
+                "DeleteMarker": {
+                  "$absent": true
+                }
               }
             }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}",
-            "IfMatch": "*"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}",
+              "IfMatch": "*"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}",
-            "IfMatch": "badetag"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}",
+              "IfMatch": "badetag"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "version2": "VersionId"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "version2": "VersionId"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version2}",
-            "IfMatch": "*"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version2}",
+              "IfMatch": "*"
+            }
           }
         }
       ]
@@ -596,72 +685,83 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19843",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "version": "VersionId"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "version": "VersionId"
+            }
           }
         },
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}"
-          },
-          "capture": {
-            "mtime": "LastModified"
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}"
+            },
+            "capture": {
+              "mtime": "LastModified"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}",
-            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}",
+              "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}",
-            "IfMatchLastModifiedTime": "${cap.mtime}"
-          },
-          "expect": {
-            "response": {
-              "DeleteMarker": {
-                "$absent": true
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}",
+              "IfMatchLastModifiedTime": "${cap.mtime}"
+            },
+            "expect": {
+              "response": {
+                "DeleteMarker": {
+                  "$absent": true
+                }
               }
             }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}",
-            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}",
+              "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+            },
+            "expect": {
+              "status": 204
+            }
           }
         }
       ]
@@ -681,61 +781,70 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19910",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "version": "VersionId"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "version": "VersionId"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}",
-            "IfMatchSize": 9999
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}",
+              "IfMatchSize": 9999
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}",
-            "IfMatchSize": 0
-          },
-          "expect": {
-            "response": {
-              "DeleteMarker": {
-                "$absent": true
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}",
+              "IfMatchSize": 0
+            },
+            "expect": {
+              "response": {
+                "DeleteMarker": {
+                  "$absent": true
+                }
               }
             }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}",
-            "IfMatchSize": 9999
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}",
+              "IfMatchSize": 9999
+            },
+            "expect": {
+              "status": 204
+            }
           }
         }
       ]
@@ -755,89 +864,98 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19953",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "etag": "ETag"
-          }
-        },
-        {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "ETag": "badetag"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "etag": "ETag"
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "ETag": "${cap.etag}"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Deleted": [
-                {
-                  "Key": "obj",
-                  "DeleteMarker": true
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "ETag": "badetag"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "ETag": "badetag"
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "ETag": "${cap.etag}"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Deleted": [
+                  {
+                    "Key": "obj",
+                    "DeleteMarker": true
+                  }
+                ]
+              }
             }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "ETag": "badetag"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
           }
         }
@@ -858,96 +976,107 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20020",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "mtime": "LastModified"
-          }
-        },
-        {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "LastModifiedTime": "2015-01-01T00:00:00Z"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "LastModifiedTime": "${cap.mtime}"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Deleted": [
-                {
-                  "Key": "obj",
-                  "DeleteMarker": true
-                }
-              ]
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "mtime": "LastModified"
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "LastModifiedTime": "2015-01-01T00:00:00Z"
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "LastModifiedTime": "2015-01-01T00:00:00Z"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "LastModifiedTime": "${cap.mtime}"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Deleted": [
+                  {
+                    "Key": "obj",
+                    "DeleteMarker": true
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "LastModifiedTime": "2015-01-01T00:00:00Z"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
           }
         }
@@ -967,82 +1096,91 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19933",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "etag": "ETag"
-          }
-        },
-        {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "ETag": "badetag"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "etag": "ETag"
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "ETag": "${cap.etag}"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Deleted": [
-                {
-                  "Key": "obj"
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "ETag": "badetag"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "ETag": "badetag"
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "ETag": "${cap.etag}"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Deleted": [
+                  {
+                    "Key": "obj"
+                  }
+                ]
+              }
             }
-          },
-          "expect": {
-            "status": 200
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "ETag": "badetag"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
           }
         }
       ]
@@ -1061,89 +1199,100 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19998",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "mtime": "LastModified"
-          }
-        },
-        {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "LastModifiedTime": "2015-01-01T00:00:00Z"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "LastModifiedTime": "${cap.mtime}"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Deleted": [
-                {
-                  "Key": "obj"
-                }
-              ]
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "mtime": "LastModified"
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "LastModifiedTime": "2015-01-01T00:00:00Z"
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "LastModifiedTime": "2015-01-01T00:00:00Z"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
-          },
-          "expect": {
-            "status": 200
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "LastModifiedTime": "${cap.mtime}"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Deleted": [
+                  {
+                    "Key": "obj"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "LastModifiedTime": "2015-01-01T00:00:00Z"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
           }
         }
       ]
@@ -1162,79 +1311,88 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20071",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          }
-        },
-        {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "Size": 9999
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "Size": 0
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Deleted": [
-                {
-                  "Key": "obj"
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "Size": 9999
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "Size": 9999
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "Size": 0
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Deleted": [
+                  {
+                    "Key": "obj"
+                  }
+                ]
+              }
             }
-          },
-          "expect": {
-            "status": 200
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "Size": 9999
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
           }
         }
       ]
@@ -1254,90 +1412,99 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19975",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "etag": "ETag",
-            "version": "VersionId"
-          }
-        },
-        {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "VersionId": "${cap.version}",
-                  "ETag": "badetag"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "etag": "ETag",
+              "version": "VersionId"
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "VersionId": "${cap.version}",
-                  "ETag": "${cap.etag}"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Deleted": [
-                {
-                  "Key": "obj",
-                  "DeleteMarker": {
-                    "$absent": true
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "VersionId": "${cap.version}",
+                    "ETag": "badetag"
                   }
-                }
-              ]
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "VersionId": "${cap.version}",
-                  "ETag": "badetag"
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "VersionId": "${cap.version}",
+                    "ETag": "${cap.etag}"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Deleted": [
+                  {
+                    "Key": "obj",
+                    "DeleteMarker": {
+                      "$absent": true
+                    }
+                  }
+                ]
+              }
             }
-          },
-          "expect": {
-            "status": 200
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "VersionId": "${cap.version}",
+                    "ETag": "badetag"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
           }
         }
       ]
@@ -1357,104 +1524,117 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20045",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "capture": {
-            "version": "VersionId"
-          }
-        },
-        {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "VersionId": "${cap.version}"
-          },
-          "capture": {
-            "mtime": "LastModified"
-          }
-        },
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          }
-        },
-        {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "VersionId": "${cap.version}",
-                  "LastModifiedTime": "2015-01-01T00:00:00Z"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "capture": {
+              "version": "VersionId"
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "VersionId": "${cap.version}",
-                  "LastModifiedTime": "${cap.mtime}"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Deleted": [
-                {
-                  "Key": "obj"
-                }
-              ]
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "VersionId": "${cap.version}"
+            },
+            "capture": {
+              "mtime": "LastModified"
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "VersionId": "${cap.version}",
-                  "LastModifiedTime": "2015-01-01T00:00:00Z"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
             }
-          },
-          "expect": {
-            "status": 200
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "VersionId": "${cap.version}",
+                    "LastModifiedTime": "2015-01-01T00:00:00Z"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "VersionId": "${cap.version}",
+                    "LastModifiedTime": "${cap.mtime}"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Deleted": [
+                  {
+                    "Key": "obj"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "VersionId": "${cap.version}",
+                    "LastModifiedTime": "2015-01-01T00:00:00Z"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
           }
         }
       ]
@@ -1473,99 +1653,114 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19623",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "*"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "*"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "Body": "data1",
-            "IfNoneMatch": "deadbeef"
-          },
-          "capture": {
-            "etag1": "ETag"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "Body": "data1",
+              "IfNoneMatch": "deadbeef"
+            },
+            "capture": {
+              "etag1": "ETag"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "Body": "data2",
-            "IfMatch": "*"
-          },
-          "capture": {
-            "etag2": "ETag"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "Body": "data2",
+              "IfMatch": "*"
+            },
+            "capture": {
+              "etag2": "ETag"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "${cap.etag1}"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "${cap.etag1}"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "${cap.etag2}"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "${cap.etag2}"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         }
       ]
@@ -1584,86 +1779,101 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19567",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "Body": "data1",
-            "IfNoneMatch": "*"
-          },
-          "capture": {
-            "etag1": "ETag"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "Body": "data1",
+              "IfNoneMatch": "*"
+            },
+            "capture": {
+              "etag1": "ETag"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "Body": "data2"
-          },
-          "capture": {
-            "etag2": "ETag"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "Body": "data2"
+            },
+            "capture": {
+              "etag2": "ETag"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "*"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "*"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "${cap.etag2}"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "${cap.etag2}"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "${cap.etag1}"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "${cap.etag1}"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "badetag"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "badetag"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            }
           }
         }
       ]
@@ -1682,97 +1892,114 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19681",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "*"
-          },
-          "capture": {
-            "etag": "ETag"
-          }
-        },
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "*"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
-          }
-        },
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "${cap.etag}"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
-          }
-        },
-        {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "${cap.etag}"
-          }
-        },
-        {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
-          },
-          "expect": {
-            "response": {
-              "DeleteMarker": true
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "*"
+            },
+            "capture": {
+              "etag": "ETag"
             }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "*"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "*"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "${cap.etag}"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "${cap.etag}"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "${cap.etag}"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            },
+            "expect": {
+              "response": {
+                "DeleteMarker": true
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "*"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "${cap.etag}"
+            }
           }
         }
       ]
@@ -1790,139 +2017,164 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19470",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "*"
-          },
-          "capture": {
-            "etag": "ETag"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "*"
+            },
+            "capture": {
+              "etag": "ETag"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "*"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "*"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "${cap.etag}"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "${cap.etag}"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "badetag"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "badetag"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "${cap.etag}"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "${cap.etag}"
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "*"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "*"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfNoneMatch": "${cap.etag}"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfNoneMatch": "${cap.etag}"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "*"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "*"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "badetag"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "badetag"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj",
-            "IfMatch": "${cap.etag}"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj",
+              "IfMatch": "${cap.etag}"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         }
       ]
@@ -1940,49 +2192,57 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3140",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "foo",
-          "body": "bar"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "foo",
+            "body": "bar"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "bar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "bar"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "zar",
-            "IfMatch": "\"ABCORZ\""
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "zar",
+              "IfMatch": "\"ABCORZ\""
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "bar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "bar"
+            }
           }
         }
       ]
@@ -2000,45 +2260,53 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3119",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "foo",
-          "body": "bar"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "foo",
+            "body": "bar"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "bar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "bar"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "zar",
-            "IfMatch": "37b51d194a7513e45b56f6524f2d51f2"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "zar",
+              "IfMatch": "37b51d194a7513e45b56f6524f2d51f2"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "zar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "zar"
+            }
           }
         }
       ]
@@ -2057,33 +2325,38 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3180",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "bar",
-            "IfMatch": "*"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "bar",
+              "IfMatch": "*"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
           }
         }
       ]
@@ -2101,45 +2374,53 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3162",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "foo",
-          "body": "bar"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "foo",
+            "body": "bar"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "bar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "bar"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "zar",
-            "IfMatch": "*"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "zar",
+              "IfMatch": "*"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "zar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "zar"
+            }
           }
         }
       ]
@@ -2158,49 +2439,57 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3215",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "foo",
-          "body": "bar"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "foo",
+            "body": "bar"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "bar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "bar"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "zar",
-            "IfNoneMatch": "37b51d194a7513e45b56f6524f2d51f2"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "zar",
+              "IfNoneMatch": "37b51d194a7513e45b56f6524f2d51f2"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "bar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "bar"
+            }
           }
         }
       ]
@@ -2218,45 +2507,53 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3197",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "foo",
-          "body": "bar"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "foo",
+            "body": "bar"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "bar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "bar"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "zar",
-            "IfNoneMatch": "ABCORZ"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "zar",
+              "IfNoneMatch": "ABCORZ"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "zar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "zar"
+            }
           }
         }
       ]
@@ -2274,28 +2571,33 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3239",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "bar",
-            "IfNoneMatch": "*"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "bar",
+              "IfNoneMatch": "*"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "bar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "bar"
+            }
           }
         }
       ]
@@ -2314,49 +2616,57 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3253",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "foo",
-          "body": "bar"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "foo",
+            "body": "bar"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "bar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "bar"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "Body": "zar",
-            "IfNoneMatch": "*"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "Body": "zar",
+              "IfNoneMatch": "*"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "expect": {
-            "body": "bar"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "expect": {
+              "body": "bar"
+            }
           }
         }
       ]
@@ -2376,86 +2686,94 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20093",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "obj",
-          "body": ""
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "obj",
+            "body": ""
+          }
         }
       ],
       "steps": [
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "Size": 9999
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "Size": 0
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Deleted": [
-                {
-                  "Key": "obj",
-                  "DeleteMarker": true
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "Size": 9999
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "Size": 9999
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "Size": 0
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Deleted": [
+                  {
+                    "Key": "obj",
+                    "DeleteMarker": true
+                  }
+                ]
+              }
             }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "Size": 9999
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
           }
         }
@@ -2476,83 +2794,91 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20118",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1",
-          "versioning": "Enabled"
+          "$bucket": {
+            "handle": "b1",
+            "versioning": "Enabled"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "obj",
-          "body": ""
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "obj",
+            "body": ""
+          }
         }
       ],
       "steps": [
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "VersionId": "${res.o1.versionId}",
-                  "Size": 9999
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Errors": [
-                {
-                  "Code": "PreconditionFailed"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "VersionId": "${res.o1.versionId}",
-                  "Size": 0
-                }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "Deleted": [
-                {
-                  "Key": "obj"
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "VersionId": "${res.o1.versionId}",
+                    "Size": 9999
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Errors": [
+                  {
+                    "Code": "PreconditionFailed"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteObjects",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Delete": {
-              "Objects": [
-                {
-                  "Key": "obj",
-                  "VersionId": "${res.o1.versionId}",
-                  "Size": 9999
-                }
-              ]
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "VersionId": "${res.o1.versionId}",
+                    "Size": 0
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "Deleted": [
+                  {
+                    "Key": "obj"
+                  }
+                ]
+              }
             }
-          },
-          "expect": {
-            "status": 200
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjects",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Delete": {
+                "Objects": [
+                  {
+                    "Key": "obj",
+                    "VersionId": "${res.o1.versionId}",
+                    "Size": 9999
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
           }
         }
       ]
@@ -2569,27 +2895,31 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_delete_object_additional.py#L28",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "dummy"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "my-obj",
+            "body": "dummy"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "IfMatch": "${res.o1.etag}"
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "IfMatch": "${res.o1.etag}"
+            },
+            "expect": {
+              "status": 204
+            }
           }
         }
       ]
@@ -2608,28 +2938,32 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_delete_object_additional.py#L28",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "dummy"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "my-obj",
+            "body": "dummy"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "IfMatch": "\"incorrect_etag\""
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "IfMatch": "\"incorrect_etag\""
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -2646,40 +2980,47 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_error_handling.py#L15",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "conditional-test",
-            "Body": "test data"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "conditional-test",
+              "Body": "test data"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "conditional-test",
-            "Body": "new data",
-            "IfMatch": "\"wrong-etag\""
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "conditional-test",
+              "Body": "new data",
+              "IfMatch": "\"wrong-etag\""
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "conditional-test"
-          },
-          "expect": {
-            "body": "test data"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "conditional-test"
+            },
+            "expect": {
+              "body": "test data"
+            }
           }
         }
       ]
@@ -2697,28 +3038,32 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_additional.py#L168",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "test data"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "my-obj",
+            "body": "test data"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "IfUnmodifiedSince": "2000-01-01T00:00:00Z"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "IfUnmodifiedSince": "2000-01-01T00:00:00Z"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -2736,28 +3081,32 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L399",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "test content"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": "test content"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "IfMatch": "\"wrong-etag\""
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "IfMatch": "\"wrong-etag\""
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -2774,27 +3123,31 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L369",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "test content"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": "test content"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "IfMatch": "${res.o1.etag}"
-          },
-          "expect": {
-            "body": "test content"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "IfMatch": "${res.o1.etag}"
+            },
+            "expect": {
+              "body": "test content"
+            }
           }
         }
       ]
@@ -2812,23 +3165,26 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L193",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "obj-2",
-            "Body": "data",
-            "IfNoneMatch": "\"any-etag\""
-          },
-          "expect": {
-            "response": {
-              "ETag": {
-                "$exists": true
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "obj-2",
+              "Body": "data",
+              "IfNoneMatch": "\"any-etag\""
+            },
+            "expect": {
+              "response": {
+                "ETag": {
+                  "$exists": true
+                }
               }
             }
           }
@@ -2849,29 +3205,33 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L158",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "v1"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "my-obj",
+            "body": "v1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "Body": "v2",
-            "IfMatch": "${res.o1.etag}",
-            "IfNoneMatch": "${res.o1.etag}"
-          },
-          "expect": {
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "Body": "v2",
+              "IfMatch": "${res.o1.etag}",
+              "IfNoneMatch": "${res.o1.etag}"
+            },
+            "expect": {
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -2889,28 +3249,32 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L59",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "v1"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "my-obj",
+            "body": "v1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "Body": "v2",
-            "IfMatch": "\"incorrect-etag\""
-          },
-          "expect": {
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "Body": "v2",
+              "IfMatch": "\"incorrect-etag\""
+            },
+            "expect": {
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -2927,30 +3291,34 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L27",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "v1"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "my-obj",
+            "body": "v1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "Body": "v2",
-            "IfMatch": "${res.o1.etag}"
-          },
-          "expect": {
-            "response": {
-              "ETag": {
-                "$matches": "^(?!${res.o1.etag}$)"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "Body": "v2",
+              "IfMatch": "${res.o1.etag}"
+            },
+            "expect": {
+              "response": {
+                "ETag": {
+                  "$matches": "^(?!${res.o1.etag}$)"
+                }
               }
             }
           }
@@ -2970,28 +3338,32 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L123",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "v1"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "my-obj",
+            "body": "v1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "Body": "v2",
-            "IfNoneMatch": "${res.o1.etag}"
-          },
-          "expect": {
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "Body": "v2",
+              "IfNoneMatch": "${res.o1.etag}"
+            },
+            "expect": {
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -3008,30 +3380,34 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L93",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "v1"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "my-obj",
+            "body": "v1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "Body": "v2",
-            "IfNoneMatch": "\"incorrect-etag\""
-          },
-          "expect": {
-            "response": {
-              "ETag": {
-                "$exists": true
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "Body": "v2",
+              "IfNoneMatch": "\"incorrect-etag\""
+            },
+            "expect": {
+              "response": {
+                "ETag": {
+                  "$exists": true
+                }
               }
             }
           }
@@ -3052,69 +3428,78 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_complete_multipart_advanced_features.py#L263",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "initial content"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "my-obj",
+            "body": "initial content"
+          }
         }
       ],
       "data": {
         "x5m": {
-          "kind": "pattern",
-          "pattern": "x",
-          "size": 5242880
+          "$pattern": {
+            "pattern": "x",
+            "size": 5242880
+          }
         }
       },
       "steps": [
         {
-          "operation": "CreateMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj"
-          },
-          "capture": {
-            "uploadId": "UploadId"
+          "$operation": {
+            "name": "CreateMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj"
+            },
+            "capture": {
+              "uploadId": "UploadId"
+            }
           }
         },
         {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 1,
-            "Body": {
-              "$data": "x5m"
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 1,
+              "Body": {
+                "$data": "x5m"
+              }
+            },
+            "capture": {
+              "etag1": "ETag"
             }
-          },
-          "capture": {
-            "etag1": "ETag"
           }
         },
         {
-          "operation": "CompleteMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "UploadId": "${cap.uploadId}",
-            "IfMatch": "\"incorrect-etag\"",
-            "MultipartUpload": {
-              "Parts": [
-                {
-                  "PartNumber": 1,
-                  "ETag": "${cap.etag1}"
-                }
-              ]
+          "$operation": {
+            "name": "CompleteMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "UploadId": "${cap.uploadId}",
+              "IfMatch": "\"incorrect-etag\"",
+              "MultipartUpload": {
+                "Parts": [
+                  {
+                    "PartNumber": 1,
+                    "ETag": "${cap.etag1}"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
             }
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
           }
         }
       ]
@@ -3132,70 +3517,79 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_complete_multipart_advanced_features.py#L202",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "my-obj",
-          "body": "initial content"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "my-obj",
+            "body": "initial content"
+          }
         }
       ],
       "data": {
         "x5m": {
-          "kind": "pattern",
-          "pattern": "x",
-          "size": 5242880
+          "$pattern": {
+            "pattern": "x",
+            "size": 5242880
+          }
         }
       },
       "steps": [
         {
-          "operation": "CreateMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj"
-          },
-          "capture": {
-            "uploadId": "UploadId"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 1,
-            "Body": {
-              "$data": "x5m"
+          "$operation": {
+            "name": "CreateMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj"
+            },
+            "capture": {
+              "uploadId": "UploadId"
             }
-          },
-          "capture": {
-            "etag1": "ETag"
           }
         },
         {
-          "operation": "CompleteMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "my-obj",
-            "UploadId": "${cap.uploadId}",
-            "IfMatch": "${res.o1.etag}",
-            "MultipartUpload": {
-              "Parts": [
-                {
-                  "PartNumber": 1,
-                  "ETag": "${cap.etag1}"
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 1,
+              "Body": {
+                "$data": "x5m"
+              }
+            },
+            "capture": {
+              "etag1": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "CompleteMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "my-obj",
+              "UploadId": "${cap.uploadId}",
+              "IfMatch": "${res.o1.etag}",
+              "MultipartUpload": {
+                "Parts": [
+                  {
+                    "PartNumber": 1,
+                    "ETag": "${cap.etag1}"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "response": {
+                "ETag": {
+                  "$exists": true
                 }
-              ]
-            }
-          },
-          "expect": {
-            "response": {
-              "ETag": {
-                "$exists": true
               }
             }
           }
@@ -3216,38 +3610,43 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L397",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "source-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "source-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0045/obj",
-          "size": 128
+          "$prng": {
+            "seed": "conditional-0045/obj",
+            "size": 128
+          }
         }
       },
       "steps": [
         {
-          "operation": "CopyObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "dest-object",
-            "CopySource": "${res.b1.name}/source-object",
-            "CopySourceIfMatch": "\"00000000000000000000000000000000\""
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "CopyObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "dest-object",
+              "CopySource": "${res.b1.name}/source-object",
+              "CopySourceIfMatch": "\"00000000000000000000000000000000\""
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -3265,54 +3664,61 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L357",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "source-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "source-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0046/obj",
-          "size": 128
+          "$prng": {
+            "seed": "conditional-0046/obj",
+            "size": 128
+          }
         }
       },
       "steps": [
         {
-          "operation": "CopyObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "dest-object",
-            "CopySource": "${res.b1.name}/source-object",
-            "CopySourceIfMatch": "${res.o1.etag}"
-          },
-          "expect": {
-            "response": {
-              "CopyObjectResult": {
-                "ETag": {
-                  "$exists": true
+          "$operation": {
+            "name": "CopyObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "dest-object",
+              "CopySource": "${res.b1.name}/source-object",
+              "CopySourceIfMatch": "${res.o1.etag}"
+            },
+            "expect": {
+              "response": {
+                "CopyObjectResult": {
+                  "ETag": {
+                    "$exists": true
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "dest-object"
-          },
-          "expect": {
-            "response": {
-              "ContentLength": 128
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "dest-object"
+            },
+            "expect": {
+              "response": {
+                "ContentLength": 128
+              }
             }
           }
         }
@@ -3332,40 +3738,45 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L475",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "source-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "source-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0047/obj",
-          "size": 128
+          "$prng": {
+            "seed": "conditional-0047/obj",
+            "size": 128
+          }
         }
       },
       "steps": [
         {
-          "operation": "CopyObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "dest-object",
-            "CopySource": "${res.b1.name}/source-object",
-            "CopySourceIfModifiedSince": "2000-01-01T00:00:00Z"
-          },
-          "expect": {
-            "response": {
-              "CopyObjectResult": {
-                "ETag": {
-                  "$exists": true
+          "$operation": {
+            "name": "CopyObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "dest-object",
+              "CopySource": "${res.b1.name}/source-object",
+              "CopySourceIfModifiedSince": "2000-01-01T00:00:00Z"
+            },
+            "expect": {
+              "response": {
+                "CopyObjectResult": {
+                  "ETag": {
+                    "$exists": true
+                  }
                 }
               }
             }
@@ -3387,38 +3798,43 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L436",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "source-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "source-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0048/obj",
-          "size": 128
+          "$prng": {
+            "seed": "conditional-0048/obj",
+            "size": 128
+          }
         }
       },
       "steps": [
         {
-          "operation": "CopyObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "dest-object",
-            "CopySource": "${res.b1.name}/source-object",
-            "CopySourceIfNoneMatch": "${res.o1.etag}"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "CopyObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "dest-object",
+              "CopySource": "${res.b1.name}/source-object",
+              "CopySourceIfNoneMatch": "${res.o1.etag}"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -3438,38 +3854,43 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L513",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "source-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "source-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0049/obj",
-          "size": 128
+          "$prng": {
+            "seed": "conditional-0049/obj",
+            "size": 128
+          }
         }
       },
       "steps": [
         {
-          "operation": "CopyObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "dest-object",
-            "CopySource": "${res.b1.name}/source-object",
-            "CopySourceIfUnmodifiedSince": "2000-01-01T00:00:00Z"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "CopyObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "dest-object",
+              "CopySource": "${res.b1.name}/source-object",
+              "CopySourceIfUnmodifiedSince": "2000-01-01T00:00:00Z"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -3487,36 +3908,41 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L317",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0052/obj",
-          "size": 256
+          "$prng": {
+            "seed": "conditional-0052/obj",
+            "size": 256
+          }
         }
       },
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "IfModifiedSince": "2099-01-01T00:00:00Z"
-          },
-          "expect": {
-            "status": 304
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "IfModifiedSince": "2099-01-01T00:00:00Z"
+            },
+            "expect": {
+              "status": 304
+            }
           }
         }
       ]
@@ -3534,36 +3960,41 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L282",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0053/obj",
-          "size": 256
+          "$prng": {
+            "seed": "conditional-0053/obj",
+            "size": 256
+          }
         }
       },
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "IfNoneMatch": "${res.o1.etag}"
-          },
-          "expect": {
-            "status": 304
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "IfNoneMatch": "${res.o1.etag}"
+            },
+            "expect": {
+              "status": 304
+            }
           }
         }
       ]
@@ -3581,37 +4012,42 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L65",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0054/obj",
-          "size": 100
+          "$prng": {
+            "seed": "conditional-0054/obj",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "IfMatch": "\"00000000000000000000000000000000\""
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "IfMatch": "\"00000000000000000000000000000000\""
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         }
       ]
@@ -3628,38 +4064,43 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L31",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0055/obj",
-          "size": 100
+          "$prng": {
+            "seed": "conditional-0055/obj",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "IfMatch": "${res.o1.etag}"
-          },
-          "expect": {
-            "response": {
-              "ETag": "${res.o1.etag}",
-              "ContentLength": 100
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "IfMatch": "${res.o1.etag}"
+            },
+            "expect": {
+              "response": {
+                "ETag": "${res.o1.etag}",
+                "ContentLength": 100
+              }
             }
           }
         }
@@ -3678,36 +4119,41 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L136",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0056/obj",
-          "size": 100
+          "$prng": {
+            "seed": "conditional-0056/obj",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "IfModifiedSince": "2099-01-01T00:00:00Z"
-          },
-          "expect": {
-            "status": 304
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "IfModifiedSince": "2099-01-01T00:00:00Z"
+            },
+            "expect": {
+              "status": 304
+            }
           }
         }
       ]
@@ -3725,36 +4171,41 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L101",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0057/obj",
-          "size": 100
+          "$prng": {
+            "seed": "conditional-0057/obj",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "IfNoneMatch": "${res.o1.etag}"
-          },
-          "expect": {
-            "status": 304
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "IfNoneMatch": "${res.o1.etag}"
+            },
+            "expect": {
+              "status": 304
+            }
           }
         }
       ]
@@ -3772,38 +4223,43 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L176",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": {
-            "$data": "obj"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": {
+              "$data": "obj"
+            }
           }
         }
       ],
       "data": {
         "obj": {
-          "kind": "prng",
-          "seed": "conditional-0058/obj",
-          "size": 100
+          "$prng": {
+            "seed": "conditional-0058/obj",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "IfUnmodifiedSince": "2099-01-01T00:00:00Z"
-          },
-          "expect": {
-            "response": {
-              "ETag": "${res.o1.etag}",
-              "ContentLength": 100
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "IfUnmodifiedSince": "2099-01-01T00:00:00Z"
+            },
+            "expect": {
+              "response": {
+                "ETag": "${res.o1.etag}",
+                "ContentLength": 100
+              }
             }
           }
         }
@@ -3823,56 +4279,66 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/production/3014.py#L416",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "data/conditional-delete.txt",
-          "body": "original content"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "data/conditional-delete.txt",
+            "body": "original content"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "data/conditional-delete.txt",
-            "IfMatch": "wrong-etag-value"
-          },
-          "expect": {
-            "status": 412,
-            "error": "PreconditionFailed"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "data/conditional-delete.txt",
+              "IfMatch": "wrong-etag-value"
+            },
+            "expect": {
+              "status": 412,
+              "error": "PreconditionFailed"
+            }
           }
         },
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "data/conditional-delete.txt"
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "data/conditional-delete.txt"
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "data/conditional-delete.txt",
-            "IfMatch": "${res.o1.etag}"
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "data/conditional-delete.txt",
+              "IfMatch": "${res.o1.etag}"
+            }
           }
         },
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "data/conditional-delete.txt"
-          },
-          "expect": {
-            "status": 404
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "data/conditional-delete.txt"
+            },
+            "expect": {
+              "status": 404
+            }
           }
         }
       ]

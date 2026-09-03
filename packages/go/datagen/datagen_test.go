@@ -18,16 +18,16 @@ const (
 func str(s string) *string { return &s }
 
 var specs = map[string]s3vectors.DataSpec{
-	"t40":   {Kind: "prng", Seed: "test", Size: 40},
-	"t32":   {Kind: "prng", Seed: "test", Size: 32},
-	"t10":   {Kind: "prng", Seed: "test", Size: 10},
-	"aaa":   {Kind: "pattern", Pattern: str("A"), Size: 5},
-	"abc":   {Kind: "pattern", Pattern: str("abc"), Size: 8},
-	"bin":   {Kind: "pattern", PatternBase64: str("3q2+7w=="), Size: 6},
-	"sl":    {Kind: "slice", Of: "t40", Offset: 30, Length: 6},
-	"chain": {Kind: "slice", Of: "sl", Offset: 0, Length: 1},
-	"over":  {Kind: "slice", Of: "t10", Offset: 8, Length: 8},
-	"check": {Kind: "pattern", Pattern: str("123456789"), Size: 9},
+	"t40":   {Prng: &s3vectors.PrngData{Seed: "test", Size: 40}},
+	"t32":   {Prng: &s3vectors.PrngData{Seed: "test", Size: 32}},
+	"t10":   {Prng: &s3vectors.PrngData{Seed: "test", Size: 10}},
+	"aaa":   {Pattern: &s3vectors.PatternData{Pattern: str("A"), Size: 5}},
+	"abc":   {Pattern: &s3vectors.PatternData{Pattern: str("abc"), Size: 8}},
+	"bin":   {Pattern: &s3vectors.PatternData{PatternBase64: str("3q2+7w=="), Size: 6}},
+	"sl":    {Slice: &s3vectors.SliceData{Of: "t40", Offset: 30, Length: 6}},
+	"chain": {Slice: &s3vectors.SliceData{Of: "sl", Offset: 0, Length: 1}},
+	"over":  {Slice: &s3vectors.SliceData{Of: "t10", Offset: 8, Length: 8}},
+	"check": {Pattern: &s3vectors.PatternData{Pattern: str("123456789"), Size: 9}},
 }
 
 func mustGenerate(t *testing.T, name string) []byte {
@@ -132,16 +132,26 @@ func TestFullCorpusDatagen(t *testing.T) {
 				continue
 			}
 			for name, spec := range v.Data {
-				parentSize := spec.Size
-				if spec.Kind == "slice" {
-					parentSize = v.Data[spec.Of].Size
+				var parentSize int64
+				if spec.Slice != nil {
+					parent := v.Data[spec.Slice.Of]
+					if parent.Prng != nil {
+						parentSize = parent.Prng.Size
+					} else if parent.Pattern != nil {
+						parentSize = parent.Pattern.Size
+					}
 				} else {
+					if spec.Prng != nil {
+						parentSize = spec.Prng.Size
+					} else if spec.Pattern != nil {
+						parentSize = spec.Pattern.Size
+					}
 					b, err := Generate(v.Data, name)
 					if err != nil {
 						t.Fatalf("%s/%s: %v", v.ID, name, err)
 					}
-					if int64(len(b)) != spec.Size {
-						t.Fatalf("%s/%s: size %d != %d", v.ID, name, len(b), spec.Size)
+					if int64(len(b)) != parentSize {
+						t.Fatalf("%s/%s: size %d != %d", v.ID, name, len(b), parentSize)
 					}
 				}
 				if parentSize <= derivedCap {

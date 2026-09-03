@@ -16,143 +16,164 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12510",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "publictag",
-          "body": "publictag"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "publictag",
+            "body": "publictag"
+          }
         },
         {
-          "type": "object",
-          "handle": "o2",
-          "bucket": "b1",
-          "key": "privatetag",
-          "body": "privatetag"
+          "$object": {
+            "handle": "o2",
+            "bucket": "b1",
+            "key": "privatetag",
+            "body": "privatetag"
+          }
         },
         {
-          "type": "object",
-          "handle": "o3",
-          "bucket": "b1",
-          "key": "invalidtag",
-          "body": "invalidtag"
+          "$object": {
+            "handle": "o3",
+            "bucket": "b1",
+            "key": "invalidtag",
+            "body": "invalidtag"
+          }
         },
         {
-          "type": "credential",
-          "handle": "alt"
+          "$credential": {
+            "handle": "alt"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketPolicy",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringEquals\":{\"s3:ExistingObjectTag/security\":\"public\"}}}]}"
-          }
-        },
-        {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "publictag",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "security",
-                  "Value": "public"
-                },
-                {
-                  "Key": "foo",
-                  "Value": "bar"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketPolicy",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringEquals\":{\"s3:ExistingObjectTag/security\":\"public\"}}}]}"
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "privatetag",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "security",
-                  "Value": "private"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "publictag",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "security",
+                    "Value": "public"
+                  },
+                  {
+                    "Key": "foo",
+                    "Value": "bar"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "invalidtag",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "security1",
-                  "Value": "public"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "privatetag",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "security",
+                    "Value": "private"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "publictag"
-          },
-          "identity": "alt",
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "invalidtag",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "security1",
+                    "Value": "public"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "publictag"
-          },
-          "identity": "alt",
-          "expect": {
-            "status": 403
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "publictag"
+            },
+            "identity": "alt",
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "privatetag"
-          },
-          "identity": "alt",
-          "expect": {
-            "status": 403
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "publictag"
+            },
+            "identity": "alt",
+            "expect": {
+              "status": 403
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "invalidtag"
-          },
-          "identity": "alt",
-          "expect": {
-            "status": 403
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "privatetag"
+            },
+            "identity": "alt",
+            "expect": {
+              "status": 403
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "invalidtag"
+            },
+            "identity": "alt",
+            "expect": {
+              "status": 403
+            }
           }
         }
       ]
@@ -171,169 +192,188 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12572",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "publictag",
-          "body": "publictag"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "publictag",
+            "body": "publictag"
+          }
         },
         {
-          "type": "object",
-          "handle": "o2",
-          "bucket": "b1",
-          "key": "privatetag",
-          "body": "privatetag"
+          "$object": {
+            "handle": "o2",
+            "bucket": "b1",
+            "key": "privatetag",
+            "body": "privatetag"
+          }
         },
         {
-          "type": "object",
-          "handle": "o3",
-          "bucket": "b1",
-          "key": "invalidtag",
-          "body": "invalidtag"
+          "$object": {
+            "handle": "o3",
+            "bucket": "b1",
+            "key": "invalidtag",
+            "body": "invalidtag"
+          }
         },
         {
-          "type": "credential",
-          "handle": "alt"
+          "$credential": {
+            "handle": "alt"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketPolicy",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringEquals\":{\"s3:ExistingObjectTag/security\":\"public\"}}}]}"
+          "$operation": {
+            "name": "PutBucketPolicy",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/*\",\"Condition\":{\"StringEquals\":{\"s3:ExistingObjectTag/security\":\"public\"}}}]}"
+            }
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "publictag",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "security",
-                  "Value": "public"
-                },
-                {
-                  "Key": "foo",
-                  "Value": "bar"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "publictag",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "security",
+                    "Value": "public"
+                  },
+                  {
+                    "Key": "foo",
+                    "Value": "bar"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "privatetag",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "security",
-                  "Value": "private"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "privatetag",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "security",
+                    "Value": "private"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "publictag",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "security",
-                  "Value": "public"
-                },
-                {
-                  "Key": "foo",
-                  "Value": "bar"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "publictag",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "security",
+                    "Value": "public"
+                  },
+                  {
+                    "Key": "foo",
+                    "Value": "bar"
+                  }
+                ]
+              }
+            },
+            "identity": "alt",
+            "expect": {
+              "status": 200
             }
-          },
-          "identity": "alt",
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "privatetag",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "security",
-                  "Value": "public"
-                },
-                {
-                  "Key": "foo",
-                  "Value": "bar"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "privatetag",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "security",
+                    "Value": "public"
+                  },
+                  {
+                    "Key": "foo",
+                    "Value": "bar"
+                  }
+                ]
+              }
+            },
+            "identity": "alt",
+            "expect": {
+              "status": 403
             }
-          },
-          "identity": "alt",
-          "expect": {
-            "status": 403
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "publictag",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "security",
-                  "Value": "private"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "publictag",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "security",
+                    "Value": "private"
+                  }
+                ]
+              }
+            },
+            "identity": "alt",
+            "expect": {
+              "status": 200
             }
-          },
-          "identity": "alt",
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "publictag",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "security",
-                  "Value": "public"
-                },
-                {
-                  "Key": "foo",
-                  "Value": "bar"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "publictag",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "security",
+                    "Value": "public"
+                  },
+                  {
+                    "Key": "foo",
+                    "Value": "bar"
+                  }
+                ]
+              }
+            },
+            "identity": "alt",
+            "expect": {
+              "status": 403
             }
-          },
-          "identity": "alt",
-          "expect": {
-            "status": 403
           }
         }
       ]
@@ -351,103 +391,114 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12359",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputtagsacl",
-          "body": "testputtagsacl"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputtagsacl",
+            "body": "testputtagsacl"
+          }
         },
         {
-          "type": "credential",
-          "handle": "alt"
+          "$credential": {
+            "handle": "alt"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketPolicy",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:DeleteObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/testputtagsacl\"}]}"
-          }
-        },
-        {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputtagsacl",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                },
-                {
-                  "Key": "2",
-                  "Value": "2"
-                },
-                {
-                  "Key": "3",
-                  "Value": "3"
-                },
-                {
-                  "Key": "4",
-                  "Value": "4"
-                },
-                {
-                  "Key": "5",
-                  "Value": "5"
-                },
-                {
-                  "Key": "6",
-                  "Value": "6"
-                },
-                {
-                  "Key": "7",
-                  "Value": "7"
-                },
-                {
-                  "Key": "8",
-                  "Value": "8"
-                },
-                {
-                  "Key": "9",
-                  "Value": "9"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketPolicy",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:DeleteObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/testputtagsacl\"}]}"
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "DeleteObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputtagsacl"
-          },
-          "identity": "alt",
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputtagsacl",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  },
+                  {
+                    "Key": "2",
+                    "Value": "2"
+                  },
+                  {
+                    "Key": "3",
+                    "Value": "3"
+                  },
+                  {
+                    "Key": "4",
+                    "Value": "4"
+                  },
+                  {
+                    "Key": "5",
+                    "Value": "5"
+                  },
+                  {
+                    "Key": "6",
+                    "Value": "6"
+                  },
+                  {
+                    "Key": "7",
+                    "Value": "7"
+                  },
+                  {
+                    "Key": "8",
+                    "Value": "8"
+                  },
+                  {
+                    "Key": "9",
+                    "Value": "9"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputtagsacl"
-          },
-          "expect": {
-            "response": {
-              "TagSet": []
+          "$operation": {
+            "name": "DeleteObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputtagsacl"
+            },
+            "identity": "alt",
+            "expect": {
+              "status": 204
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputtagsacl"
+            },
+            "expect": {
+              "response": {
+                "TagSet": []
+              }
             }
           }
         }
@@ -465,50 +516,56 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12043",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputtags",
-          "body": "testputtags"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputtags",
+            "body": "testputtags"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputtags",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputtags",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputtags"
-          },
-          "expect": {
-            "status": 200,
-            "headers": {
-              "x-amz-tagging-count": "2"
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputtags"
+            },
+            "expect": {
+              "status": 200,
+              "headers": {
+                "x-amz-tagging-count": "2"
+              }
             }
           }
         }
@@ -527,134 +584,143 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12314",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputtagsacl",
-          "body": "testputtagsacl"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputtagsacl",
+            "body": "testputtagsacl"
+          }
         },
         {
-          "type": "credential",
-          "handle": "alt"
+          "$credential": {
+            "handle": "alt"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketPolicy",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/testputtagsacl\"}]}"
-          }
-        },
-        {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputtagsacl",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                },
-                {
-                  "Key": "2",
-                  "Value": "2"
-                },
-                {
-                  "Key": "3",
-                  "Value": "3"
-                },
-                {
-                  "Key": "4",
-                  "Value": "4"
-                },
-                {
-                  "Key": "5",
-                  "Value": "5"
-                },
-                {
-                  "Key": "6",
-                  "Value": "6"
-                },
-                {
-                  "Key": "7",
-                  "Value": "7"
-                },
-                {
-                  "Key": "8",
-                  "Value": "8"
-                },
-                {
-                  "Key": "9",
-                  "Value": "9"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketPolicy",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/testputtagsacl\"}]}"
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputtagsacl"
-          },
-          "identity": "alt",
-          "expect": {
-            "response": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                },
-                {
-                  "Key": "2",
-                  "Value": "2"
-                },
-                {
-                  "Key": "3",
-                  "Value": "3"
-                },
-                {
-                  "Key": "4",
-                  "Value": "4"
-                },
-                {
-                  "Key": "5",
-                  "Value": "5"
-                },
-                {
-                  "Key": "6",
-                  "Value": "6"
-                },
-                {
-                  "Key": "7",
-                  "Value": "7"
-                },
-                {
-                  "Key": "8",
-                  "Value": "8"
-                },
-                {
-                  "Key": "9",
-                  "Value": "9"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputtagsacl",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  },
+                  {
+                    "Key": "2",
+                    "Value": "2"
+                  },
+                  {
+                    "Key": "3",
+                    "Value": "3"
+                  },
+                  {
+                    "Key": "4",
+                    "Value": "4"
+                  },
+                  {
+                    "Key": "5",
+                    "Value": "5"
+                  },
+                  {
+                    "Key": "6",
+                    "Value": "6"
+                  },
+                  {
+                    "Key": "7",
+                    "Value": "7"
+                  },
+                  {
+                    "Key": "8",
+                    "Value": "8"
+                  },
+                  {
+                    "Key": "9",
+                    "Value": "9"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputtagsacl"
+            },
+            "identity": "alt",
+            "expect": {
+              "response": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  },
+                  {
+                    "Key": "2",
+                    "Value": "2"
+                  },
+                  {
+                    "Key": "3",
+                    "Value": "3"
+                  },
+                  {
+                    "Key": "4",
+                    "Value": "4"
+                  },
+                  {
+                    "Key": "5",
+                    "Value": "5"
+                  },
+                  {
+                    "Key": "6",
+                    "Value": "6"
+                  },
+                  {
+                    "Key": "7",
+                    "Value": "7"
+                  },
+                  {
+                    "Key": "8",
+                    "Value": "8"
+                  },
+                  {
+                    "Key": "9",
+                    "Value": "9"
+                  }
+                ]
+              }
             }
           }
         }
@@ -672,80 +738,90 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12183",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputmodifytags",
-          "body": "testputmodifytags"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputmodifytags",
+            "body": "testputmodifytags"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmodifytags",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "status": 200
-          }
-        },
-        {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmodifytags"
-          },
-          "expect": {
-            "response": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmodifytags",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
           }
         },
         {
-          "operation": "DeleteObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmodifytags"
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmodifytags"
+            },
+            "expect": {
+              "response": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  }
+                ]
+              }
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmodifytags"
-          },
-          "expect": {
-            "response": {
-              "TagSet": []
+          "$operation": {
+            "name": "DeleteObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmodifytags"
+            },
+            "expect": {
+              "status": 204
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmodifytags"
+            },
+            "expect": {
+              "response": {
+                "TagSet": []
+              }
             }
           }
         }
@@ -764,82 +840,88 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12108",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputexcesskeytags",
-          "body": "testputexcesskeytags"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputexcesskeytags",
+            "body": "testputexcesskeytags"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputexcesskeytags",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-                  "Value": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-                },
-                {
-                  "Key": "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
-                  "Value": "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
-                },
-                {
-                  "Key": "222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
-                  "Value": "2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
-                },
-                {
-                  "Key": "333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
-                  "Value": "3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
-                },
-                {
-                  "Key": "444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
-                  "Value": "4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
-                },
-                {
-                  "Key": "555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555",
-                  "Value": "5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"
-                },
-                {
-                  "Key": "666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666",
-                  "Value": "6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666"
-                },
-                {
-                  "Key": "777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777",
-                  "Value": "7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
-                },
-                {
-                  "Key": "888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888",
-                  "Value": "8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888"
-                },
-                {
-                  "Key": "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
-                  "Value": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputexcesskeytags",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                    "Value": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                  },
+                  {
+                    "Key": "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+                    "Value": "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+                  },
+                  {
+                    "Key": "222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
+                    "Value": "2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
+                  },
+                  {
+                    "Key": "333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
+                    "Value": "3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+                  },
+                  {
+                    "Key": "444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
+                    "Value": "4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+                  },
+                  {
+                    "Key": "555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555",
+                    "Value": "5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"
+                  },
+                  {
+                    "Key": "666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666",
+                    "Value": "6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666"
+                  },
+                  {
+                    "Key": "777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777",
+                    "Value": "7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
+                  },
+                  {
+                    "Key": "888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888",
+                    "Value": "8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888"
+                  },
+                  {
+                    "Key": "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+                    "Value": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "InvalidTag"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidTag"
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputexcesskeytags"
-          },
-          "expect": {
-            "response": {
-              "TagSet": []
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputexcesskeytags"
+            },
+            "expect": {
+              "response": {
+                "TagSet": []
+              }
             }
           }
         }
@@ -858,86 +940,92 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12072",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputmaxtags",
-          "body": "testputmaxtags"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputmaxtags",
+            "body": "testputmaxtags"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmaxtags",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                },
-                {
-                  "Key": "2",
-                  "Value": "2"
-                },
-                {
-                  "Key": "3",
-                  "Value": "3"
-                },
-                {
-                  "Key": "4",
-                  "Value": "4"
-                },
-                {
-                  "Key": "5",
-                  "Value": "5"
-                },
-                {
-                  "Key": "6",
-                  "Value": "6"
-                },
-                {
-                  "Key": "7",
-                  "Value": "7"
-                },
-                {
-                  "Key": "8",
-                  "Value": "8"
-                },
-                {
-                  "Key": "9",
-                  "Value": "9"
-                },
-                {
-                  "Key": "10",
-                  "Value": "10"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmaxtags",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  },
+                  {
+                    "Key": "2",
+                    "Value": "2"
+                  },
+                  {
+                    "Key": "3",
+                    "Value": "3"
+                  },
+                  {
+                    "Key": "4",
+                    "Value": "4"
+                  },
+                  {
+                    "Key": "5",
+                    "Value": "5"
+                  },
+                  {
+                    "Key": "6",
+                    "Value": "6"
+                  },
+                  {
+                    "Key": "7",
+                    "Value": "7"
+                  },
+                  {
+                    "Key": "8",
+                    "Value": "8"
+                  },
+                  {
+                    "Key": "9",
+                    "Value": "9"
+                  },
+                  {
+                    "Key": "10",
+                    "Value": "10"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "InvalidTag"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidTag"
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmaxtags"
-          },
-          "expect": {
-            "response": {
-              "TagSet": []
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmaxtags"
+            },
+            "expect": {
+              "response": {
+                "TagSet": []
+              }
             }
           }
         }
@@ -956,82 +1044,88 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12130",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputexcesskeytags",
-          "body": "testputexcesskeytags"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputexcesskeytags",
+            "body": "testputexcesskeytags"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputexcesskeytags",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-                  "Value": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-                },
-                {
-                  "Key": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
-                  "Value": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
-                },
-                {
-                  "Key": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
-                  "Value": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
-                },
-                {
-                  "Key": "33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
-                  "Value": "33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
-                },
-                {
-                  "Key": "44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
-                  "Value": "44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
-                },
-                {
-                  "Key": "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555",
-                  "Value": "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"
-                },
-                {
-                  "Key": "66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666",
-                  "Value": "66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666"
-                },
-                {
-                  "Key": "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777",
-                  "Value": "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
-                },
-                {
-                  "Key": "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888",
-                  "Value": "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888"
-                },
-                {
-                  "Key": "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
-                  "Value": "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputexcesskeytags",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                    "Value": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                  },
+                  {
+                    "Key": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+                    "Value": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+                  },
+                  {
+                    "Key": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
+                    "Value": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
+                  },
+                  {
+                    "Key": "33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
+                    "Value": "33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+                  },
+                  {
+                    "Key": "44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
+                    "Value": "44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+                  },
+                  {
+                    "Key": "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555",
+                    "Value": "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"
+                  },
+                  {
+                    "Key": "66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666",
+                    "Value": "66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666"
+                  },
+                  {
+                    "Key": "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777",
+                    "Value": "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
+                  },
+                  {
+                    "Key": "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888",
+                    "Value": "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888"
+                  },
+                  {
+                    "Key": "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+                    "Value": "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "InvalidTag"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidTag"
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputexcesskeytags"
-          },
-          "expect": {
-            "response": {
-              "TagSet": []
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputexcesskeytags"
+            },
+            "expect": {
+              "response": {
+                "TagSet": []
+              }
             }
           }
         }
@@ -1050,85 +1144,91 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12087",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputmaxkeysize",
-          "body": "testputmaxkeysize"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputmaxkeysize",
+            "body": "testputmaxkeysize"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmaxkeysize",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-                  "Value": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-                },
-                {
-                  "Key": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
-                  "Value": "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
-                },
-                {
-                  "Key": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
-                  "Value": "2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
-                },
-                {
-                  "Key": "33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
-                  "Value": "3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
-                },
-                {
-                  "Key": "44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
-                  "Value": "4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
-                },
-                {
-                  "Key": "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555",
-                  "Value": "5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"
-                },
-                {
-                  "Key": "66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666",
-                  "Value": "6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666"
-                },
-                {
-                  "Key": "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777",
-                  "Value": "7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
-                },
-                {
-                  "Key": "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888",
-                  "Value": "8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888"
-                },
-                {
-                  "Key": "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
-                  "Value": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmaxkeysize",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                    "Value": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                  },
+                  {
+                    "Key": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+                    "Value": "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+                  },
+                  {
+                    "Key": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
+                    "Value": "2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
+                  },
+                  {
+                    "Key": "33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333",
+                    "Value": "3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+                  },
+                  {
+                    "Key": "44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
+                    "Value": "4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+                  },
+                  {
+                    "Key": "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555",
+                    "Value": "5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555"
+                  },
+                  {
+                    "Key": "66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666",
+                    "Value": "6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666"
+                  },
+                  {
+                    "Key": "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777",
+                    "Value": "7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
+                  },
+                  {
+                    "Key": "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888",
+                    "Value": "8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888"
+                  },
+                  {
+                    "Key": "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+                    "Value": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmaxkeysize"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$length": 10,
-                "$contains": {
-                  "Key": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-                  "Value": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmaxkeysize"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$length": 10,
+                  "$contains": {
+                    "Key": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                    "Value": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                  }
                 }
               }
             }
@@ -1148,122 +1248,128 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12059",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputmaxtags",
-          "body": "testputmaxtags"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputmaxtags",
+            "body": "testputmaxtags"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmaxtags",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                },
-                {
-                  "Key": "2",
-                  "Value": "2"
-                },
-                {
-                  "Key": "3",
-                  "Value": "3"
-                },
-                {
-                  "Key": "4",
-                  "Value": "4"
-                },
-                {
-                  "Key": "5",
-                  "Value": "5"
-                },
-                {
-                  "Key": "6",
-                  "Value": "6"
-                },
-                {
-                  "Key": "7",
-                  "Value": "7"
-                },
-                {
-                  "Key": "8",
-                  "Value": "8"
-                },
-                {
-                  "Key": "9",
-                  "Value": "9"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmaxtags",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  },
+                  {
+                    "Key": "2",
+                    "Value": "2"
+                  },
+                  {
+                    "Key": "3",
+                    "Value": "3"
+                  },
+                  {
+                    "Key": "4",
+                    "Value": "4"
+                  },
+                  {
+                    "Key": "5",
+                    "Value": "5"
+                  },
+                  {
+                    "Key": "6",
+                    "Value": "6"
+                  },
+                  {
+                    "Key": "7",
+                    "Value": "7"
+                  },
+                  {
+                    "Key": "8",
+                    "Value": "8"
+                  },
+                  {
+                    "Key": "9",
+                    "Value": "9"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmaxtags"
-          },
-          "expect": {
-            "response": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                },
-                {
-                  "Key": "2",
-                  "Value": "2"
-                },
-                {
-                  "Key": "3",
-                  "Value": "3"
-                },
-                {
-                  "Key": "4",
-                  "Value": "4"
-                },
-                {
-                  "Key": "5",
-                  "Value": "5"
-                },
-                {
-                  "Key": "6",
-                  "Value": "6"
-                },
-                {
-                  "Key": "7",
-                  "Value": "7"
-                },
-                {
-                  "Key": "8",
-                  "Value": "8"
-                },
-                {
-                  "Key": "9",
-                  "Value": "9"
-                }
-              ]
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmaxtags"
+            },
+            "expect": {
+              "response": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  },
+                  {
+                    "Key": "2",
+                    "Value": "2"
+                  },
+                  {
+                    "Key": "3",
+                    "Value": "3"
+                  },
+                  {
+                    "Key": "4",
+                    "Value": "4"
+                  },
+                  {
+                    "Key": "5",
+                    "Value": "5"
+                  },
+                  {
+                    "Key": "6",
+                    "Value": "6"
+                  },
+                  {
+                    "Key": "7",
+                    "Value": "7"
+                  },
+                  {
+                    "Key": "8",
+                    "Value": "8"
+                  },
+                  {
+                    "Key": "9",
+                    "Value": "9"
+                  }
+                ]
+              }
             }
           }
         }
@@ -1281,93 +1387,103 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12153",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputmodifytags",
-          "body": "testputmodifytags"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputmodifytags",
+            "body": "testputmodifytags"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmodifytags",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key",
-                  "Value": "val"
-                },
-                {
-                  "Key": "key2",
-                  "Value": "val2"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "status": 200
-          }
-        },
-        {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmodifytags"
-          },
-          "expect": {
-            "response": {
-              "TagSet": [
-                {
-                  "Key": "key",
-                  "Value": "val"
-                },
-                {
-                  "Key": "key2",
-                  "Value": "val2"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmodifytags",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key",
+                    "Value": "val"
+                  },
+                  {
+                    "Key": "key2",
+                    "Value": "val2"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
             }
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmodifytags",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key3",
-                  "Value": "val3"
-                }
-              ]
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmodifytags"
+            },
+            "expect": {
+              "response": {
+                "TagSet": [
+                  {
+                    "Key": "key",
+                    "Value": "val"
+                  },
+                  {
+                    "Key": "key2",
+                    "Value": "val2"
+                  }
+                ]
+              }
             }
-          },
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputmodifytags"
-          },
-          "expect": {
-            "response": {
-              "TagSet": [
-                {
-                  "Key": "key3",
-                  "Value": "val3"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmodifytags",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key3",
+                    "Value": "val3"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputmodifytags"
+            },
+            "expect": {
+              "response": {
+                "TagSet": [
+                  {
+                    "Key": "key3",
+                    "Value": "val3"
+                  }
+                ]
+              }
             }
           }
         }
@@ -1385,48 +1501,55 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12281",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testtagobj1",
-            "Body": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "Tagging": "foo=bar&bar"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testtagobj1",
+              "Body": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Tagging": "foo=bar&bar"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testtagobj1"
-          },
-          "expect": {
-            "body": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testtagobj1"
+            },
+            "expect": {
+              "body": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testtagobj1"
-          },
-          "expect": {
-            "response": {
-              "TagSet": [
-                {
-                  "Key": "bar",
-                  "Value": ""
-                },
-                {
-                  "Key": "foo",
-                  "Value": "bar"
-                }
-              ]
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testtagobj1"
+            },
+            "expect": {
+              "response": {
+                "TagSet": [
+                  {
+                    "Key": "bar",
+                    "Value": ""
+                  },
+                  {
+                    "Key": "foo",
+                    "Value": "bar"
+                  }
+                ]
+              }
             }
           }
         }
@@ -1445,134 +1568,143 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12337",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "testputtagsacl",
-          "body": "testputtagsacl"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "testputtagsacl",
+            "body": "testputtagsacl"
+          }
         },
         {
-          "type": "credential",
-          "handle": "alt"
+          "$credential": {
+            "handle": "alt"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketPolicy",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/testputtagsacl\"}]}"
-          }
-        },
-        {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputtagsacl",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                },
-                {
-                  "Key": "2",
-                  "Value": "2"
-                },
-                {
-                  "Key": "3",
-                  "Value": "3"
-                },
-                {
-                  "Key": "4",
-                  "Value": "4"
-                },
-                {
-                  "Key": "5",
-                  "Value": "5"
-                },
-                {
-                  "Key": "6",
-                  "Value": "6"
-                },
-                {
-                  "Key": "7",
-                  "Value": "7"
-                },
-                {
-                  "Key": "8",
-                  "Value": "8"
-                },
-                {
-                  "Key": "9",
-                  "Value": "9"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketPolicy",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:PutObjectTagging\",\"Resource\":\"arn:aws:s3:::${res.b1.name}/testputtagsacl\"}]}"
             }
-          },
-          "identity": "alt",
-          "expect": {
-            "status": 200
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "testputtagsacl"
-          },
-          "expect": {
-            "response": {
-              "TagSet": [
-                {
-                  "Key": "0",
-                  "Value": "0"
-                },
-                {
-                  "Key": "1",
-                  "Value": "1"
-                },
-                {
-                  "Key": "2",
-                  "Value": "2"
-                },
-                {
-                  "Key": "3",
-                  "Value": "3"
-                },
-                {
-                  "Key": "4",
-                  "Value": "4"
-                },
-                {
-                  "Key": "5",
-                  "Value": "5"
-                },
-                {
-                  "Key": "6",
-                  "Value": "6"
-                },
-                {
-                  "Key": "7",
-                  "Value": "7"
-                },
-                {
-                  "Key": "8",
-                  "Value": "8"
-                },
-                {
-                  "Key": "9",
-                  "Value": "9"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputtagsacl",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  },
+                  {
+                    "Key": "2",
+                    "Value": "2"
+                  },
+                  {
+                    "Key": "3",
+                    "Value": "3"
+                  },
+                  {
+                    "Key": "4",
+                    "Value": "4"
+                  },
+                  {
+                    "Key": "5",
+                    "Value": "5"
+                  },
+                  {
+                    "Key": "6",
+                    "Value": "6"
+                  },
+                  {
+                    "Key": "7",
+                    "Value": "7"
+                  },
+                  {
+                    "Key": "8",
+                    "Value": "8"
+                  },
+                  {
+                    "Key": "9",
+                    "Value": "9"
+                  }
+                ]
+              }
+            },
+            "identity": "alt",
+            "expect": {
+              "status": 200
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "testputtagsacl"
+            },
+            "expect": {
+              "response": {
+                "TagSet": [
+                  {
+                    "Key": "0",
+                    "Value": "0"
+                  },
+                  {
+                    "Key": "1",
+                    "Value": "1"
+                  },
+                  {
+                    "Key": "2",
+                    "Value": "2"
+                  },
+                  {
+                    "Key": "3",
+                    "Value": "3"
+                  },
+                  {
+                    "Key": "4",
+                    "Value": "4"
+                  },
+                  {
+                    "Key": "5",
+                    "Value": "5"
+                  },
+                  {
+                    "Key": "6",
+                    "Value": "6"
+                  },
+                  {
+                    "Key": "7",
+                    "Value": "7"
+                  },
+                  {
+                    "Key": "8",
+                    "Value": "8"
+                  },
+                  {
+                    "Key": "9",
+                    "Value": "9"
+                  }
+                ]
+              }
             }
           }
         }
@@ -1592,68 +1724,79 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L7148",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchTagSet"
-          }
-        },
-        {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "Hello",
-                  "Value": "World"
-                }
-              ]
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchTagSet"
             }
           }
         },
         {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "TagSet": [
-                {
-                  "Key": "Hello",
-                  "Value": "World"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "Hello",
+                    "Value": "World"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "TagSet": [
+                  {
+                    "Key": "Hello",
+                    "Value": "World"
+                  }
+                ]
+              }
+            }
           }
         },
         {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchTagSet"
+          "$operation": {
+            "name": "DeleteBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 204
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchTagSet"
+            }
           }
         }
       ]
@@ -1671,94 +1814,107 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L12003",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "CreateMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "mymultipart",
-            "Tagging": "Hello=World&foo=bar"
-          },
-          "capture": {
-            "uploadId": "UploadId"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "mymultipart",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 1,
-            "Body": "A"
-          },
-          "capture": {
-            "etag1": "ETag"
-          }
-        },
-        {
-          "operation": "CompleteMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "mymultipart",
-            "UploadId": "${cap.uploadId}",
-            "MultipartUpload": {
-              "Parts": [
-                {
-                  "PartNumber": 1,
-                  "ETag": "${cap.etag1}"
-                }
-              ]
-            }
-          },
-          "expect": {
-            "status": 200
-          }
-        },
-        {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "mymultipart"
-          },
-          "expect": {
-            "response": {
-              "TagSet": [
-                {
-                  "Key": "Hello",
-                  "Value": "World"
-                },
-                {
-                  "Key": "foo",
-                  "Value": "bar"
-                }
-              ]
+          "$operation": {
+            "name": "CreateMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "mymultipart",
+              "Tagging": "Hello=World&foo=bar"
+            },
+            "capture": {
+              "uploadId": "UploadId"
             }
           }
         },
         {
-          "operation": "DeleteObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "mymultipart"
-          },
-          "expect": {
-            "status": 204
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "mymultipart",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 1,
+              "Body": "A"
+            },
+            "capture": {
+              "etag1": "ETag"
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "mymultipart"
-          },
-          "expect": {
-            "response": {
-              "TagSet": []
+          "$operation": {
+            "name": "CompleteMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "mymultipart",
+              "UploadId": "${cap.uploadId}",
+              "MultipartUpload": {
+                "Parts": [
+                  {
+                    "PartNumber": 1,
+                    "ETag": "${cap.etag1}"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 200
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "mymultipart"
+            },
+            "expect": {
+              "response": {
+                "TagSet": [
+                  {
+                    "Key": "Hello",
+                    "Value": "World"
+                  },
+                  {
+                    "Key": "foo",
+                    "Value": "bar"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "DeleteObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "mymultipart"
+            },
+            "expect": {
+              "status": 204
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "mymultipart"
+            },
+            "expect": {
+              "response": {
+                "TagSet": []
+              }
             }
           }
         }
@@ -1776,246 +1932,273 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/9.py#L14",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object.txt",
-            "Body": "Tagged object content",
-            "Tagging": "Environment=Production&Department=Engineering&Project=MSST"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object.txt",
+              "Body": "Tagged object content",
+              "Tagging": "Environment=Production&Department=Engineering&Project=MSST"
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object.txt"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$length": 3,
-                "$contains": {
-                  "Key": "Environment",
-                  "Value": "Production"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object.txt"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$length": 3,
+                  "$contains": {
+                    "Key": "Environment",
+                    "Value": "Production"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object.txt",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "Environment",
-                  "Value": "Staging"
-                },
-                {
-                  "Key": "Department",
-                  "Value": "QA"
-                },
-                {
-                  "Key": "Version",
-                  "Value": "2.0"
-                },
-                {
-                  "Key": "Owner",
-                  "Value": "TestTeam"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object.txt",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "Environment",
+                    "Value": "Staging"
+                  },
+                  {
+                    "Key": "Department",
+                    "Value": "QA"
+                  },
+                  {
+                    "Key": "Version",
+                    "Value": "2.0"
+                  },
+                  {
+                    "Key": "Owner",
+                    "Value": "TestTeam"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object.txt"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$length": 4,
-                "$contains": {
-                  "Key": "Environment",
-                  "Value": "Staging"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object.txt"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$length": 4,
+                  "$contains": {
+                    "Key": "Environment",
+                    "Value": "Staging"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "special-tags.txt",
-            "Body": "Object with special tags"
-          }
-        },
-        {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "special-tags.txt",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "Cost-Center",
-                  "Value": "12345"
-                },
-                {
-                  "Key": "Backup.Schedule",
-                  "Value": "daily"
-                },
-                {
-                  "Key": "Data:Type",
-                  "Value": "sensitive"
-                },
-                {
-                  "Key": "Retention_Days",
-                  "Value": "90"
-                },
-                {
-                  "Key": "Empty",
-                  "Value": ""
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "special-tags.txt",
+              "Body": "Object with special tags"
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "special-tags.txt"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "Cost-Center",
-                  "Value": "12345"
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "special-tags.txt",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "Cost-Center",
+                    "Value": "12345"
+                  },
+                  {
+                    "Key": "Backup.Schedule",
+                    "Value": "daily"
+                  },
+                  {
+                    "Key": "Data:Type",
+                    "Value": "sensitive"
+                  },
+                  {
+                    "Key": "Retention_Days",
+                    "Value": "90"
+                  },
+                  {
+                    "Key": "Empty",
+                    "Value": ""
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "special-tags.txt"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "Cost-Center",
+                    "Value": "12345"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "special-tags.txt"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "Empty",
-                  "Value": ""
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "special-tags.txt"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "Empty",
+                    "Value": ""
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "max-tags.txt",
-            "Body": "Object with maximum tags"
-          }
-        },
-        {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "max-tags.txt",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "Tag0",
-                  "Value": "Value0"
-                },
-                {
-                  "Key": "Tag1",
-                  "Value": "Value1"
-                },
-                {
-                  "Key": "Tag2",
-                  "Value": "Value2"
-                },
-                {
-                  "Key": "Tag3",
-                  "Value": "Value3"
-                },
-                {
-                  "Key": "Tag4",
-                  "Value": "Value4"
-                },
-                {
-                  "Key": "Tag5",
-                  "Value": "Value5"
-                },
-                {
-                  "Key": "Tag6",
-                  "Value": "Value6"
-                },
-                {
-                  "Key": "Tag7",
-                  "Value": "Value7"
-                },
-                {
-                  "Key": "Tag8",
-                  "Value": "Value8"
-                },
-                {
-                  "Key": "Tag9",
-                  "Value": "Value9"
-                }
-              ]
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "max-tags.txt",
+              "Body": "Object with maximum tags"
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "max-tags.txt"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$length": 10
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "max-tags.txt",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "Tag0",
+                    "Value": "Value0"
+                  },
+                  {
+                    "Key": "Tag1",
+                    "Value": "Value1"
+                  },
+                  {
+                    "Key": "Tag2",
+                    "Value": "Value2"
+                  },
+                  {
+                    "Key": "Tag3",
+                    "Value": "Value3"
+                  },
+                  {
+                    "Key": "Tag4",
+                    "Value": "Value4"
+                  },
+                  {
+                    "Key": "Tag5",
+                    "Value": "Value5"
+                  },
+                  {
+                    "Key": "Tag6",
+                    "Value": "Value6"
+                  },
+                  {
+                    "Key": "Tag7",
+                    "Value": "Value7"
+                  },
+                  {
+                    "Key": "Tag8",
+                    "Value": "Value8"
+                  },
+                  {
+                    "Key": "Tag9",
+                    "Value": "Value9"
+                  }
+                ]
               }
             }
           }
         },
         {
-          "operation": "DeleteObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object.txt"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "max-tags.txt"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$length": 10
+                }
+              }
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object.txt"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$length": 0
+          "$operation": {
+            "name": "DeleteObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object.txt"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object.txt"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$length": 0
+                }
               }
             }
           }
@@ -2035,72 +2218,82 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/basic/9.py#L14",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "data": {
         "mp": {
-          "kind": "pattern",
-          "pattern": "M",
-          "size": 5242880
+          "$pattern": {
+            "pattern": "M",
+            "size": 5242880
+          }
         }
       },
       "steps": [
         {
-          "operation": "CreateMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart-with-tags.bin",
-            "Tagging": "UploadType=Multipart&Size=Large"
-          },
-          "capture": {
-            "uploadId": "UploadId"
-          }
-        },
-        {
-          "operation": "UploadPart",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart-with-tags.bin",
-            "UploadId": "${cap.uploadId}",
-            "PartNumber": 1,
-            "Body": {
-              "$data": "mp"
-            }
-          },
-          "capture": {
-            "etag1": "ETag"
-          }
-        },
-        {
-          "operation": "CompleteMultipartUpload",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart-with-tags.bin",
-            "UploadId": "${cap.uploadId}",
-            "MultipartUpload": {
-              "Parts": [
-                {
-                  "PartNumber": 1,
-                  "ETag": "${cap.etag1}"
-                }
-              ]
+          "$operation": {
+            "name": "CreateMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart-with-tags.bin",
+              "Tagging": "UploadType=Multipart&Size=Large"
+            },
+            "capture": {
+              "uploadId": "UploadId"
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "multipart-with-tags.bin"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "UploadType",
-                  "Value": "Multipart"
+          "$operation": {
+            "name": "UploadPart",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart-with-tags.bin",
+              "UploadId": "${cap.uploadId}",
+              "PartNumber": 1,
+              "Body": {
+                "$data": "mp"
+              }
+            },
+            "capture": {
+              "etag1": "ETag"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "CompleteMultipartUpload",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart-with-tags.bin",
+              "UploadId": "${cap.uploadId}",
+              "MultipartUpload": {
+                "Parts": [
+                  {
+                    "PartNumber": 1,
+                    "ETag": "${cap.etag1}"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "multipart-with-tags.bin"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "UploadType",
+                    "Value": "Multipart"
+                  }
                 }
               }
             }
@@ -2121,20 +2314,23 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L299",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "DeleteObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "non-existing-object"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "DeleteObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "non-existing-object"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
           }
         }
       ]
@@ -2152,62 +2348,71 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L250",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "tagged-object",
-          "body": {
-            "$data": "body"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "tagged-object",
+            "body": {
+              "$data": "body"
+            }
           }
         }
       ],
       "data": {
         "body": {
-          "kind": "prng",
-          "seed": "tagging-0021/body",
-          "size": 100
+          "$prng": {
+            "seed": "tagging-0021/body",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key1",
-                  "Value": "value1"
-                },
-                {
-                  "Key": "key2",
-                  "Value": "value2"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key1",
+                    "Value": "value1"
+                  },
+                  {
+                    "Key": "key2",
+                    "Value": "value2"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
+          "$operation": {
+            "name": "DeleteObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": []
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": []
+              }
             }
           }
         }
@@ -2226,38 +2431,44 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L584",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "tagged-object",
-          "body": "data"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "tagged-object",
+            "body": "data"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "Hello",
-                  "Value": "World"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "Hello",
+                    "Value": "World"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "DeleteObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
+          "$operation": {
+            "name": "DeleteObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            }
           }
         }
       ]
@@ -2275,27 +2486,31 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L554",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "not-a-dir",
-          "body": "data"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "not-a-dir",
+            "body": "data"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "not-a-dir/bad-obj"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "not-a-dir/bad-obj"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
           }
         }
       ]
@@ -2313,20 +2528,23 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L149",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "non-existing-object"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "non-existing-object"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
           }
         }
       ]
@@ -2343,97 +2561,108 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L211",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "tagged-object",
-          "body": {
-            "$data": "body"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "tagged-object",
+            "body": {
+              "$data": "body"
+            }
           }
         }
       ],
       "data": {
         "body": {
-          "kind": "prng",
-          "seed": "tagging-0025/body",
-          "size": 100
+          "$prng": {
+            "seed": "tagging-0025/body",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "environment",
-                  "Value": "testing"
-                },
-                {
-                  "Key": "application",
-                  "Value": "s3-tests"
-                },
-                {
-                  "Key": "version",
-                  "Value": "1.0"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "environment",
+                    "Value": "testing"
+                  },
+                  {
+                    "Key": "application",
+                    "Value": "s3-tests"
+                  },
+                  {
+                    "Key": "version",
+                    "Value": "1.0"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$length": 3,
-                "$contains": {
-                  "Key": "environment",
-                  "Value": "testing"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$length": 3,
+                  "$contains": {
+                    "Key": "environment",
+                    "Value": "testing"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "application",
-                  "Value": "s3-tests"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "application",
+                    "Value": "s3-tests"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "version",
-                  "Value": "1.0"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "version",
+                    "Value": "1.0"
+                  }
                 }
               }
             }
@@ -2454,36 +2683,41 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L173",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "untagged-object",
-          "body": {
-            "$data": "body"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "untagged-object",
+            "body": {
+              "$data": "body"
+            }
           }
         }
       ],
       "data": {
         "body": {
-          "kind": "prng",
-          "seed": "tagging-0026/body",
-          "size": 100
+          "$prng": {
+            "seed": "tagging-0026/body",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "untagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": []
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "untagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": []
+              }
             }
           }
         }
@@ -2502,111 +2736,126 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L364",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "tagged-object",
-          "body": {
-            "$data": "body"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "tagged-object",
+            "body": {
+              "$data": "body"
+            }
           }
         }
       ],
       "data": {
         "body": {
-          "kind": "prng",
-          "seed": "tagging-0027/body",
-          "size": 100
+          "$prng": {
+            "seed": "tagging-0027/body",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "stage",
-                  "Value": "dev"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "stage",
+                    "Value": "dev"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "stage",
-                  "Value": "prod"
-                },
-                {
-                  "Key": "region",
-                  "Value": "us-east-1"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "stage",
+                    "Value": "prod"
+                  },
+                  {
+                    "Key": "region",
+                    "Value": "us-east-1"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "stage",
-                  "Value": "prod"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "stage",
+                    "Value": "prod"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "region",
-                  "Value": "us-east-1"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "region",
+                    "Value": "us-east-1"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "DeleteObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
+          "$operation": {
+            "name": "DeleteObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": []
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": []
+              }
             }
           }
         }
@@ -2624,96 +2873,107 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L323",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "tagged-object",
-          "body": {
-            "$data": "body"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "tagged-object",
+            "body": {
+              "$data": "body"
+            }
           }
         }
       ],
       "data": {
         "body": {
-          "kind": "prng",
-          "seed": "tagging-0028/body",
-          "size": 100
+          "$prng": {
+            "seed": "tagging-0028/body",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "path",
-                  "Value": "/usr/local/bin"
-                },
-                {
-                  "Key": "email",
-                  "Value": "test@example.com"
-                },
-                {
-                  "Key": "description",
-                  "Value": "Test object with spaces and symbols"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "path",
+                    "Value": "/usr/local/bin"
+                  },
+                  {
+                    "Key": "email",
+                    "Value": "test@example.com"
+                  },
+                  {
+                    "Key": "description",
+                    "Value": "Test object with spaces and symbols"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "path",
-                  "Value": "/usr/local/bin"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "path",
+                    "Value": "/usr/local/bin"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "email",
-                  "Value": "test@example.com"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "email",
+                    "Value": "test@example.com"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "description",
-                  "Value": "Test object with spaces and symbols"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "description",
+                    "Value": "Test object with spaces and symbols"
+                  }
                 }
               }
             }
@@ -2735,46 +2995,50 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L479",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "data"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": "data"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key-1",
-                  "Value": "value-1"
-                },
-                {
-                  "Key": "key-2",
-                  "Value": "value-2"
-                },
-                {
-                  "Key": "same-key",
-                  "Value": "value-3"
-                },
-                {
-                  "Key": "same-key",
-                  "Value": "value-4"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key-1",
+                    "Value": "value-1"
+                  },
+                  {
+                    "Key": "key-2",
+                    "Value": "value-2"
+                  },
+                  {
+                    "Key": "same-key",
+                    "Value": "value-3"
+                  },
+                  {
+                    "Key": "same-key",
+                    "Value": "value-4"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         }
       ]
@@ -2793,52 +3057,58 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L424",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "data"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": "data"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                  "Value": "value"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "Value": "value"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key",
-                  "Value": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key",
+                    "Value": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         }
       ]
@@ -2856,28 +3126,31 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L69",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "non-existing-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key1",
-                  "Value": "value1"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "non-existing-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key1",
+                    "Value": "value1"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
             }
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
           }
         }
       ]
@@ -2894,70 +3167,79 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L99",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "tagged-object",
-          "body": {
-            "$data": "body"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "tagged-object",
+            "body": {
+              "$data": "body"
+            }
           }
         }
       ],
       "data": {
         "body": {
-          "kind": "prng",
-          "seed": "tagging-0032/body",
-          "size": 100
+          "$prng": {
+            "seed": "tagging-0032/body",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "old-key",
-                  "Value": "old-value"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "old-key",
+                    "Value": "old-value"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "new-key",
-                  "Value": "new-value"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "new-key",
+                    "Value": "new-value"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$length": 1,
-                "$contains": {
-                  "Key": "new-key",
-                  "Value": "new-value"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$length": 1,
+                  "$contains": {
+                    "Key": "new-key",
+                    "Value": "new-value"
+                  }
                 }
               }
             }
@@ -2977,75 +3259,84 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L28",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "tagged-object",
-          "body": {
-            "$data": "body"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "tagged-object",
+            "body": {
+              "$data": "body"
+            }
           }
         }
       ],
       "data": {
         "body": {
-          "kind": "prng",
-          "seed": "tagging-0033/body",
-          "size": 100
+          "$prng": {
+            "seed": "tagging-0033/body",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key1",
-                  "Value": "value1"
-                },
-                {
-                  "Key": "key2",
-                  "Value": "value2"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key1",
+                    "Value": "value1"
+                  },
+                  {
+                    "Key": "key2",
+                    "Value": "value2"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "key1",
-                  "Value": "value1"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "key1",
+                    "Value": "value1"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "key2",
-                  "Value": "value2"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "key2",
+                    "Value": "value2"
+                  }
                 }
               }
             }
@@ -3067,74 +3358,78 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_tagging.py#L519",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "test-object",
-          "body": "data"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "test-object",
+            "body": "data"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "test-object",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key-0",
-                  "Value": "value-0"
-                },
-                {
-                  "Key": "key-1",
-                  "Value": "value-1"
-                },
-                {
-                  "Key": "key-2",
-                  "Value": "value-2"
-                },
-                {
-                  "Key": "key-3",
-                  "Value": "value-3"
-                },
-                {
-                  "Key": "key-4",
-                  "Value": "value-4"
-                },
-                {
-                  "Key": "key-5",
-                  "Value": "value-5"
-                },
-                {
-                  "Key": "key-6",
-                  "Value": "value-6"
-                },
-                {
-                  "Key": "key-7",
-                  "Value": "value-7"
-                },
-                {
-                  "Key": "key-8",
-                  "Value": "value-8"
-                },
-                {
-                  "Key": "key-9",
-                  "Value": "value-9"
-                },
-                {
-                  "Key": "key-10",
-                  "Value": "value-10"
-                }
-              ]
+          "$operation": {
+            "name": "PutObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "test-object",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key-0",
+                    "Value": "value-0"
+                  },
+                  {
+                    "Key": "key-1",
+                    "Value": "value-1"
+                  },
+                  {
+                    "Key": "key-2",
+                    "Value": "value-2"
+                  },
+                  {
+                    "Key": "key-3",
+                    "Value": "value-3"
+                  },
+                  {
+                    "Key": "key-4",
+                    "Value": "value-4"
+                  },
+                  {
+                    "Key": "key-5",
+                    "Value": "value-5"
+                  },
+                  {
+                    "Key": "key-6",
+                    "Value": "value-6"
+                  },
+                  {
+                    "Key": "key-7",
+                    "Value": "value-7"
+                  },
+                  {
+                    "Key": "key-8",
+                    "Value": "value-8"
+                  },
+                  {
+                    "Key": "key-9",
+                    "Value": "value-9"
+                  },
+                  {
+                    "Key": "key-10",
+                    "Value": "value-10"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         }
       ]
@@ -3151,52 +3446,61 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L290",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key1",
-                  "Value": "val1"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$length": 1
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key1",
+                    "Value": "val1"
+                  }
+                ]
               }
             }
           }
         },
         {
-          "operation": "DeleteBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$length": 1
+                }
+              }
+            }
           }
         },
         {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchTagSet"
+          "$operation": {
+            "name": "DeleteBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            }
+          }
+        },
+        {
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchTagSet"
+            }
           }
         }
       ]
@@ -3214,19 +3518,22 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L263",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchTagSet"
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchTagSet"
+            }
           }
         }
       ]
@@ -3244,13 +3551,15 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L235",
       "steps": [
         {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "msst-nonexistent-tag-get-bucket"
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchBucket"
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "msst-nonexistent-tag-get-bucket"
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchBucket"
+            }
           }
         }
       ]
@@ -3268,39 +3577,42 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L104",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key",
-                  "Value": "value"
-                },
-                {
-                  "Key": "key",
-                  "Value": "value-1"
-                },
-                {
-                  "Key": "key-1",
-                  "Value": "value-2"
-                },
-                {
-                  "Key": "key-2",
-                  "Value": "value-3"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key",
+                    "Value": "value"
+                  },
+                  {
+                    "Key": "key",
+                    "Value": "value-1"
+                  },
+                  {
+                    "Key": "key-1",
+                    "Value": "value-2"
+                  },
+                  {
+                    "Key": "key-2",
+                    "Value": "value-3"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "InvalidTag"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidTag"
           }
         }
       ]
@@ -3319,45 +3631,50 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L56",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                  "Value": "val"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "Value": "val"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "InvalidTag"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidTag"
           }
         },
         {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key",
-                  "Value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key",
+                    "Value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400,
+              "error": "InvalidTag"
             }
-          },
-          "expect": {
-            "status": 400,
-            "error": "InvalidTag"
           }
         }
       ]
@@ -3375,16 +3692,18 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L28",
       "steps": [
         {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "msst-nonexistent-tag-put-bucket",
-            "Tagging": {
-              "TagSet": []
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "msst-nonexistent-tag-put-bucket",
+              "Tagging": {
+                "TagSet": []
+              }
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchBucket"
             }
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchBucket"
           }
         }
       ]
@@ -3401,57 +3720,64 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L174",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key1",
-                  "Value": "val1"
-                },
-                {
-                  "Key": "key2",
-                  "Value": "val2"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key1",
+                    "Value": "val1"
+                  },
+                  {
+                    "Key": "key2",
+                    "Value": "val2"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$length": 2,
-                "$contains": {
-                  "Key": "key1",
-                  "Value": "val1"
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$length": 2,
+                  "$contains": {
+                    "Key": "key1",
+                    "Value": "val1"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "key2",
-                  "Value": "val2"
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "key2",
+                    "Value": "val2"
+                  }
                 }
               }
             }
@@ -3472,25 +3798,28 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L209",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key",
-                  "Value": "val"
-                }
-              ]
-            }
-          },
-          "expect": {}
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key",
+                    "Value": "val"
+                  }
+                ]
+              }
+            },
+            "expect": {}
+          }
         }
       ]
     },
@@ -3508,226 +3837,229 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L141",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key-0",
-                  "Value": "value-0"
-                },
-                {
-                  "Key": "key-1",
-                  "Value": "value-1"
-                },
-                {
-                  "Key": "key-2",
-                  "Value": "value-2"
-                },
-                {
-                  "Key": "key-3",
-                  "Value": "value-3"
-                },
-                {
-                  "Key": "key-4",
-                  "Value": "value-4"
-                },
-                {
-                  "Key": "key-5",
-                  "Value": "value-5"
-                },
-                {
-                  "Key": "key-6",
-                  "Value": "value-6"
-                },
-                {
-                  "Key": "key-7",
-                  "Value": "value-7"
-                },
-                {
-                  "Key": "key-8",
-                  "Value": "value-8"
-                },
-                {
-                  "Key": "key-9",
-                  "Value": "value-9"
-                },
-                {
-                  "Key": "key-10",
-                  "Value": "value-10"
-                },
-                {
-                  "Key": "key-11",
-                  "Value": "value-11"
-                },
-                {
-                  "Key": "key-12",
-                  "Value": "value-12"
-                },
-                {
-                  "Key": "key-13",
-                  "Value": "value-13"
-                },
-                {
-                  "Key": "key-14",
-                  "Value": "value-14"
-                },
-                {
-                  "Key": "key-15",
-                  "Value": "value-15"
-                },
-                {
-                  "Key": "key-16",
-                  "Value": "value-16"
-                },
-                {
-                  "Key": "key-17",
-                  "Value": "value-17"
-                },
-                {
-                  "Key": "key-18",
-                  "Value": "value-18"
-                },
-                {
-                  "Key": "key-19",
-                  "Value": "value-19"
-                },
-                {
-                  "Key": "key-20",
-                  "Value": "value-20"
-                },
-                {
-                  "Key": "key-21",
-                  "Value": "value-21"
-                },
-                {
-                  "Key": "key-22",
-                  "Value": "value-22"
-                },
-                {
-                  "Key": "key-23",
-                  "Value": "value-23"
-                },
-                {
-                  "Key": "key-24",
-                  "Value": "value-24"
-                },
-                {
-                  "Key": "key-25",
-                  "Value": "value-25"
-                },
-                {
-                  "Key": "key-26",
-                  "Value": "value-26"
-                },
-                {
-                  "Key": "key-27",
-                  "Value": "value-27"
-                },
-                {
-                  "Key": "key-28",
-                  "Value": "value-28"
-                },
-                {
-                  "Key": "key-29",
-                  "Value": "value-29"
-                },
-                {
-                  "Key": "key-30",
-                  "Value": "value-30"
-                },
-                {
-                  "Key": "key-31",
-                  "Value": "value-31"
-                },
-                {
-                  "Key": "key-32",
-                  "Value": "value-32"
-                },
-                {
-                  "Key": "key-33",
-                  "Value": "value-33"
-                },
-                {
-                  "Key": "key-34",
-                  "Value": "value-34"
-                },
-                {
-                  "Key": "key-35",
-                  "Value": "value-35"
-                },
-                {
-                  "Key": "key-36",
-                  "Value": "value-36"
-                },
-                {
-                  "Key": "key-37",
-                  "Value": "value-37"
-                },
-                {
-                  "Key": "key-38",
-                  "Value": "value-38"
-                },
-                {
-                  "Key": "key-39",
-                  "Value": "value-39"
-                },
-                {
-                  "Key": "key-40",
-                  "Value": "value-40"
-                },
-                {
-                  "Key": "key-41",
-                  "Value": "value-41"
-                },
-                {
-                  "Key": "key-42",
-                  "Value": "value-42"
-                },
-                {
-                  "Key": "key-43",
-                  "Value": "value-43"
-                },
-                {
-                  "Key": "key-44",
-                  "Value": "value-44"
-                },
-                {
-                  "Key": "key-45",
-                  "Value": "value-45"
-                },
-                {
-                  "Key": "key-46",
-                  "Value": "value-46"
-                },
-                {
-                  "Key": "key-47",
-                  "Value": "value-47"
-                },
-                {
-                  "Key": "key-48",
-                  "Value": "value-48"
-                },
-                {
-                  "Key": "key-49",
-                  "Value": "value-49"
-                },
-                {
-                  "Key": "key-50",
-                  "Value": "value-50"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key-0",
+                    "Value": "value-0"
+                  },
+                  {
+                    "Key": "key-1",
+                    "Value": "value-1"
+                  },
+                  {
+                    "Key": "key-2",
+                    "Value": "value-2"
+                  },
+                  {
+                    "Key": "key-3",
+                    "Value": "value-3"
+                  },
+                  {
+                    "Key": "key-4",
+                    "Value": "value-4"
+                  },
+                  {
+                    "Key": "key-5",
+                    "Value": "value-5"
+                  },
+                  {
+                    "Key": "key-6",
+                    "Value": "value-6"
+                  },
+                  {
+                    "Key": "key-7",
+                    "Value": "value-7"
+                  },
+                  {
+                    "Key": "key-8",
+                    "Value": "value-8"
+                  },
+                  {
+                    "Key": "key-9",
+                    "Value": "value-9"
+                  },
+                  {
+                    "Key": "key-10",
+                    "Value": "value-10"
+                  },
+                  {
+                    "Key": "key-11",
+                    "Value": "value-11"
+                  },
+                  {
+                    "Key": "key-12",
+                    "Value": "value-12"
+                  },
+                  {
+                    "Key": "key-13",
+                    "Value": "value-13"
+                  },
+                  {
+                    "Key": "key-14",
+                    "Value": "value-14"
+                  },
+                  {
+                    "Key": "key-15",
+                    "Value": "value-15"
+                  },
+                  {
+                    "Key": "key-16",
+                    "Value": "value-16"
+                  },
+                  {
+                    "Key": "key-17",
+                    "Value": "value-17"
+                  },
+                  {
+                    "Key": "key-18",
+                    "Value": "value-18"
+                  },
+                  {
+                    "Key": "key-19",
+                    "Value": "value-19"
+                  },
+                  {
+                    "Key": "key-20",
+                    "Value": "value-20"
+                  },
+                  {
+                    "Key": "key-21",
+                    "Value": "value-21"
+                  },
+                  {
+                    "Key": "key-22",
+                    "Value": "value-22"
+                  },
+                  {
+                    "Key": "key-23",
+                    "Value": "value-23"
+                  },
+                  {
+                    "Key": "key-24",
+                    "Value": "value-24"
+                  },
+                  {
+                    "Key": "key-25",
+                    "Value": "value-25"
+                  },
+                  {
+                    "Key": "key-26",
+                    "Value": "value-26"
+                  },
+                  {
+                    "Key": "key-27",
+                    "Value": "value-27"
+                  },
+                  {
+                    "Key": "key-28",
+                    "Value": "value-28"
+                  },
+                  {
+                    "Key": "key-29",
+                    "Value": "value-29"
+                  },
+                  {
+                    "Key": "key-30",
+                    "Value": "value-30"
+                  },
+                  {
+                    "Key": "key-31",
+                    "Value": "value-31"
+                  },
+                  {
+                    "Key": "key-32",
+                    "Value": "value-32"
+                  },
+                  {
+                    "Key": "key-33",
+                    "Value": "value-33"
+                  },
+                  {
+                    "Key": "key-34",
+                    "Value": "value-34"
+                  },
+                  {
+                    "Key": "key-35",
+                    "Value": "value-35"
+                  },
+                  {
+                    "Key": "key-36",
+                    "Value": "value-36"
+                  },
+                  {
+                    "Key": "key-37",
+                    "Value": "value-37"
+                  },
+                  {
+                    "Key": "key-38",
+                    "Value": "value-38"
+                  },
+                  {
+                    "Key": "key-39",
+                    "Value": "value-39"
+                  },
+                  {
+                    "Key": "key-40",
+                    "Value": "value-40"
+                  },
+                  {
+                    "Key": "key-41",
+                    "Value": "value-41"
+                  },
+                  {
+                    "Key": "key-42",
+                    "Value": "value-42"
+                  },
+                  {
+                    "Key": "key-43",
+                    "Value": "value-43"
+                  },
+                  {
+                    "Key": "key-44",
+                    "Value": "value-44"
+                  },
+                  {
+                    "Key": "key-45",
+                    "Value": "value-45"
+                  },
+                  {
+                    "Key": "key-46",
+                    "Value": "value-46"
+                  },
+                  {
+                    "Key": "key-47",
+                    "Value": "value-47"
+                  },
+                  {
+                    "Key": "key-48",
+                    "Value": "value-48"
+                  },
+                  {
+                    "Key": "key-49",
+                    "Value": "value-49"
+                  },
+                  {
+                    "Key": "key-50",
+                    "Value": "value-50"
+                  }
+                ]
+              }
+            },
+            "expect": {
+              "status": 400
             }
-          },
-          "expect": {
-            "status": 400
           }
         }
       ]
@@ -3744,71 +4076,80 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_bucket_tagging.py#L330",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key1",
-                  "Value": "val1"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key1",
+                    "Value": "val1"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "PutBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Tagging": {
-              "TagSet": [
-                {
-                  "Key": "key2",
-                  "Value": "val2"
-                },
-                {
-                  "Key": "key3",
-                  "Value": "val3"
-                }
-              ]
+          "$operation": {
+            "name": "PutBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Tagging": {
+                "TagSet": [
+                  {
+                    "Key": "key2",
+                    "Value": "val2"
+                  },
+                  {
+                    "Key": "key3",
+                    "Value": "val3"
+                  }
+                ]
+              }
             }
           }
         },
         {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$length": 2,
-                "$contains": {
-                  "Key": "key2",
-                  "Value": "val2"
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$length": 2,
+                  "$contains": {
+                    "Key": "key2",
+                    "Value": "val2"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "GetBucketTagging",
-          "params": {
-            "Bucket": "${res.b1.name}"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "key3",
-                  "Value": "val3"
+          "$operation": {
+            "name": "GetBucketTagging",
+            "params": {
+              "Bucket": "${res.b1.name}"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "key3",
+                    "Value": "val3"
+                  }
                 }
               }
             }
@@ -3829,58 +4170,66 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_edge_cases.py#L352",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "data": {
         "body": {
-          "kind": "prng",
-          "seed": "tagging-0045/body",
-          "size": 100
+          "$prng": {
+            "seed": "tagging-0045/body",
+            "size": 100
+          }
         }
       },
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object",
-            "Body": {
-              "$data": "body"
-            },
-            "Tagging": "key1=value1&key2=value2"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object",
+              "Body": {
+                "$data": "body"
+              },
+              "Tagging": "key1=value1&key2=value2"
+            }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "key1",
-                  "Value": "value1"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "key1",
+                    "Value": "value1"
+                  }
                 }
               }
             }
           }
         },
         {
-          "operation": "GetObjectTagging",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "tagged-object"
-          },
-          "expect": {
-            "response": {
-              "TagSet": {
-                "$contains": {
-                  "Key": "key2",
-                  "Value": "value2"
+          "$operation": {
+            "name": "GetObjectTagging",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "tagged-object"
+            },
+            "expect": {
+              "response": {
+                "TagSet": {
+                  "$contains": {
+                    "Key": "key2",
+                    "Value": "value2"
+                  }
                 }
               }
             }

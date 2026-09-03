@@ -51,19 +51,21 @@ export interface SigningRequest {
   body?: string
 }
 
-export type Prerequisite = BucketPrerequisite | ObjectPrerequisite | CredentialPrerequisite
+/** Keyed union: exactly one of $bucket / $object / $credential. */
+export type Prerequisite =
+  | { $bucket: BucketPrerequisite }
+  | { $object: ObjectPrerequisite }
+  | { $credential: CredentialPrerequisite }
 
 export interface BucketPrerequisite {
-  type: 'bucket'
   handle: string
   versioning?: 'Enabled' | 'Suspended'
   objectLock?: boolean
 }
 
 export interface ObjectPrerequisite {
-  type: 'object'
   handle: string
-  /** Handle of a bucket prerequisite in the same vector. */
+  /** Handle of a $bucket prerequisite in the same vector. */
   bucket: string
   key: string
   body?: ContentDescriptor
@@ -72,26 +74,30 @@ export interface ObjectPrerequisite {
 }
 
 export interface CredentialPrerequisite {
-  type: 'credential'
   handle: string
 }
 
-export type DataSpec = PrngData | PatternData | SliceData
+/** Keyed union: exactly one of $prng / $pattern / $slice. */
+export type DataSpec =
+  | { $prng: PrngData }
+  | { $pattern: PatternData }
+  | { $slice: SliceData }
 
 /** SHA-256 counter mode: block(i) = SHA256(UTF8(seed) || BE64(i)). */
-export interface PrngData { kind: 'prng'; seed: string; size: number }
+export interface PrngData { seed: string; size: number }
 /** Pattern bytes repeated and truncated to size (exactly one of pattern | patternBase64). */
-export interface PatternData { kind: 'pattern'; pattern?: string; patternBase64?: string; size: number }
-/** Byte range [offset, offset+length) of a prng/pattern dataset. */
-export interface SliceData { kind: 'slice'; of: string; offset: number; length: number }
+export interface PatternData { pattern?: string; patternBase64?: string; size: number }
+/** Byte range [offset, offset+length) of a $prng/$pattern dataset. */
+export interface SliceData { of: string; offset: number; length: number }
 
 export type ContentDescriptor = string | { $data: string } | { $base64: string }
 
-export type Step = OperationStep | HttpStep
+/** Keyed union: exactly one of $operation / $http. */
+export type Step = { $operation: OperationStep } | { $http: HttpStep }
 
 export interface OperationStep {
   /** Exact AWS S3 API operation name. */
-  operation: string
+  name: string
   /** AWS API model member names; string values may contain ${...} placeholders. */
   params?: Record<string, unknown>
   identity?: string
@@ -102,13 +108,11 @@ export interface OperationStep {
 }
 
 export interface HttpStep {
-  http: {
-    method: string
-    path: string
-    query?: Record<string, string | string[]>
-    headers?: Record<string, string | string[]>
-    body?: ContentDescriptor
-  }
+  method: string
+  path: string
+  query?: Record<string, string | string[]>
+  headers?: Record<string, string | string[]>
+  body?: ContentDescriptor
   /** Default true: runner SigV4-signs with the step identity. false: send byte-literal. */
   sign?: boolean
   identity?: string

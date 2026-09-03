@@ -49,27 +49,29 @@ def generate(specs: Mapping[str, Mapping[str, Any]], name: str) -> bytes:
     spec = specs.get(name)
     if spec is None:
         raise KeyError(f"unknown dataset: {name}")
-    kind = spec["kind"]
-    if kind == "prng":
-        return _prng(spec["seed"], spec["size"])
-    if kind == "pattern":
-        if "pattern" in spec:
-            return _pattern(spec["pattern"].encode("utf-8"), spec["size"])
-        return _pattern(base64.b64decode(spec["patternBase64"]), spec["size"])
-    if kind == "slice":
-        parent = specs.get(spec["of"])
+    if "$prng" in spec:
+        d = spec["$prng"]
+        return _prng(d["seed"], d["size"])
+    if "$pattern" in spec:
+        d = spec["$pattern"]
+        if "pattern" in d:
+            return _pattern(d["pattern"].encode("utf-8"), d["size"])
+        return _pattern(base64.b64decode(d["patternBase64"]), d["size"])
+    if "$slice" in spec:
+        d = spec["$slice"]
+        parent = specs.get(d["of"])
         if parent is None:
-            raise KeyError(f"slice {name!r} references unknown dataset {spec['of']!r}")
-        if parent["kind"] == "slice":
-            raise ValueError(f"slice {name!r} references slice {spec['of']!r} (chained slices are not allowed)")
-        base = generate(specs, spec["of"])
-        offset, length = spec["offset"], spec["length"]
+            raise KeyError(f"slice {name!r} references unknown dataset {d['of']!r}")
+        if "$slice" in parent:
+            raise ValueError(f"slice {name!r} references slice {d['of']!r} (chained slices are not allowed)")
+        base = generate(specs, d["of"])
+        offset, length = d["offset"], d["length"]
         if offset + length > len(base):
             raise ValueError(
-                f"slice {name!r} [{offset}, {offset + length}) exceeds {spec['of']!r} size {len(base)}"
+                f"slice {name!r} [{offset}, {offset + length}) exceeds {d['of']!r} size {len(base)}"
             )
         return base[offset:offset + length]
-    raise ValueError(f"unknown data kind: {kind}")
+    raise ValueError(f"unknown data kind: {sorted(spec)}")
 
 
 def _make_crc_table(poly: int, width: int) -> list[int]:

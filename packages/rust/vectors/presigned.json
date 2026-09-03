@@ -16,37 +16,44 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3507",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutBucketAcl",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "ACL": "public-read"
+          "$operation": {
+            "name": "PutBucketAcl",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "ACL": "public-read"
+            }
           }
         },
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "ACL": "public-read"
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "ACL": "public-read"
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "presign": {
-            "expiresIn": 100000
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "presign": {
+              "expiresIn": 100000
+            },
+            "expect": {
+              "status": 200
+            }
           }
         }
       ]
@@ -64,38 +71,43 @@
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3624",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo",
-            "ACL": "private",
-            "Body": "hello world"
-          },
-          "presign": {
-            "expiresIn": 3600
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo",
+              "ACL": "private",
+              "Body": "hello world"
+            },
+            "presign": {
+              "expiresIn": 3600
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "foo"
-          },
-          "presign": {
-            "expiresIn": 3600
-          },
-          "expect": {
-            "status": 200,
-            "body": "hello world"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "foo"
+            },
+            "presign": {
+              "expiresIn": 3600
+            },
+            "expect": {
+              "status": 200,
+              "body": "hello world"
+            }
           }
         }
       ]
@@ -112,30 +124,34 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/presigned/test_presigned_urls.py#L26",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o1",
-          "bucket": "b1",
-          "key": "presigned-get-test",
-          "body": "presigned url test data"
+          "$object": {
+            "handle": "o1",
+            "bucket": "b1",
+            "key": "presigned-get-test",
+            "body": "presigned url test data"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "presigned-get-test"
-          },
-          "presign": {
-            "expiresIn": 3600
-          },
-          "expect": {
-            "status": 200,
-            "body": "presigned url test data"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "presigned-get-test"
+            },
+            "presign": {
+              "expiresIn": 3600
+            },
+            "expect": {
+              "status": 200,
+              "body": "presigned url test data"
+            }
           }
         }
       ]
@@ -152,34 +168,39 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/presigned/test_presigned_urls.py#L55",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "PutObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "presigned-put-test",
-            "Body": "uploaded via presigned url"
-          },
-          "presign": {
-            "expiresIn": 300
-          },
-          "expect": {
-            "status": 200
+          "$operation": {
+            "name": "PutObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "presigned-put-test",
+              "Body": "uploaded via presigned url"
+            },
+            "presign": {
+              "expiresIn": 300
+            },
+            "expect": {
+              "status": 200
+            }
           }
         },
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "presigned-put-test"
-          },
-          "expect": {
-            "status": 200,
-            "body": "uploaded via presigned url"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "presigned-put-test"
+            },
+            "expect": {
+              "status": 200,
+              "body": "uploaded via presigned url"
+            }
           }
         }
       ]
@@ -196,34 +217,38 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/presigned/test_presigned_urls.py#L146",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o5",
-          "bucket": "b1",
-          "key": "custom-headers",
-          "body": "test"
+          "$object": {
+            "handle": "o5",
+            "bucket": "b1",
+            "key": "custom-headers",
+            "body": "test"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "custom-headers",
-            "ResponseContentDisposition": "attachment; filename=\"download.txt\"",
-            "ResponseContentType": "text/plain"
-          },
-          "presign": {
-            "expiresIn": 3600
-          },
-          "expect": {
-            "status": 200,
-            "headers": {
-              "content-disposition": {
-                "$matches": "attachment"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "custom-headers",
+              "ResponseContentDisposition": "attachment; filename=\"download.txt\"",
+              "ResponseContentType": "text/plain"
+            },
+            "presign": {
+              "expiresIn": 3600
+            },
+            "expect": {
+              "status": 200,
+              "headers": {
+                "content-disposition": {
+                  "$matches": "attachment"
+                }
               }
             }
           }
@@ -243,23 +268,26 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/presigned/test_presigned_urls.py#L176",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "GetObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "does-not-exist"
-          },
-          "presign": {
-            "expiresIn": 300
-          },
-          "expect": {
-            "status": 404,
-            "error": "NoSuchKey"
+          "$operation": {
+            "name": "GetObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "does-not-exist"
+            },
+            "presign": {
+              "expiresIn": 300
+            },
+            "expect": {
+              "status": 404,
+              "error": "NoSuchKey"
+            }
           }
         }
       ]
@@ -276,36 +304,42 @@
       "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/presigned/test_presigned_urls.py#L221",
       "prerequisites": [
         {
-          "type": "bucket",
-          "handle": "b1"
+          "$bucket": {
+            "handle": "b1"
+          }
         },
         {
-          "type": "object",
-          "handle": "o8",
-          "bucket": "b1",
-          "key": "presigned-delete",
-          "body": "to delete"
+          "$object": {
+            "handle": "o8",
+            "bucket": "b1",
+            "key": "presigned-delete",
+            "body": "to delete"
+          }
         }
       ],
       "steps": [
         {
-          "operation": "DeleteObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "presigned-delete"
-          },
-          "presign": {
-            "expiresIn": 300
+          "$operation": {
+            "name": "DeleteObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "presigned-delete"
+            },
+            "presign": {
+              "expiresIn": 300
+            }
           }
         },
         {
-          "operation": "HeadObject",
-          "params": {
-            "Bucket": "${res.b1.name}",
-            "Key": "presigned-delete"
-          },
-          "expect": {
-            "status": 404
+          "$operation": {
+            "name": "HeadObject",
+            "params": {
+              "Bucket": "${res.b1.name}",
+              "Key": "presigned-delete"
+            },
+            "expect": {
+              "status": 404
+            }
           }
         }
       ]

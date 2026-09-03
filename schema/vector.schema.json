@@ -92,33 +92,46 @@
     },
 
     "prerequisite": {
-      "description": "A condition the runner must establish before step 1. If it cannot be established the vector outcome is 'blocked', not 'fail'.",
+      "description": "A condition the runner must establish before step 1. Keyed union: exactly one of $bucket / $object / $credential. If it cannot be established the vector outcome is 'blocked', not 'fail'.",
       "oneOf": [
-        { "$ref": "#/$defs/bucketPrerequisite" },
-        { "$ref": "#/$defs/objectPrerequisite" },
-        { "$ref": "#/$defs/credentialPrerequisite" }
+        {
+          "type": "object",
+          "properties": { "$bucket": { "$ref": "#/$defs/bucketPrerequisite" } },
+          "required": ["$bucket"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "$object": { "$ref": "#/$defs/objectPrerequisite" } },
+          "required": ["$object"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "$credential": { "$ref": "#/$defs/credentialPrerequisite" } },
+          "required": ["$credential"],
+          "additionalProperties": false
+        }
       ]
     },
 
     "bucketPrerequisite": {
       "type": "object",
       "properties": {
-        "type": { "const": "bucket" },
         "handle": { "$ref": "#/$defs/handle" },
         "versioning": { "enum": ["Enabled", "Suspended"] },
         "objectLock": { "type": "boolean" }
       },
-      "required": ["type", "handle"],
+      "required": ["handle"],
       "additionalProperties": false
     },
 
     "objectPrerequisite": {
       "type": "object",
       "properties": {
-        "type": { "const": "object" },
         "handle": { "$ref": "#/$defs/handle" },
         "bucket": {
-          "description": "Handle of a bucket prerequisite in this vector.",
+          "description": "Handle of a $bucket prerequisite in this vector.",
           "$ref": "#/$defs/handle"
         },
         "key": { "type": "string", "minLength": 1 },
@@ -129,7 +142,7 @@
           "additionalProperties": { "type": "string" }
         }
       },
-      "required": ["type", "handle", "bucket", "key"],
+      "required": ["handle", "bucket", "key"],
       "additionalProperties": false
     },
 
@@ -137,18 +150,33 @@
       "description": "A second, distinct identity. Attributes: accessKeyId, canonicalId, displayName.",
       "type": "object",
       "properties": {
-        "type": { "const": "credential" },
         "handle": { "$ref": "#/$defs/handle" }
       },
-      "required": ["type", "handle"],
+      "required": ["handle"],
       "additionalProperties": false
     },
 
     "dataSpec": {
+      "description": "A deterministic dataset declaration. Keyed union: exactly one of $prng / $pattern / $slice.",
       "oneOf": [
-        { "$ref": "#/$defs/prngData" },
-        { "$ref": "#/$defs/patternData" },
-        { "$ref": "#/$defs/sliceData" }
+        {
+          "type": "object",
+          "properties": { "$prng": { "$ref": "#/$defs/prngData" } },
+          "required": ["$prng"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "$pattern": { "$ref": "#/$defs/patternData" } },
+          "required": ["$pattern"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "$slice": { "$ref": "#/$defs/sliceData" } },
+          "required": ["$slice"],
+          "additionalProperties": false
+        }
       ]
     },
 
@@ -156,11 +184,10 @@
       "description": "Deterministic bytes: SHA-256 counter mode. block(i) = SHA256(UTF8(seed) || BE64(i)); stream = block(0) || block(1) || ...; data = stream[0:size]. Seed convention: '<vector-id>/<name>'.",
       "type": "object",
       "properties": {
-        "kind": { "const": "prng" },
         "seed": { "type": "string", "minLength": 1 },
         "size": { "type": "integer", "minimum": 0 }
       },
-      "required": ["kind", "seed", "size"],
+      "required": ["seed", "size"],
       "additionalProperties": false
     },
 
@@ -168,12 +195,11 @@
       "description": "The pattern bytes repeated and truncated to size. Exactly one of pattern (UTF-8) or patternBase64.",
       "type": "object",
       "properties": {
-        "kind": { "const": "pattern" },
         "pattern": { "type": "string", "minLength": 1 },
         "patternBase64": { "type": "string", "pattern": "^[A-Za-z0-9+/]+={0,2}$" },
         "size": { "type": "integer", "minimum": 0 }
       },
-      "required": ["kind", "size"],
+      "required": ["size"],
       "oneOf": [
         { "required": ["pattern"], "not": { "required": ["patternBase64"] } },
         { "required": ["patternBase64"], "not": { "required": ["pattern"] } }
@@ -182,15 +208,14 @@
     },
 
     "sliceData": {
-      "description": "A byte range of another dataset in this vector. 'of' must name a prng or pattern entry (no chained slices).",
+      "description": "A byte range of another dataset in this vector. 'of' must name a $prng or $pattern entry (no chained slices).",
       "type": "object",
       "properties": {
-        "kind": { "const": "slice" },
         "of": { "$ref": "#/$defs/handle" },
         "offset": { "type": "integer", "minimum": 0 },
         "length": { "type": "integer", "minimum": 0 }
       },
-      "required": ["kind", "of", "offset", "length"],
+      "required": ["of", "offset", "length"],
       "additionalProperties": false
     },
 
@@ -214,9 +239,20 @@
     },
 
     "step": {
+      "description": "Keyed union: exactly one of $operation (an S3 API operation by name) or $http (a raw wire-level request).",
       "oneOf": [
-        { "$ref": "#/$defs/operationStep" },
-        { "$ref": "#/$defs/httpStep" }
+        {
+          "type": "object",
+          "properties": { "$operation": { "$ref": "#/$defs/operationStep" } },
+          "required": ["$operation"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "$http": { "$ref": "#/$defs/httpStep" } },
+          "required": ["$http"],
+          "additionalProperties": false
+        }
       ]
     },
 
@@ -224,7 +260,7 @@
       "description": "An S3 API operation by name with API-model member names as params. When expect is omitted the step must simply succeed.",
       "type": "object",
       "properties": {
-        "operation": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]+$" },
+        "name": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]+$" },
         "params": { "type": "object" },
         "identity": { "$ref": "#/$defs/identity" },
         "presign": {
@@ -239,7 +275,7 @@
         "capture": { "$ref": "#/$defs/capture" },
         "expect": { "$ref": "#/$defs/expect" }
       },
-      "required": ["operation"],
+      "required": ["name"],
       "additionalProperties": false
     },
 
@@ -247,40 +283,33 @@
       "description": "Raw HTTP escape hatch for wire-level tests. sign defaults to true (runner SigV4-signs with the step identity); sign:false sends the request byte-literal.",
       "type": "object",
       "properties": {
-        "http": {
+        "method": { "type": "string", "pattern": "^[A-Z]+$" },
+        "path": { "type": "string", "pattern": "^/" },
+        "query": {
           "type": "object",
-          "properties": {
-            "method": { "type": "string", "pattern": "^[A-Z]+$" },
-            "path": { "type": "string", "pattern": "^/" },
-            "query": {
-              "type": "object",
-              "additionalProperties": {
-                "anyOf": [
-                  { "type": "string" },
-                  { "type": "array", "items": { "type": "string" } }
-                ]
-              }
-            },
-            "headers": {
-              "type": "object",
-              "additionalProperties": {
-                "anyOf": [
-                  { "type": "string" },
-                  { "type": "array", "items": { "type": "string" } }
-                ]
-              }
-            },
-            "body": { "$ref": "#/$defs/contentDescriptor" }
-          },
-          "required": ["method", "path"],
-          "additionalProperties": false
+          "additionalProperties": {
+            "anyOf": [
+              { "type": "string" },
+              { "type": "array", "items": { "type": "string" } }
+            ]
+          }
         },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              { "type": "string" },
+              { "type": "array", "items": { "type": "string" } }
+            ]
+          }
+        },
+        "body": { "$ref": "#/$defs/contentDescriptor" },
         "sign": { "type": "boolean", "default": true },
         "identity": { "$ref": "#/$defs/identity" },
         "capture": { "$ref": "#/$defs/capture" },
         "expect": { "$ref": "#/$defs/expect" }
       },
-      "required": ["http"],
+      "required": ["method", "path"],
       "additionalProperties": false
     },
 

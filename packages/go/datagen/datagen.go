@@ -62,37 +62,39 @@ func Generate(specs map[string]s3vectors.DataSpec, name string) ([]byte, error) 
 	if !ok {
 		return nil, fmt.Errorf("unknown dataset: %s", name)
 	}
-	switch spec.Kind {
-	case "prng":
-		return prng(spec.Seed, spec.Size), nil
-	case "pattern":
-		if spec.Pattern != nil {
-			return pattern([]byte(*spec.Pattern), spec.Size)
+	switch {
+	case spec.Prng != nil:
+		return prng(spec.Prng.Seed, spec.Prng.Size), nil
+	case spec.Pattern != nil:
+		d := spec.Pattern
+		if d.Pattern != nil {
+			return pattern([]byte(*d.Pattern), d.Size)
 		}
-		raw, err := base64.StdEncoding.DecodeString(*spec.PatternBase64)
+		raw, err := base64.StdEncoding.DecodeString(*d.PatternBase64)
 		if err != nil {
 			return nil, fmt.Errorf("dataset %s: bad patternBase64: %w", name, err)
 		}
-		return pattern(raw, spec.Size)
-	case "slice":
-		parent, ok := specs[spec.Of]
+		return pattern(raw, d.Size)
+	case spec.Slice != nil:
+		d := spec.Slice
+		parent, ok := specs[d.Of]
 		if !ok {
-			return nil, fmt.Errorf("slice %q references unknown dataset %q", name, spec.Of)
+			return nil, fmt.Errorf("slice %q references unknown dataset %q", name, d.Of)
 		}
-		if parent.Kind == "slice" {
-			return nil, fmt.Errorf("slice %q references slice %q (chained slices are not allowed)", name, spec.Of)
+		if parent.Slice != nil {
+			return nil, fmt.Errorf("slice %q references slice %q (chained slices are not allowed)", name, d.Of)
 		}
-		base, err := Generate(specs, spec.Of)
+		base, err := Generate(specs, d.Of)
 		if err != nil {
 			return nil, err
 		}
-		if spec.Offset+spec.Length > int64(len(base)) {
+		if d.Offset+d.Length > int64(len(base)) {
 			return nil, fmt.Errorf("slice %q [%d, %d) exceeds %q size %d",
-				name, spec.Offset, spec.Offset+spec.Length, spec.Of, len(base))
+				name, d.Offset, d.Offset+d.Length, d.Of, len(base))
 		}
-		return base[spec.Offset : spec.Offset+spec.Length], nil
+		return base[d.Offset : d.Offset+d.Length], nil
 	default:
-		return nil, fmt.Errorf("unknown data kind: %s", spec.Kind)
+		return nil, fmt.Errorf("dataset %s: no $prng/$pattern/$slice key", name)
 	}
 }
 
