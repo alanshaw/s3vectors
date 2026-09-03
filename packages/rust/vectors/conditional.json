@@ -3317,7 +3317,7 @@
             "expect": {
               "response": {
                 "ETag": {
-                  "$matches": "^(?!${res.o1.etag}$)"
+                  "$ne": "${res.o1.etag}"
                 }
               }
             }

@@ -8565,7 +8565,8 @@
             "expect": {
               "response": {
                 "ETag": {
-                  "$matches": "^(?!${cap.singleEtag}$).*-"
+                  "$ne": "${cap.singleEtag}",
+                  "$matches": "-"
                 }
               }
             }

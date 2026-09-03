@@ -371,12 +371,14 @@
     },
 
     "assertionObject": {
+      "description": "All $-keys present must hold (AND). $matches uses the portable regex subset valid in both ECMA-262 and RE2: no lookaheads/lookbehinds, no backreferences.",
       "type": "object",
       "minProperties": 1,
       "properties": {
         "$exists": { "const": true },
         "$absent": { "const": true },
         "$eq": {},
+        "$ne": { "type": ["string", "number", "boolean", "null"] },
         "$matches": { "type": "string", "format": "regex" },
         "$length": { "type": "integer", "minimum": 0 },
         "$contains": { "$ref": "#/$defs/matcher" }

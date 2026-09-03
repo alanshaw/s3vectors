@@ -6260,7 +6260,7 @@
             "expect": {
               "response": {
                 "ETag": {
-                  "$matches": "^(?!${cap.e1}$)"
+                  "$ne": "${cap.e1}"
                 }
               }
             }
@@ -6290,7 +6290,7 @@
             "expect": {
               "response": {
                 "ETag": {
-                  "$matches": "^(?!${cap.e2}$)"
+                  "$ne": "${cap.e2}"
                 }
               }
             }
@@ -6320,7 +6320,7 @@
             "expect": {
               "response": {
                 "ETag": {
-                  "$matches": "^(?!${cap.e3}$)"
+                  "$ne": "${cap.e3}"
                 }
               }
             }
@@ -9445,7 +9445,7 @@
             "expect": {
               "response": {
                 "ETag": {
-                  "$matches": "^(?!${cap.etag1}$)"
+                  "$ne": "${cap.etag1}"
                 }
               }
             }
