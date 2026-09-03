@@ -1,0 +1,170 @@
+name: Release
+
+# Releases every package in lockstep when packages/VERSION changes on main.
+# Publishing uses OIDC trusted publishing (no registry tokens in secrets); see
+# docs/releasing.md for the one-time trusted-publisher setup per registry and
+# the first-publish bootstrap caveats.
+
+on:
+  push:
+    branches: [main]
+    paths: [packages/VERSION]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      exists: ${{ steps.tag.outputs.exists }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: version
+        run: echo "version=$(cat packages/VERSION)" >> "$GITHUB_OUTPUT"
+      - id: tag
+        run: |
+          git fetch --tags --quiet
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "tag v${{ steps.version.outputs.version }} already exists; nothing to release"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  verify:
+    name: Verify everything
+    needs: check
+    if: needs.check.outputs.exists != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache-dependency-path: packages/go/go.mod
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: packages/rust
+      - run: npm ci
+        working-directory: scripts
+      - run: node scripts/validate.js
+      - run: node scripts/datagen.js --self-test
+      - run: node scripts/sync-packages.js --check
+      - run: npm test
+        working-directory: packages/js
+      - run: python -m unittest discover -s tests
+        working-directory: packages/python
+      - run: go test ./...
+        working-directory: packages/go
+      - run: cargo test && cargo test --no-default-features
+        working-directory: packages/rust
+
+  tag:
+    name: Tag vX.Y.Z + packages/go/vX.Y.Z
+    needs: [check, verify]
+    if: needs.check.outputs.exists != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          VERSION="${{ needs.check.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "v$VERSION"
+          # The path-prefixed tag IS the Go module release.
+          git tag "packages/go/v$VERSION"
+          git push origin "v$VERSION" "packages/go/v$VERSION"
+
+  publish-npm:
+    name: Publish npm
+    needs: [check, tag]
+    if: needs.check.outputs.exists != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          # npm >= 11.5 exchanges the Actions OIDC token with the configured
+          # trusted publisher automatically — no NODE_AUTH_TOKEN.
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - run: npm publish --access public --provenance
+        working-directory: packages/js
+
+  publish-pypi:
+    name: Publish PyPI
+    needs: [check, tag]
+    if: needs.check.outputs.exists != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build && python -m build
+        working-directory: packages/python
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: packages/python/dist
+          skip-existing: true
+
+  publish-crates:
+    name: Publish crates.io
+    # crates.io is immutable — publish last, after the mutable registries succeed.
+    needs: [check, publish-npm, publish-pypi]
+    if: needs.check.outputs.exists != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: rust-lang/crates-io-auth-action@v1
+        id: auth
+      - run: cargo publish
+        working-directory: packages/rust
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+
+  github-release:
+    name: GitHub release
+    needs: [check, publish-crates]
+    if: needs.check.outputs.exists != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          VERSION="${{ needs.check.outputs.version }}"
+          gh release create "v$VERSION" --generate-notes --title "v$VERSION" --notes-file - <<EOF
+          Corpus snapshot **$VERSION** — released in lockstep:
+
+          - npm: [\`@cloud-portable/s3vectors\`](https://www.npmjs.com/package/@cloud-portable/s3vectors/v/$VERSION)
+          - PyPI: [\`cloud-portable-s3vectors\`](https://pypi.org/project/cloud-portable-s3vectors/$VERSION/)
+          - crates.io: [\`cloud-portable-s3vectors\`](https://crates.io/crates/cloud-portable-s3vectors/$VERSION)
+          - Go: \`go get github.com/cloud-portable/s3vectors/packages/go@v$VERSION\`
+          EOF
+        env:
+          GH_TOKEN: ${{ github.token }}
