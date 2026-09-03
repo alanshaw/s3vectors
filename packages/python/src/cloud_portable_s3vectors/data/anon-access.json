@@ -1,0 +1,585 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "anon-access",
+  "vectors": [
+    {
+      "id": "anon-access-0001",
+      "kind": "api",
+      "title": "Anonymous PutObject to a private bucket returns AccessDenied",
+      "tags": [
+        "tier-1",
+        "anon-access",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3572",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": ""
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "foo"
+          },
+          "identity": "anonymous",
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0002",
+      "kind": "api",
+      "title": "Anonymous PutObject succeeds on a public-read-write bucket",
+      "tags": [
+        "tier-3",
+        "anon-access",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3585",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read-write"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "foo"
+          },
+          "identity": "anonymous",
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0003",
+      "kind": "api",
+      "title": "Authenticated GetObject succeeds on public-read bucket and object",
+      "tags": [
+        "tier-3",
+        "anon-access",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3438",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0004",
+      "kind": "api",
+      "title": "Owner GetObject succeeds on a public-read object despite a private bucket ACL",
+      "description": "The source creates the bucket with ACL 'private', which is the default canned ACL for a new bucket, so the bucket prerequisite carries no ACL step.",
+      "tags": [
+        "tier-1",
+        "anon-access",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3458",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0005",
+      "kind": "api",
+      "title": "Authenticated GetObject on a deleted bucket returns NoSuchBucket",
+      "tags": [
+        "tier-3",
+        "anon-access",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3472",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0006",
+      "kind": "api",
+      "title": "Owner GetObject succeeds on a private object in a public-read bucket",
+      "tags": [
+        "tier-3",
+        "anon-access",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3465",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0007",
+      "kind": "api",
+      "title": "Authenticated GetObject on a deleted object returns NoSuchKey",
+      "tags": [
+        "tier-3",
+        "anon-access",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3484",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0008",
+      "kind": "api",
+      "title": "Anonymous GetObject succeeds on public-read bucket and object",
+      "tags": [
+        "tier-3",
+        "anon-access",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3297",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "identity": "anonymous",
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0009",
+      "kind": "api",
+      "title": "Anonymous GetObject succeeds on a public-read object in a private bucket",
+      "description": "The source creates the bucket with ACL 'private', which is the default canned ACL for a new bucket, so the bucket prerequisite carries no ACL step.",
+      "tags": [
+        "tier-1",
+        "anon-access",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3385",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "identity": "anonymous",
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0010",
+      "kind": "api",
+      "title": "Anonymous GetObject on a deleted bucket returns NoSuchBucket",
+      "tags": [
+        "tier-3",
+        "anon-access",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3304",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          }
+        },
+        {
+          "operation": "DeleteBucket",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "identity": "anonymous",
+          "expect": {
+            "status": 404,
+            "error": "NoSuchBucket"
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0011",
+      "kind": "api",
+      "title": "Anonymous GetObject on a private object in a public-read bucket returns AccessDenied",
+      "tags": [
+        "tier-3",
+        "anon-access",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3392",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "identity": "anonymous",
+          "expect": {
+            "status": 403,
+            "error": "AccessDenied"
+          }
+        }
+      ]
+    },
+    {
+      "id": "anon-access-0012",
+      "kind": "api",
+      "title": "Anonymous GetObject on a deleted object in a public-read bucket returns NoSuchKey",
+      "tags": [
+        "tier-3",
+        "anon-access",
+        "acl",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3332",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutBucketAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "ACL": "public-read"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "identity": "anonymous",
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    }
+  ]
+}

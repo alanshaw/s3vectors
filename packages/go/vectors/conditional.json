@@ -1,0 +1,3881 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "conditional",
+  "vectors": [
+    {
+      "id": "conditional-0001",
+      "kind": "api",
+      "title": "DeleteObject with If-Match ETag precondition against the current version on a versioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19734",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "*"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "version": "VersionId",
+            "etag": "ETag"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "${cap.etag}"
+          },
+          "expect": {
+            "response": {
+              "DeleteMarker": true
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "*"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "*"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0002",
+      "kind": "api",
+      "title": "DeleteObject with last-modified-time precondition against the current version on a versioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19819",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "mtime": "LastModified"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchLastModifiedTime": "${cap.mtime}"
+          },
+          "expect": {
+            "response": {
+              "DeleteMarker": true
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0003",
+      "kind": "api",
+      "title": "DeleteObject with size precondition against the current version on a versioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19887",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchSize": 9999
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchSize": 0
+          },
+          "expect": {
+            "response": {
+              "DeleteMarker": {
+                "$exists": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchSize": 9999
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0004",
+      "kind": "api",
+      "title": "DeleteObject with If-Match ETag precondition on an unversioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19709",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "etag": "ETag"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "${cap.etag}"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "*"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 204
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "*"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0005",
+      "kind": "api",
+      "title": "DeleteObject with last-modified-time precondition on an unversioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19798",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "mtime": "LastModified"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchLastModifiedTime": "${cap.mtime}"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+          },
+          "expect": {
+            "status": 204
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0006",
+      "kind": "api",
+      "title": "DeleteObject with size precondition on an unversioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19866",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchSize": 9999
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchSize": 0
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatchSize": 9999
+          },
+          "expect": {
+            "status": 204
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0007",
+      "kind": "api",
+      "title": "DeleteObject with If-Match ETag precondition on a specific version",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19769",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "version": "VersionId",
+            "etag": "ETag"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}",
+            "IfMatch": "${cap.etag}"
+          },
+          "expect": {
+            "response": {
+              "DeleteMarker": {
+                "$absent": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}",
+            "IfMatch": "*"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}",
+            "IfMatch": "badetag"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "version2": "VersionId"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version2}",
+            "IfMatch": "*"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0008",
+      "kind": "api",
+      "title": "DeleteObject with last-modified-time precondition on a specific version",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19843",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "version": "VersionId"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}"
+          },
+          "capture": {
+            "mtime": "LastModified"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}",
+            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}",
+            "IfMatchLastModifiedTime": "${cap.mtime}"
+          },
+          "expect": {
+            "response": {
+              "DeleteMarker": {
+                "$absent": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}",
+            "IfMatchLastModifiedTime": "2015-01-01T00:00:00Z"
+          },
+          "expect": {
+            "status": 204
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0009",
+      "kind": "api",
+      "title": "DeleteObject with size precondition on a specific version",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19910",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "version": "VersionId"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}",
+            "IfMatchSize": 9999
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}",
+            "IfMatchSize": 0
+          },
+          "expect": {
+            "response": {
+              "DeleteMarker": {
+                "$absent": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}",
+            "IfMatchSize": 9999
+          },
+          "expect": {
+            "status": 204
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0010",
+      "kind": "api",
+      "title": "DeleteObjects with per-key ETag precondition against the current version on a versioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19953",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "etag": "ETag"
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "ETag": "badetag"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "ETag": "${cap.etag}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "obj",
+                  "DeleteMarker": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "ETag": "badetag"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0011",
+      "kind": "api",
+      "title": "DeleteObjects with per-key last-modified-time precondition against the current version on a versioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20020",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "mtime": "LastModified"
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "LastModifiedTime": "2015-01-01T00:00:00Z"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "LastModifiedTime": "${cap.mtime}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "obj",
+                  "DeleteMarker": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "LastModifiedTime": "2015-01-01T00:00:00Z"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0012",
+      "kind": "api",
+      "title": "DeleteObjects with per-key ETag precondition on an unversioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19933",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "etag": "ETag"
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "ETag": "badetag"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "ETag": "${cap.etag}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "obj"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "ETag": "badetag"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0013",
+      "kind": "api",
+      "title": "DeleteObjects with per-key last-modified-time precondition on an unversioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19998",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "mtime": "LastModified"
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "LastModifiedTime": "2015-01-01T00:00:00Z"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "LastModifiedTime": "${cap.mtime}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "obj"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "LastModifiedTime": "2015-01-01T00:00:00Z"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0014",
+      "kind": "api",
+      "title": "DeleteObjects with per-key size precondition on an unversioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20071",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "Size": 9999
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "Size": 0
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "obj"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "Size": 9999
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0015",
+      "kind": "api",
+      "title": "DeleteObjects with per-key ETag precondition on a specific version",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19975",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "etag": "ETag",
+            "version": "VersionId"
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "VersionId": "${cap.version}",
+                  "ETag": "badetag"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "VersionId": "${cap.version}",
+                  "ETag": "${cap.etag}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "obj",
+                  "DeleteMarker": {
+                    "$absent": true
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "VersionId": "${cap.version}",
+                  "ETag": "badetag"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0016",
+      "kind": "api",
+      "title": "DeleteObjects with per-key last-modified-time precondition on a specific noncurrent version",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20045",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "capture": {
+            "version": "VersionId"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "VersionId": "${cap.version}"
+          },
+          "capture": {
+            "mtime": "LastModified"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "VersionId": "${cap.version}",
+                  "LastModifiedTime": "2015-01-01T00:00:00Z"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "VersionId": "${cap.version}",
+                  "LastModifiedTime": "${cap.mtime}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "obj"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "VersionId": "${cap.version}",
+                  "LastModifiedTime": "2015-01-01T00:00:00Z"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0017",
+      "kind": "api",
+      "title": "PutObject If-Match is evaluated against the current version on a versioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19623",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "*"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "Body": "data1",
+            "IfNoneMatch": "deadbeef"
+          },
+          "capture": {
+            "etag1": "ETag"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "Body": "data2",
+            "IfMatch": "*"
+          },
+          "capture": {
+            "etag2": "ETag"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "${cap.etag1}"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "${cap.etag2}"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0018",
+      "kind": "api",
+      "title": "PutObject If-None-Match is evaluated against the current version on a versioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19567",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "Body": "data1",
+            "IfNoneMatch": "*"
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "Body": "data2"
+          },
+          "capture": {
+            "etag2": "ETag"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "*"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "${cap.etag2}"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "${cap.etag1}"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "badetag"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0019",
+      "kind": "api",
+      "title": "PutObject preconditions treat a delete marker as a nonexistent current object",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19681",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "*"
+          },
+          "capture": {
+            "etag": "ETag"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "*"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "${cap.etag}"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "${cap.etag}"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          },
+          "expect": {
+            "response": {
+              "DeleteMarker": true
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "*"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "${cap.etag}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0020",
+      "kind": "api",
+      "title": "PutObject If-Match/If-None-Match precondition matrix on an unversioned bucket",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L19470",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "*"
+          },
+          "capture": {
+            "etag": "ETag"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "*"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "${cap.etag}"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "badetag"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "${cap.etag}"
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "*"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfNoneMatch": "${cap.etag}"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "*"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "badetag"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj",
+            "IfMatch": "${cap.etag}"
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0021",
+      "kind": "api",
+      "title": "PutObject with non-matching If-Match ETag fails with PreconditionFailed and leaves object intact",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3140",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "zar",
+            "IfMatch": "\"ABCORZ\""
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0022",
+      "kind": "api",
+      "title": "PutObject with matching If-Match ETag overwrites the object",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3119",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "zar",
+            "IfMatch": "37b51d194a7513e45b56f6524f2d51f2"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "zar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0023",
+      "kind": "api",
+      "title": "PutObject with If-Match: * on a nonexistent key fails with NoSuchKey and creates nothing",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3180",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "bar",
+            "IfMatch": "*"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0024",
+      "kind": "api",
+      "title": "PutObject with If-Match: * overwrites an existing object",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3162",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "zar",
+            "IfMatch": "*"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "zar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0025",
+      "kind": "api",
+      "title": "PutObject with matching If-None-Match ETag fails with PreconditionFailed and leaves object intact",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3215",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "zar",
+            "IfNoneMatch": "37b51d194a7513e45b56f6524f2d51f2"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0026",
+      "kind": "api",
+      "title": "PutObject with non-matching If-None-Match ETag overwrites the object",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3197",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "zar",
+            "IfNoneMatch": "ABCORZ"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "zar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0027",
+      "kind": "api",
+      "title": "PutObject with If-None-Match: * creates a nonexistent key",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3239",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "bar",
+            "IfNoneMatch": "*"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0028",
+      "kind": "api",
+      "title": "PutObject with If-None-Match: * on an existing key fails with PreconditionFailed and leaves object intact",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L3253",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "foo",
+          "body": "bar"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo",
+            "Body": "zar",
+            "IfNoneMatch": "*"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "foo"
+          },
+          "expect": {
+            "body": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0029",
+      "kind": "api",
+      "title": "DeleteObjects Size precondition on current version: mismatch errors, match creates delete marker, then delete marker blocks further match",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20093",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "obj",
+          "body": ""
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "Size": 9999
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "Size": 0
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "obj",
+                  "DeleteMarker": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "Size": 9999
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0030",
+      "kind": "api",
+      "title": "DeleteObjects by VersionId with Size precondition: mismatch errors, match deletes the version, repeat on gone version returns 200",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "versioning",
+        "errors",
+        "source:ceph-s3-tests",
+        "quirk:not-aws"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L20118",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1",
+          "versioning": "Enabled"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "obj",
+          "body": ""
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "VersionId": "${res.o1.versionId}",
+                  "Size": 9999
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Errors": [
+                {
+                  "Code": "PreconditionFailed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "VersionId": "${res.o1.versionId}",
+                  "Size": 0
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "Deleted": [
+                {
+                  "Key": "obj"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "DeleteObjects",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Delete": {
+              "Objects": [
+                {
+                  "Key": "obj",
+                  "VersionId": "${res.o1.versionId}",
+                  "Size": 9999
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0031",
+      "kind": "api",
+      "title": "Conditional DeleteObject with matching IfMatch ETag succeeds with 204",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_delete_object_additional.py#L28",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "dummy"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "IfMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "status": 204
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0032",
+      "kind": "api",
+      "title": "Conditional DeleteObject with a wrong IfMatch ETag returns PreconditionFailed",
+      "description": "Original tolerated implementations that ignore IfMatch on DeleteObject (MinIO) or return InvalidArgument; AWS enforces the precondition.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_delete_object_additional.py#L28",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "dummy"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "IfMatch": "\"incorrect_etag\""
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0033",
+      "kind": "api",
+      "title": "PutObject with a non-matching If-Match returns 412 and leaves the object unchanged",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_error_handling.py#L15",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "conditional-test",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "conditional-test",
+            "Body": "new data",
+            "IfMatch": "\"wrong-etag\""
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "conditional-test"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0034",
+      "kind": "api",
+      "title": "GetObject with If-Unmodified-Since in the past returns 412 PreconditionFailed",
+      "description": "The source used utcnow() minus one day; a fixed date guaranteed to precede any object creation preserves the semantics.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_additional.py#L168",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "test data"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "IfUnmodifiedSince": "2000-01-01T00:00:00Z"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0035",
+      "kind": "api",
+      "title": "GetObject with non-matching If-Match ETag returns PreconditionFailed",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L399",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": "test content"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "IfMatch": "\"wrong-etag\""
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0036",
+      "kind": "api",
+      "title": "GetObject with matching If-Match ETag returns the object",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_get_object_advanced.py#L369",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": "test content"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "IfMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "body": "test content"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0037",
+      "kind": "api",
+      "title": "PutObject with If-None-Match on a non-existent key succeeds",
+      "description": "The original test also sends If-Match on a non-existent key but accepts either success (AWS) or PreconditionFailed/NoSuchKey (MinIO); that either-or expectation is not expressible and is omitted here.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L193",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "obj-2",
+            "Body": "data",
+            "IfNoneMatch": "\"any-etag\""
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0038",
+      "kind": "api",
+      "title": "PutObject with matching If-Match plus matching If-None-Match returns PreconditionFailed",
+      "description": "When both conditional headers are sent and both match the current ETag, the If-None-Match condition fails and the write is rejected.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L158",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "v1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Body": "v2",
+            "IfMatch": "${res.o1.etag}",
+            "IfNoneMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0039",
+      "kind": "api",
+      "title": "PutObject with non-matching If-Match returns PreconditionFailed",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L59",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "v1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Body": "v2",
+            "IfMatch": "\"incorrect-etag\""
+          },
+          "expect": {
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0040",
+      "kind": "api",
+      "title": "PutObject with If-Match matching the current ETag succeeds and returns a new ETag",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L27",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "v1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Body": "v2",
+            "IfMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$matches": "^(?!${res.o1.etag}$)"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0041",
+      "kind": "api",
+      "title": "PutObject with If-None-Match matching the current ETag returns PreconditionFailed",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L123",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "v1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Body": "v2",
+            "IfNoneMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0042",
+      "kind": "api",
+      "title": "PutObject with non-matching If-None-Match on an existing object succeeds",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_put_object_conditionals.py#L93",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "v1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "Body": "v2",
+            "IfNoneMatch": "\"incorrect-etag\""
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0043",
+      "kind": "api",
+      "title": "CompleteMultipartUpload with non-matching If-Match returns PreconditionFailed",
+      "tags": [
+        "tier-1",
+        "multipart",
+        "conditional",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_complete_multipart_advanced_features.py#L263",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "initial content"
+        }
+      ],
+      "data": {
+        "x5m": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "x5m"
+            }
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "IfMatch": "\"incorrect-etag\"",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0044",
+      "kind": "api",
+      "title": "CompleteMultipartUpload with If-Match matching the existing object's ETag succeeds",
+      "tags": [
+        "tier-1",
+        "multipart",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_complete_multipart_advanced_features.py#L202",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "my-obj",
+          "body": "initial content"
+        }
+      ],
+      "data": {
+        "x5m": {
+          "kind": "pattern",
+          "pattern": "x",
+          "size": 5242880
+        }
+      },
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj"
+          },
+          "capture": {
+            "uploadId": "UploadId"
+          }
+        },
+        {
+          "operation": "UploadPart",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "PartNumber": 1,
+            "Body": {
+              "$data": "x5m"
+            }
+          },
+          "capture": {
+            "etag1": "ETag"
+          }
+        },
+        {
+          "operation": "CompleteMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-obj",
+            "UploadId": "${cap.uploadId}",
+            "IfMatch": "${res.o1.etag}",
+            "MultipartUpload": {
+              "Parts": [
+                {
+                  "PartNumber": 1,
+                  "ETag": "${cap.etag1}"
+                }
+              ]
+            }
+          },
+          "expect": {
+            "response": {
+              "ETag": {
+                "$exists": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0045",
+      "kind": "api",
+      "title": "CopyObject with a non-matching CopySourceIfMatch returns 412 PreconditionFailed",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "copy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L397",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0045/obj",
+          "size": 128
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object",
+            "CopySourceIfMatch": "\"00000000000000000000000000000000\""
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0046",
+      "kind": "api",
+      "title": "CopyObject with a matching CopySourceIfMatch copies the object",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L357",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0046/obj",
+          "size": 128
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object",
+            "CopySourceIfMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ETag": {
+                  "$exists": true
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object"
+          },
+          "expect": {
+            "response": {
+              "ContentLength": 128
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0047",
+      "kind": "api",
+      "title": "CopyObject with a past CopySourceIfModifiedSince copies the object",
+      "description": "The source used now-1h; a fixed past date guaranteed to precede the object's LastModified preserves the semantics.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "copy",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L475",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0047/obj",
+          "size": 128
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object",
+            "CopySourceIfModifiedSince": "2000-01-01T00:00:00Z"
+          },
+          "expect": {
+            "response": {
+              "CopyObjectResult": {
+                "ETag": {
+                  "$exists": true
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0048",
+      "kind": "api",
+      "title": "CopyObject with a matching CopySourceIfNoneMatch returns 412 PreconditionFailed",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "copy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L436",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0048/obj",
+          "size": 128
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object",
+            "CopySourceIfNoneMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0049",
+      "kind": "api",
+      "title": "CopyObject with a past CopySourceIfUnmodifiedSince returns 412 PreconditionFailed",
+      "description": "The source used now-1h; a fixed past date guaranteed to precede the object's LastModified preserves the semantics.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "copy",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L513",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "source-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0049/obj",
+          "size": 128
+        }
+      },
+      "steps": [
+        {
+          "operation": "CopyObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dest-object",
+            "CopySource": "${res.b1.name}/source-object",
+            "CopySourceIfUnmodifiedSince": "2000-01-01T00:00:00Z"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0052",
+      "kind": "api",
+      "title": "GetObject with a future If-Modified-Since returns 304 Not Modified",
+      "description": "The source used now+1h; a fixed far-future date guaranteed to postdate the object's LastModified preserves the semantics.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L317",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0052/obj",
+          "size": 256
+        }
+      },
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "IfModifiedSince": "2099-01-01T00:00:00Z"
+          },
+          "expect": {
+            "status": 304
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0053",
+      "kind": "api",
+      "title": "GetObject with a matching If-None-Match returns 304 Not Modified",
+      "description": "The source accepted error code NotModified or the bare '304'.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L282",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0053/obj",
+          "size": 256
+        }
+      },
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "IfNoneMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "status": 304
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0054",
+      "kind": "api",
+      "title": "HeadObject with a non-matching If-Match returns 412 PreconditionFailed",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L65",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0054/obj",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "IfMatch": "\"00000000000000000000000000000000\""
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0055",
+      "kind": "api",
+      "title": "HeadObject with a matching If-Match returns the object metadata",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L31",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0055/obj",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "IfMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "response": {
+              "ETag": "${res.o1.etag}",
+              "ContentLength": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0056",
+      "kind": "api",
+      "title": "HeadObject with a future If-Modified-Since returns 304 Not Modified",
+      "description": "The source used now+1h; a fixed far-future date guaranteed to postdate the object's LastModified preserves the semantics.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L136",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0056/obj",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "IfModifiedSince": "2099-01-01T00:00:00Z"
+          },
+          "expect": {
+            "status": 304
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0057",
+      "kind": "api",
+      "title": "HeadObject with a matching If-None-Match returns 304 Not Modified",
+      "description": "The source accepted error code NotModified or the bare '304'.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L101",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0057/obj",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "IfNoneMatch": "${res.o1.etag}"
+          },
+          "expect": {
+            "status": 304
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0058",
+      "kind": "api",
+      "title": "HeadObject with a future If-Unmodified-Since succeeds",
+      "description": "The source used now+1h; a fixed far-future date guaranteed to postdate the object's LastModified preserves the semantics.",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_conditional_requests.py#L176",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "test-object",
+          "body": {
+            "$data": "obj"
+          }
+        }
+      ],
+      "data": {
+        "obj": {
+          "kind": "prng",
+          "seed": "conditional-0058/obj",
+          "size": 100
+        }
+      },
+      "steps": [
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test-object",
+            "IfUnmodifiedSince": "2099-01-01T00:00:00Z"
+          },
+          "expect": {
+            "response": {
+              "ETag": "${res.o1.etag}",
+              "ContentLength": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conditional-0059",
+      "kind": "api",
+      "title": "Conditional DeleteObject with If-Match rejects stale ETag, succeeds on match",
+      "tags": [
+        "tier-1",
+        "conditional",
+        "object-crud",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/production/3014.py#L416",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "data/conditional-delete.txt",
+          "body": "original content"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "data/conditional-delete.txt",
+            "IfMatch": "wrong-etag-value"
+          },
+          "expect": {
+            "status": 412,
+            "error": "PreconditionFailed"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "data/conditional-delete.txt"
+          },
+          "expect": {
+            "status": 200
+          }
+        },
+        {
+          "operation": "DeleteObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "data/conditional-delete.txt",
+            "IfMatch": "${res.o1.etag}"
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "data/conditional-delete.txt"
+          },
+          "expect": {
+            "status": 404
+          }
+        }
+      ]
+    }
+  ]
+}

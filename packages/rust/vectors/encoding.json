@@ -1,0 +1,2922 @@
+{
+  "$schema": "../schema/vector.schema.json",
+  "area": "encoding",
+  "vectors": [
+    {
+      "id": "encoding-0001",
+      "kind": "api",
+      "title": "Keys with special characters list correctly, read back their bodies and accept ACLs",
+      "tags": [
+        "tier-3",
+        "encoding",
+        "acl",
+        "source:ceph-s3-tests"
+      ],
+      "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5471",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": " ",
+          "body": " "
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "\"",
+          "body": "\""
+        },
+        {
+          "type": "object",
+          "handle": "o3",
+          "bucket": "b1",
+          "key": "$",
+          "body": "$"
+        },
+        {
+          "type": "object",
+          "handle": "o4",
+          "bucket": "b1",
+          "key": "%",
+          "body": "%"
+        },
+        {
+          "type": "object",
+          "handle": "o5",
+          "bucket": "b1",
+          "key": "&",
+          "body": "&"
+        },
+        {
+          "type": "object",
+          "handle": "o6",
+          "bucket": "b1",
+          "key": "'",
+          "body": "'"
+        },
+        {
+          "type": "object",
+          "handle": "o7",
+          "bucket": "b1",
+          "key": "<",
+          "body": "<"
+        },
+        {
+          "type": "object",
+          "handle": "o8",
+          "bucket": "b1",
+          "key": ">",
+          "body": ">"
+        },
+        {
+          "type": "object",
+          "handle": "o9",
+          "bucket": "b1",
+          "key": "_",
+          "body": "_"
+        },
+        {
+          "type": "object",
+          "handle": "o10",
+          "bucket": "b1",
+          "key": "_ ",
+          "body": "_ "
+        },
+        {
+          "type": "object",
+          "handle": "o11",
+          "bucket": "b1",
+          "key": "_ _",
+          "body": "_ _"
+        },
+        {
+          "type": "object",
+          "handle": "o12",
+          "bucket": "b1",
+          "key": "__",
+          "body": "__"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "ListObjects",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Key": " "
+                },
+                {
+                  "Key": "\""
+                },
+                {
+                  "Key": "$"
+                },
+                {
+                  "Key": "%"
+                },
+                {
+                  "Key": "&"
+                },
+                {
+                  "Key": "'"
+                },
+                {
+                  "Key": "<"
+                },
+                {
+                  "Key": ">"
+                },
+                {
+                  "Key": "_"
+                },
+                {
+                  "Key": "_ "
+                },
+                {
+                  "Key": "_ _"
+                },
+                {
+                  "Key": "__"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": " "
+          },
+          "expect": {
+            "body": " "
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": " ",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "\""
+          },
+          "expect": {
+            "body": "\""
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "\"",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "$"
+          },
+          "expect": {
+            "body": "$"
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "$",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "%"
+          },
+          "expect": {
+            "body": "%"
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "%",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "&"
+          },
+          "expect": {
+            "body": "&"
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "&",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "'"
+          },
+          "expect": {
+            "body": "'"
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "'",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "<"
+          },
+          "expect": {
+            "body": "<"
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "<",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": ">"
+          },
+          "expect": {
+            "body": ">"
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": ">",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "_"
+          },
+          "expect": {
+            "body": "_"
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "_",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "_ "
+          },
+          "expect": {
+            "body": "_ "
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "_ ",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "_ _"
+          },
+          "expect": {
+            "body": "_ _"
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "_ _",
+            "ACL": "private"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "__"
+          },
+          "expect": {
+            "body": "__"
+          }
+        },
+        {
+          "operation": "PutObjectAcl",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "__",
+            "ACL": "private"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0002",
+      "kind": "api",
+      "title": "Keys containing URL-encoding-like characters round-trip literally",
+      "description": "Keys that look percent-encoded or contain '+', '?' and '#' must be stored and retrieved literally, not decoded.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_key_special_chars.py#L15",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test%20space.txt",
+            "Body": "percent encoded space"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test%20space.txt"
+          },
+          "expect": {
+            "body": "percent encoded space"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test+plus.txt",
+            "Body": "plus sign"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test+plus.txt"
+          },
+          "expect": {
+            "body": "plus sign"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test?query=param",
+            "Body": "query string"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test?query=param"
+          },
+          "expect": {
+            "body": "query string"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test#fragment",
+            "Body": "fragment"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test#fragment"
+          },
+          "expect": {
+            "body": "fragment"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test%2F%2Fencoded.txt",
+            "Body": "double encoded"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test%2F%2Fencoded.txt"
+          },
+          "expect": {
+            "body": "double encoded"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test%252Ftriple.txt",
+            "Body": "triple encoded"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test%252Ftriple.txt"
+          },
+          "expect": {
+            "body": "triple encoded"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0003",
+      "kind": "api",
+      "title": "Path-traversal-like keys and Windows reserved names round-trip",
+      "description": "Keys containing ../ or ..\\ sequences must be stored literally (no path normalization); Windows reserved device names are ordinary keys.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_key_special_chars.py#L15",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "../../../etc/passwd",
+            "Body": "path traversal"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "../../../etc/passwd"
+          },
+          "expect": {
+            "body": "path traversal"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "..\\..\\..\\windows\\system32",
+            "Body": "windows path"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "..\\..\\..\\windows\\system32"
+          },
+          "expect": {
+            "body": "windows path"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "./././test.txt",
+            "Body": "dot slash"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "./././test.txt"
+          },
+          "expect": {
+            "body": "dot slash"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "CON",
+            "Body": "windows reserved"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "CON"
+          },
+          "expect": {
+            "body": "windows reserved"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "PRN",
+            "Body": "printer reserved"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "PRN"
+          },
+          "expect": {
+            "body": "printer reserved"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "AUX",
+            "Body": "auxiliary reserved"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "AUX"
+          },
+          "expect": {
+            "body": "auxiliary reserved"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "NUL",
+            "Body": "null device"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "NUL"
+          },
+          "expect": {
+            "body": "null device"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0004",
+      "kind": "api",
+      "title": "Keys containing CR/LF and escape control characters round-trip",
+      "description": "The original also tried a key containing a NUL (0x00) byte, accepting either success or InvalidArgument rejection; that case is omitted because the accept-or-reject disjunction is not expressible.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_key_special_chars.py#L15",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test\r\nCRLF.txt",
+            "Body": "crlf"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test\r\nCRLF.txt"
+          },
+          "expect": {
+            "body": "crlf"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test\u001bescape.txt",
+            "Body": "escape char"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test\u001bescape.txt"
+          },
+          "expect": {
+            "body": "escape char"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0005",
+      "kind": "api",
+      "title": "Slash-only keys and a 1024-byte maximum-length key round-trip",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_key_special_chars.py#L15",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "/",
+            "Body": "single slash"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "/"
+          },
+          "expect": {
+            "body": "single slash"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "//",
+            "Body": "double slash"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "//"
+          },
+          "expect": {
+            "body": "double slash"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "///",
+            "Body": "triple slash"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "///"
+          },
+          "expect": {
+            "body": "triple slash"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "Body": "max key length"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "expect": {
+            "body": "max key length"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0006",
+      "kind": "api",
+      "title": "Key longer than 1024 bytes is rejected",
+      "description": "The original accepted KeyTooLong* or InvalidRequest; AWS returns KeyTooLongError.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_key_special_chars.py#L15",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "Body": "test"
+          },
+          "expect": {
+            "status": 400,
+            "error": "KeyTooLongError"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0007",
+      "kind": "api",
+      "title": "Unicode object key round-trip",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "unicode",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_object_naming.py#L394",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "файл-文件-ファイル.txt",
+            "Body": "unicode data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "файл-文件-ファイル.txt"
+          },
+          "expect": {
+            "body": "unicode data"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0008",
+      "kind": "api",
+      "title": "Object key containing '+' is listable by literal '+' prefix and HEADable",
+      "description": "The source test branches on an SDK capability flag for legacy '+'-as-space URL encoding; the correct S3 behavior (default branch) is that '+' in a key is a literal plus sign.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_sdk_capability_example.py#L18",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test+object.txt",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "test+"
+          },
+          "expect": {
+            "response": {
+              "Contents": {
+                "$contains": {
+                  "Key": "test+object.txt"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "HeadObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test+object.txt"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0009",
+      "kind": "api",
+      "title": "Real-world object keys mixing paths, dates, '@', parentheses, colons, '#' and brackets round-trip",
+      "description": "Listing order assertion relies on S3's guaranteed ascending UTF-8 binary key order.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_special_characters.py#L296",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "documents/2024-01-15_report_v1.2.pdf",
+            "Body": "complex name test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "documents/2024-01-15_report_v1.2.pdf"
+          },
+          "expect": {
+            "body": "complex name test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "user@email.com/files/my-file.txt",
+            "Body": "complex name test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "user@email.com/files/my-file.txt"
+          },
+          "expect": {
+            "body": "complex name test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "data/export_(2024)_final.csv",
+            "Body": "complex name test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "data/export_(2024)_final.csv"
+          },
+          "expect": {
+            "body": "complex name test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "backups/db_backup_2024-01-15_23:59:59.sql",
+            "Body": "complex name test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "backups/db_backup_2024-01-15_23:59:59.sql"
+          },
+          "expect": {
+            "body": "complex name test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "images/photo #123 [final].jpg",
+            "Body": "complex name test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "images/photo #123 [final].jpg"
+          },
+          "expect": {
+            "body": "complex name test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "logs/app.log.2024-01-15.gz",
+            "Body": "complex name test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "logs/app.log.2024-01-15.gz"
+          },
+          "expect": {
+            "body": "complex name test"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Key": "backups/db_backup_2024-01-15_23:59:59.sql"
+                },
+                {
+                  "Key": "data/export_(2024)_final.csv"
+                },
+                {
+                  "Key": "documents/2024-01-15_report_v1.2.pdf"
+                },
+                {
+                  "Key": "images/photo #123 [final].jpg"
+                },
+                {
+                  "Key": "logs/app.log.2024-01-15.gz"
+                },
+                {
+                  "Key": "user@email.com/files/my-file.txt"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0010",
+      "kind": "api",
+      "title": "Path-like object keys (nested, leading/trailing/double slashes, directory markers) list correctly",
+      "description": "Listing order assertion relies on S3's guaranteed ascending UTF-8 binary key order.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_special_characters.py#L217",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "folder/file.txt",
+            "Body": "path test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "deep/nested/path/file.txt",
+            "Body": "path test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "folder/subfolder/",
+            "Body": "path test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "/leading/slash/file.txt",
+            "Body": "path test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "trailing/slash/",
+            "Body": "path test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "folder//double//slash.txt",
+            "Body": "path test data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Key": "/leading/slash/file.txt"
+                },
+                {
+                  "Key": "deep/nested/path/file.txt"
+                },
+                {
+                  "Key": "folder//double//slash.txt"
+                },
+                {
+                  "Key": "folder/file.txt"
+                },
+                {
+                  "Key": "folder/subfolder/"
+                },
+                {
+                  "Key": "trailing/slash/"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0011",
+      "kind": "api",
+      "title": "Object keys with 24 common special characters can be created, listed and read back",
+      "description": "Listing order assertion relies on S3's guaranteed ascending UTF-8 binary key order.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_special_characters.py#L28",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my!key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my_key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my.key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my'key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my(key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my)key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my&key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my@key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my=key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my;key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my:key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my,key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my?key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my^key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my{}key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my%key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my`key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my[]key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my~key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my<>key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my|key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my#key",
+            "Body": "test data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Key": "my key"
+                },
+                {
+                  "Key": "my!key"
+                },
+                {
+                  "Key": "my#key"
+                },
+                {
+                  "Key": "my%key"
+                },
+                {
+                  "Key": "my&key"
+                },
+                {
+                  "Key": "my'key"
+                },
+                {
+                  "Key": "my(key"
+                },
+                {
+                  "Key": "my)key"
+                },
+                {
+                  "Key": "my,key"
+                },
+                {
+                  "Key": "my-key"
+                },
+                {
+                  "Key": "my.key"
+                },
+                {
+                  "Key": "my:key"
+                },
+                {
+                  "Key": "my;key"
+                },
+                {
+                  "Key": "my<>key"
+                },
+                {
+                  "Key": "my=key"
+                },
+                {
+                  "Key": "my?key"
+                },
+                {
+                  "Key": "my@key"
+                },
+                {
+                  "Key": "my[]key"
+                },
+                {
+                  "Key": "my^key"
+                },
+                {
+                  "Key": "my_key"
+                },
+                {
+                  "Key": "my`key"
+                },
+                {
+                  "Key": "my{}key"
+                },
+                {
+                  "Key": "my|key"
+                },
+                {
+                  "Key": "my~key"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my!key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my_key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my.key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my'key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my(key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my)key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my&key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my@key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my=key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my;key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my:key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my,key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my?key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my^key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my{}key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my%key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my`key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my[]key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my~key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my<>key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my|key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my#key"
+          },
+          "expect": {
+            "body": "test data"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0012",
+      "kind": "api",
+      "title": "Object keys with non-ASCII Unicode characters (CJK, accents, Cyrillic, emoji) list correctly",
+      "description": "Listing order assertion relies on S3's guaranteed ascending UTF-8 binary key order.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "unicode",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_special_characters.py#L113",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-中文-key",
+            "Body": "unicode test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-日本語-key",
+            "Body": "unicode test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-한글-key",
+            "Body": "unicode test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-café-key",
+            "Body": "unicode test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-emoji-😀-key",
+            "Body": "unicode test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-Ñoño-key",
+            "Body": "unicode test data"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my-Москва-key",
+            "Body": "unicode test data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Key": "my-café-key"
+                },
+                {
+                  "Key": "my-emoji-😀-key"
+                },
+                {
+                  "Key": "my-Ñoño-key"
+                },
+                {
+                  "Key": "my-Москва-key"
+                },
+                {
+                  "Key": "my-中文-key"
+                },
+                {
+                  "Key": "my-日本語-key"
+                },
+                {
+                  "Key": "my-한글-key"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0013",
+      "kind": "api",
+      "title": "Object keys requiring URL encoding round-trip through put, get and list",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_special_characters.py#L165",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my key with spaces",
+            "Body": "url encoded test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my key with spaces"
+          },
+          "expect": {
+            "body": "url encoded test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my+plus+key",
+            "Body": "url encoded test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my+plus+key"
+          },
+          "expect": {
+            "body": "url encoded test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my%percent%key",
+            "Body": "url encoded test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my%percent%key"
+          },
+          "expect": {
+            "body": "url encoded test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my&query&key",
+            "Body": "url encoded test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my&query&key"
+          },
+          "expect": {
+            "body": "url encoded test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my=equals=key",
+            "Body": "url encoded test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my=equals=key"
+          },
+          "expect": {
+            "body": "url encoded test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my?question?key",
+            "Body": "url encoded test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my?question?key"
+          },
+          "expect": {
+            "body": "url encoded test"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my#hash#key",
+            "Body": "url encoded test"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "my#hash#key"
+          },
+          "expect": {
+            "body": "url encoded test"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}"
+          },
+          "expect": {
+            "response": {
+              "KeyCount": 7
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0014",
+      "kind": "api",
+      "title": "Keys with URL-special ASCII characters round-trip through PutObject/GetObject",
+      "description": "Space, plus, percent, question mark, hash, ampersand, equals and at-sign in object keys. The original accepted InvalidArgument rejection as an alternative outcome for lenient vendors; AWS S3 accepts all of these keys, so the vector asserts the round-trip.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_url_encoding.py#L16",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "space file.txt",
+            "Body": "File with space content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "space file.txt"
+          },
+          "expect": {
+            "body": "File with space content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "plus+file.txt",
+            "Body": "File with plus content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "plus+file.txt"
+          },
+          "expect": {
+            "body": "File with plus content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "percent%file.txt",
+            "Body": "File with percent content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "percent%file.txt"
+          },
+          "expect": {
+            "body": "File with percent content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "question?file.txt",
+            "Body": "File with question mark content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "question?file.txt"
+          },
+          "expect": {
+            "body": "File with question mark content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "hash#file.txt",
+            "Body": "File with hash content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "hash#file.txt"
+          },
+          "expect": {
+            "body": "File with hash content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "ampersand&file.txt",
+            "Body": "File with ampersand content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "ampersand&file.txt"
+          },
+          "expect": {
+            "body": "File with ampersand content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "equals=file.txt",
+            "Body": "File with equals content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "equals=file.txt"
+          },
+          "expect": {
+            "body": "File with equals content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "at@file.txt",
+            "Body": "File with at symbol content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "at@file.txt"
+          },
+          "expect": {
+            "body": "File with at symbol content"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0015",
+      "kind": "api",
+      "title": "Path-separator variations in keys are stored as-is and listable by prefix",
+      "description": "Double/triple slashes, leading slash, dot and dot-dot segments must not be normalized: each key appears verbatim in a prefix listing (prefixes are the first five characters of the key, as in the original test).",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_url_encoding.py#L16",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "normal/path/file.txt",
+            "Body": "Normal forward slash data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "norma"
+          },
+          "expect": {
+            "response": {
+              "Contents": {
+                "$contains": {
+                  "Key": "normal/path/file.txt"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "path//double//slash.txt",
+            "Body": "Double forward slash data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "path/"
+          },
+          "expect": {
+            "response": {
+              "Contents": {
+                "$contains": {
+                  "Key": "path//double//slash.txt"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "path///triple///slash.txt",
+            "Body": "Triple forward slash data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "path/"
+          },
+          "expect": {
+            "response": {
+              "Contents": {
+                "$contains": {
+                  "Key": "path///triple///slash.txt"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "/leading/slash.txt",
+            "Body": "Leading slash data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "/lead"
+          },
+          "expect": {
+            "response": {
+              "Contents": {
+                "$contains": {
+                  "Key": "/leading/slash.txt"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "trailing/slash/.txt",
+            "Body": "Trailing slash in dir data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "trail"
+          },
+          "expect": {
+            "response": {
+              "Contents": {
+                "$contains": {
+                  "Key": "trailing/slash/.txt"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "./relative/path.txt",
+            "Body": "Relative path data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "./rel"
+          },
+          "expect": {
+            "response": {
+              "Contents": {
+                "$contains": {
+                  "Key": "./relative/path.txt"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "../parent/path.txt",
+            "Body": "Parent directory data"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "../pa"
+          },
+          "expect": {
+            "response": {
+              "Contents": {
+                "$contains": {
+                  "Key": "../parent/path.txt"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0016",
+      "kind": "api",
+      "title": "A raw space and a percent-encoded space are distinct object keys",
+      "description": "'test space.txt' and 'test%20space.txt' are two different objects. The original also tolerated normalization to a single form; AWS S3 stores both distinctly, so the listing asserts exactly the two keys.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_url_encoding.py#L16",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test space.txt",
+            "Body": "raw space content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "test%20space.txt",
+            "Body": "encoded space content"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "test"
+          },
+          "expect": {
+            "response": {
+              "Contents": [
+                {
+                  "Key": "test space.txt"
+                },
+                {
+                  "Key": "test%20space.txt"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0017",
+      "kind": "api",
+      "title": "UTF-8 international keys round-trip through PutObject/GetObject",
+      "description": "Accented Latin, Cyrillic, Chinese, Japanese and Korean keys. The original accepted InvalidArgument rejection as an alternative outcome; AWS S3 accepts any UTF-8 key, so the vector asserts the round-trip.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "unicode",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_url_encoding.py#L16",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "café.txt",
+            "Body": "French accents content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "café.txt"
+          },
+          "expect": {
+            "body": "French accents content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "naïve.txt",
+            "Body": "Diaeresis content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "naïve.txt"
+          },
+          "expect": {
+            "body": "Diaeresis content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "résumé.txt",
+            "Body": "Mixed accents content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "résumé.txt"
+          },
+          "expect": {
+            "body": "Mixed accents content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "файл.txt",
+            "Body": "Cyrillic content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "файл.txt"
+          },
+          "expect": {
+            "body": "Cyrillic content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "文件.txt",
+            "Body": "Chinese content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "文件.txt"
+          },
+          "expect": {
+            "body": "Chinese content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "ファイル.txt",
+            "Body": "Japanese content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "ファイル.txt"
+          },
+          "expect": {
+            "body": "Japanese content"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "파일.txt",
+            "Body": "Korean content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "파일.txt"
+          },
+          "expect": {
+            "body": "Korean content"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0018",
+      "kind": "api",
+      "title": "Spaces and percent sequences in directory and file parts are accepted",
+      "description": "PutObject with reserved characters at different path positions, then ListObjectsV2 with the directory part as Prefix and '/' Delimiter. The original recorded the listing outcome without failing on absence, so the converted steps assert only that both operations succeed.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "listing",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_url_encoding.py#L16",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dir with spaces/file.txt",
+            "Body": "Space in directory content"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "dir with spaces",
+            "Delimiter": "/"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dir%20encoded/file.txt",
+            "Body": "Encoded in directory content"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "dir%20encoded",
+            "Delimiter": "/"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "normal/file with spaces.txt",
+            "Body": "Space in filename content"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "normal",
+            "Delimiter": "/"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "normal/file%20encoded.txt",
+            "Body": "Encoded in filename content"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "normal",
+            "Delimiter": "/"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "dir/subdir/file.ext",
+            "Body": "Multiple levels content"
+          }
+        },
+        {
+          "operation": "ListObjectsV2",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Prefix": "dir",
+            "Delimiter": "/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0019",
+      "kind": "api",
+      "title": "Query-string-like characters in keys are accepted and retrievable",
+      "description": "Keys containing '?', '&', '=' and '#' sequences that resemble query strings or fragments must not be interpreted as such. The original accepted InvalidArgument rejection as an alternative outcome; AWS S3 accepts these keys.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_url_encoding.py#L16",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file?param=value.txt",
+            "Body": "query test content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file?param=value.txt"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file&param1=val&param2=val.txt",
+            "Body": "query test content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file&param1=val&param2=val.txt"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file.txt?v=1.0",
+            "Body": "query test content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file.txt?v=1.0"
+          }
+        },
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file.txt#section",
+            "Body": "query test content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "file.txt#section"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0020",
+      "kind": "api",
+      "title": "Object keys are case-sensitive",
+      "description": "GetObject with the case-swapped form of each stored key must fail. The original accepted any error; AWS S3 returns 404 NoSuchKey since the case-swapped key does not exist.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "errors",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_url_encoding.py#L16",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        },
+        {
+          "type": "object",
+          "handle": "o1",
+          "bucket": "b1",
+          "key": "CamelCase.txt",
+          "body": "Camel case content"
+        },
+        {
+          "type": "object",
+          "handle": "o2",
+          "bucket": "b1",
+          "key": "camelcase.txt",
+          "body": "Lower case content"
+        },
+        {
+          "type": "object",
+          "handle": "o3",
+          "bucket": "b1",
+          "key": "UPPERCASE.TXT",
+          "body": "Upper case content"
+        },
+        {
+          "type": "object",
+          "handle": "o4",
+          "bucket": "b1",
+          "key": "MiXeD-CaSe.TxT",
+          "body": "Mixed case content"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "cAMELcASE.TXT"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "CAMELCASE.TXT"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "uppercase.txt"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "mIxEd-cAsE.tXt"
+          },
+          "expect": {
+            "status": 404,
+            "error": "NoSuchKey"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0021",
+      "kind": "api",
+      "title": "An 819-character key round-trips",
+      "description": "A long key approaching URL length limits (within the 1024-byte S3 key limit). The original accepted KeyTooLong/RequestURITooLong as an alternative outcome; AWS S3 accepts keys up to 1024 bytes, so the vector asserts the round-trip.",
+      "tags": [
+        "tier-1",
+        "encoding",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_url_encoding.py#L16",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "PutObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "very/long/path/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt",
+            "Body": "long path content"
+          }
+        },
+        {
+          "operation": "GetObject",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "very/long/path/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt"
+          },
+          "expect": {
+            "body": "long path content"
+          }
+        }
+      ]
+    },
+    {
+      "id": "encoding-0022",
+      "kind": "api",
+      "title": "CreateMultipartUpload preserves keys with non-ASCII (Greek, Chinese) characters",
+      "tags": [
+        "tier-1",
+        "multipart",
+        "encoding",
+        "unicode",
+        "source:msst-s3"
+      ],
+      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_create_multipart_special.py#L190",
+      "prerequisites": [
+        {
+          "type": "bucket",
+          "handle": "b1"
+        }
+      ],
+      "steps": [
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "κλειδί.txt"
+          },
+          "capture": {
+            "u1": "UploadId"
+          },
+          "expect": {
+            "response": {
+              "Key": "κλειδί.txt",
+              "UploadId": {
+                "$exists": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "AbortMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "κλειδί.txt",
+            "UploadId": "${cap.u1}"
+          }
+        },
+        {
+          "operation": "CreateMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "密钥.txt"
+          },
+          "capture": {
+            "u2": "UploadId"
+          },
+          "expect": {
+            "response": {
+              "Key": "密钥.txt",
+              "UploadId": {
+                "$exists": true
+              }
+            }
+          }
+        },
+        {
+          "operation": "AbortMultipartUpload",
+          "params": {
+            "Bucket": "${res.b1.name}",
+            "Key": "密钥.txt",
+            "UploadId": "${cap.u2}"
+          }
+        }
+      ]
+    }
+  ]
+}

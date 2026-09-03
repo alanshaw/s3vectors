@@ -1,0 +1,31 @@
+{
+  "name": "@cloud-portable/s3vectors",
+  "version": "1.0.0",
+  "description": "Language-independent S3 API compatibility test vectors, parsed and importable per feature area, plus the deterministic test-data generator",
+  "type": "module",
+  "exports": {
+    ".": { "types": "./index.d.ts", "default": "./index.js" },
+    "./datagen": { "types": "./datagen.d.ts", "default": "./datagen.js" },
+    "./areas/*.json": "./data/*.json"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "datagen.js",
+    "datagen.d.ts",
+    "data",
+    "LICENSE.md"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20.19" },
+  "license": "Apache-2.0 OR MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cloud-portable/s3vectors.git",
+    "directory": "packages/js"
+  },
+  "keywords": ["s3", "test-vectors", "compatibility", "conformance", "sigv4", "aws"],
+  "sideEffects": false
+}

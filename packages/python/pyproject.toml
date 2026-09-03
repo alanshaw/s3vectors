@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cloud-portable-s3vectors"
+version = "1.0.0"
+description = "Language-independent S3 API compatibility test vectors, parsed and importable per feature area, plus the deterministic test-data generator"
+readme = "README.md"
+license = "Apache-2.0 OR MIT"
+requires-python = ">=3.10"
+keywords = ["s3", "test-vectors", "compatibility", "conformance", "sigv4", "aws"]
+classifiers = [
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Testing",
+  "Programming Language :: Python :: 3",
+  "Typing :: Typed",
+]
+
+[project.urls]
+Repository = "https://github.com/cloud-portable/s3vectors"
+Issues = "https://github.com/cloud-portable/s3vectors/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cloud_portable_s3vectors"]

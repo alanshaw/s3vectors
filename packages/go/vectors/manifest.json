@@ -1,0 +1,122 @@
+{
+  "version": "1.0.0",
+  "total": 1191,
+  "schemaSha256": "87cccbbaecda7a94f66cb2e34aecabb415e6a37d4f127b4e347ee2e31c7d7959",
+  "areas": [
+    {
+      "area": "acl",
+      "file": "acl.json",
+      "count": 81
+    },
+    {
+      "area": "anon-access",
+      "file": "anon-access.json",
+      "count": 12
+    },
+    {
+      "area": "bucket-logging",
+      "file": "bucket-logging.json",
+      "count": 11
+    },
+    {
+      "area": "bucket",
+      "file": "bucket.json",
+      "count": 49
+    },
+    {
+      "area": "checksums",
+      "file": "checksums.json",
+      "count": 44
+    },
+    {
+      "area": "conditional",
+      "file": "conditional.json",
+      "count": 57
+    },
+    {
+      "area": "copy",
+      "file": "copy.json",
+      "count": 48
+    },
+    {
+      "area": "cors",
+      "file": "cors.json",
+      "count": 21
+    },
+    {
+      "area": "encoding",
+      "file": "encoding.json",
+      "count": 22
+    },
+    {
+      "area": "errors",
+      "file": "errors.json",
+      "count": 8
+    },
+    {
+      "area": "lifecycle-config",
+      "file": "lifecycle-config.json",
+      "count": 29
+    },
+    {
+      "area": "listing",
+      "file": "listing.json",
+      "count": 111
+    },
+    {
+      "area": "misc",
+      "file": "misc.json",
+      "count": 11
+    },
+    {
+      "area": "multipart",
+      "file": "multipart.json",
+      "count": 167
+    },
+    {
+      "area": "object-crud",
+      "file": "object-crud.json",
+      "count": 159
+    },
+    {
+      "area": "object-lock",
+      "file": "object-lock.json",
+      "count": 68
+    },
+    {
+      "area": "policy",
+      "file": "policy.json",
+      "count": 53
+    },
+    {
+      "area": "presigned",
+      "file": "presigned.json",
+      "count": 7
+    },
+    {
+      "area": "signing",
+      "file": "signing.json",
+      "count": 31
+    },
+    {
+      "area": "sse",
+      "file": "sse.json",
+      "count": 44
+    },
+    {
+      "area": "tagging",
+      "file": "tagging.json",
+      "count": 44
+    },
+    {
+      "area": "versioning",
+      "file": "versioning.json",
+      "count": 93
+    },
+    {
+      "area": "wire-headers",
+      "file": "wire-headers.json",
+      "count": 21
+    }
+  ]
+}
