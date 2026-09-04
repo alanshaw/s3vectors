@@ -996,9 +996,11 @@
       "group": "bucket",
       "kind": "api",
       "title": "Re-creating an existing bucket does not remove its objects",
+      "description": "Re-creating a bucket you own succeeds here (200) — the AWS us-east-1 legacy behavior. Every other region returns BucketAlreadyOwnedByYou (see bucket-0039); the quirk:us-east-1-legacy tag lets non-us-east-1 targets skip this vector.",
       "tags": [
         "tier-3",
         "bucket",
+        "quirk:us-east-1-legacy",
         "source:ceph-s3-tests"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_s3.py#L5457",
