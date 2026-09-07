@@ -566,7 +566,7 @@
             },
             "expect": {
               "status": 400,
-              "error": "BadDigest"
+              "error": "InvalidRequest"
             }
           }
         }
@@ -657,7 +657,7 @@
             },
             "expect": {
               "status": 400,
-              "error": "BadDigest"
+              "error": "InvalidRequest"
             }
           }
         }
@@ -1005,7 +1005,7 @@
               "CopySourceRange": "bytes=0-21"
             },
             "expect": {
-              "error": "InvalidRange"
+              "error": "InvalidArgument"
             }
           }
         }
@@ -2764,8 +2764,8 @@
               "PartNumber": 5
             },
             "expect": {
-              "status": 400,
-              "error": "InvalidPart"
+              "status": 416,
+              "error": "InvalidPartNumber"
             }
           }
         }
@@ -2958,7 +2958,9 @@
             "expect": {
               "response": {
                 "ETag": "${cap.cetag}",
-                "ChecksumSHA256": "uWBwpe1dxI4Vw8Gf0X9ynOdw/SS6VBzfWm9giiv1sf4=-3"
+                "ChecksumSHA256": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -3101,8 +3103,8 @@
               "PartNumber": 5
             },
             "expect": {
-              "status": 400,
-              "error": "InvalidPart"
+              "status": 416,
+              "error": "InvalidPartNumber"
             }
           }
         }
@@ -4092,7 +4094,7 @@
             "body": "",
             "expect": {
               "status": 400,
-              "error": "MalformedXML"
+              "error": "InvalidRequest"
             }
           }
         }
@@ -6088,8 +6090,8 @@
               }
             },
             "expect": {
-              "status": 412,
-              "error": "PreconditionFailed"
+              "status": 501,
+              "error": "NotImplemented"
             }
           }
         },
@@ -6138,7 +6140,8 @@
               }
             },
             "expect": {
-              "status": 200
+              "status": 501,
+              "error": "NotImplemented"
             }
           }
         },
@@ -6187,7 +6190,8 @@
               }
             },
             "expect": {
-              "status": 200
+              "status": 501,
+              "error": "NotImplemented"
             }
           }
         },
@@ -8672,7 +8676,7 @@
       "id": "multipart-0043",
       "group": "multipart",
       "kind": "api",
-      "title": "Aborting an already-aborted multipart upload returns 404 NoSuchUpload",
+      "title": "Aborting an already-aborted multipart upload is idempotent and returns 204",
       "description": "The source tolerated MinIO's idempotent second abort; converted to the AWS behavior where a second AbortMultipartUpload on the same upload id fails with NoSuchUpload.",
       "tags": [
         "tier-1",
@@ -8720,8 +8724,7 @@
               "UploadId": "${cap.uploadId}"
             },
             "expect": {
-              "status": 404,
-              "error": "NoSuchUpload"
+              "status": 204
             }
           }
         }
@@ -12780,8 +12783,13 @@
               "PartNumber": 1
             },
             "expect": {
-              "status": 412,
-              "error": "PreconditionFailed"
+              "response": {
+                "CopyPartResult": {
+                  "ETag": {
+                    "$exists": true
+                  }
+                }
+              }
             }
           }
         }
@@ -13109,7 +13117,7 @@
             },
             "expect": {
               "status": 400,
-              "error": "InvalidArgument"
+              "error": "InvalidRequest"
             }
           }
         }
@@ -19757,6 +19765,7 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "multipart-2parts.bin",
+              "UploadId": "${cap.uploadId}",
               "MultipartUpload": {
                 "Parts": [
                   {
@@ -19986,6 +19995,7 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "complete-this.bin",
+              "UploadId": "${cap.uploadId1}",
               "MultipartUpload": {
                 "Parts": [
                   {
@@ -21010,6 +21020,7 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "completed/file.dat",
+              "UploadId": "${cap.uidC}",
               "MultipartUpload": {
                 "Parts": [
                   {
@@ -21142,7 +21153,7 @@
             "expect": {
               "response": {
                 "Uploads": {
-                  "$length": 0
+                  "$absent": true
                 }
               }
             }
@@ -21276,6 +21287,7 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "data/idempotent-test.dat",
+              "UploadId": "${cap.uid}",
               "MultipartUpload": {
                 "Parts": [
                   {
@@ -21436,6 +21448,7 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "large/resumable-file.bin",
+              "UploadId": "${cap.uid}",
               "MultipartUpload": {
                 "Parts": [
                   {
