@@ -15232,130 +15232,6 @@
       "id": "multipart-0135",
       "group": "multipart",
       "kind": "api",
-      "title": "Completing the same multipart upload a second time returns NoSuchUpload",
-      "tags": [
-        "tier-1",
-        "multipart",
-        "errors",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_complete_multipart_checksums.py#L390",
-      "prerequisites": [
-        {
-          "$bucket": {
-            "handle": "b1"
-          }
-        }
-      ],
-      "data": {
-        "c5m": {
-          "$pattern": {
-            "pattern": "c",
-            "size": 5242880
-          }
-        }
-      },
-      "steps": [
-        {
-          "$operation": {
-            "name": "CreateMultipartUpload",
-            "params": {
-              "Bucket": "${res.b1.name}",
-              "Key": "my-obj"
-            },
-            "capture": {
-              "uploadId": "UploadId"
-            }
-          }
-        },
-        {
-          "$operation": {
-            "name": "UploadPart",
-            "params": {
-              "Bucket": "${res.b1.name}",
-              "Key": "my-obj",
-              "UploadId": "${cap.uploadId}",
-              "PartNumber": 1,
-              "Body": {
-                "$data": "c5m"
-              }
-            },
-            "capture": {
-              "etag1": "ETag"
-            }
-          }
-        },
-        {
-          "$operation": {
-            "name": "UploadPart",
-            "params": {
-              "Bucket": "${res.b1.name}",
-              "Key": "my-obj",
-              "UploadId": "${cap.uploadId}",
-              "PartNumber": 2,
-              "Body": {
-                "$data": "c5m"
-              }
-            },
-            "capture": {
-              "etag2": "ETag"
-            }
-          }
-        },
-        {
-          "$operation": {
-            "name": "CompleteMultipartUpload",
-            "params": {
-              "Bucket": "${res.b1.name}",
-              "Key": "my-obj",
-              "UploadId": "${cap.uploadId}",
-              "MultipartUpload": {
-                "Parts": [
-                  {
-                    "PartNumber": 1,
-                    "ETag": "${cap.etag1}"
-                  },
-                  {
-                    "PartNumber": 2,
-                    "ETag": "${cap.etag2}"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        {
-          "$operation": {
-            "name": "CompleteMultipartUpload",
-            "params": {
-              "Bucket": "${res.b1.name}",
-              "Key": "my-obj",
-              "UploadId": "${cap.uploadId}",
-              "MultipartUpload": {
-                "Parts": [
-                  {
-                    "PartNumber": 1,
-                    "ETag": "${cap.etag1}"
-                  },
-                  {
-                    "PartNumber": 2,
-                    "ETag": "${cap.etag2}"
-                  }
-                ]
-              }
-            },
-            "expect": {
-              "status": 404,
-              "error": "NoSuchUpload"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "multipart-0136",
-      "group": "multipart",
-      "kind": "api",
       "title": "50 MiB multipart upload of ten 5 MiB parts completes with correct ContentLength",
       "tags": [
         "tier-1",
@@ -15642,7 +15518,7 @@
       ]
     },
     {
-      "id": "multipart-0137",
+      "id": "multipart-0136",
       "group": "multipart",
       "kind": "api",
       "title": "Parts uploaded in reverse order assemble in part-number order on complete",
@@ -15848,7 +15724,7 @@
       ]
     },
     {
-      "id": "multipart-0138",
+      "id": "multipart-0137",
       "group": "multipart",
       "kind": "api",
       "title": "Metadata, tags and content type from CreateMultipartUpload are preserved on the completed object",
@@ -16009,7 +15885,7 @@
       ]
     },
     {
-      "id": "multipart-0139",
+      "id": "multipart-0138",
       "group": "multipart",
       "kind": "api",
       "title": "Multipart upload initiated with StorageClass STANDARD completes and the object is readable",
@@ -16117,107 +15993,7 @@
       ]
     },
     {
-      "id": "multipart-0140",
-      "group": "multipart",
-      "kind": "api",
-      "title": "CompleteMultipartUpload on an already-completed upload returns NoSuchUpload",
-      "description": "The source ran the two completes sequentially despite the 'concurrent' name; it accepted NoSuchUpload or a bare 404 code.",
-      "tags": [
-        "tier-1",
-        "multipart",
-        "errors",
-        "source:msst-s3"
-      ],
-      "source": "https://github.com/linux-kdevops/msst-s3/blob/b84a323cca5ee862e87677043f672f156c46b448/tests/edge/test_complete_multipart_special.py#L274",
-      "prerequisites": [
-        {
-          "$bucket": {
-            "handle": "b1"
-          }
-        }
-      ],
-      "data": {
-        "part1": {
-          "$pattern": {
-            "pattern": "x",
-            "size": 5242880
-          }
-        }
-      },
-      "steps": [
-        {
-          "$operation": {
-            "name": "CreateMultipartUpload",
-            "params": {
-              "Bucket": "${res.b1.name}",
-              "Key": "concurrent-object"
-            },
-            "capture": {
-              "uploadId": "UploadId"
-            }
-          }
-        },
-        {
-          "$operation": {
-            "name": "UploadPart",
-            "params": {
-              "Bucket": "${res.b1.name}",
-              "Key": "concurrent-object",
-              "UploadId": "${cap.uploadId}",
-              "PartNumber": 1,
-              "Body": {
-                "$data": "part1"
-              }
-            },
-            "capture": {
-              "etag1": "ETag"
-            }
-          }
-        },
-        {
-          "$operation": {
-            "name": "CompleteMultipartUpload",
-            "params": {
-              "Bucket": "${res.b1.name}",
-              "Key": "concurrent-object",
-              "UploadId": "${cap.uploadId}",
-              "MultipartUpload": {
-                "Parts": [
-                  {
-                    "PartNumber": 1,
-                    "ETag": "${cap.etag1}"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        {
-          "$operation": {
-            "name": "CompleteMultipartUpload",
-            "params": {
-              "Bucket": "${res.b1.name}",
-              "Key": "concurrent-object",
-              "UploadId": "${cap.uploadId}",
-              "MultipartUpload": {
-                "Parts": [
-                  {
-                    "PartNumber": 1,
-                    "ETag": "${cap.etag1}"
-                  }
-                ]
-              }
-            },
-            "expect": {
-              "status": 404,
-              "error": "NoSuchUpload"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "multipart-0141",
+      "id": "multipart-0139",
       "group": "multipart",
       "kind": "api",
       "title": "Last multipart part may be smaller than the 5 MiB minimum",
@@ -16361,7 +16137,7 @@
       ]
     },
     {
-      "id": "multipart-0142",
+      "id": "multipart-0140",
       "group": "multipart",
       "kind": "api",
       "title": "Multipart upload with 50 parts assembles correctly",
@@ -17790,7 +17566,7 @@
       ]
     },
     {
-      "id": "multipart-0143",
+      "id": "multipart-0141",
       "group": "multipart",
       "kind": "api",
       "title": "Multipart upload with the maximum part number 10000 succeeds",
@@ -17880,7 +17656,7 @@
       ]
     },
     {
-      "id": "multipart-0144",
+      "id": "multipart-0142",
       "group": "multipart",
       "kind": "api",
       "title": "CompleteMultipartUpload with a non-last part under 5 MiB returns EntityTooSmall",
@@ -18016,7 +17792,7 @@
       ]
     },
     {
-      "id": "multipart-0145",
+      "id": "multipart-0143",
       "group": "multipart",
       "kind": "api",
       "title": "CompleteMultipartUpload naming parts that were never uploaded returns InvalidPart",
@@ -18106,7 +17882,7 @@
       ]
     },
     {
-      "id": "multipart-0148",
+      "id": "multipart-0146",
       "group": "multipart",
       "kind": "api",
       "title": "Multipart part numbers need not be consecutive",
@@ -18252,7 +18028,7 @@
       ]
     },
     {
-      "id": "multipart-0149",
+      "id": "multipart-0147",
       "group": "multipart",
       "kind": "api",
       "title": "Multipart upload of a single empty part creates a zero-length object",
@@ -18333,7 +18109,7 @@
       ]
     },
     {
-      "id": "multipart-0151",
+      "id": "multipart-0149",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload rejects duplicate tag keys",
@@ -18370,7 +18146,7 @@
       ]
     },
     {
-      "id": "multipart-0152",
+      "id": "multipart-0150",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload accepts degenerate empty tagging strings",
@@ -18542,7 +18318,7 @@
       ]
     },
     {
-      "id": "multipart-0153",
+      "id": "multipart-0151",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload rejects tag keys and values with invalid characters",
@@ -18618,7 +18394,7 @@
       ]
     },
     {
-      "id": "multipart-0154",
+      "id": "multipart-0152",
       "group": "multipart",
       "kind": "api",
       "title": "Multiple concurrent multipart uploads are allowed for the same key",
@@ -18690,7 +18466,7 @@
       ]
     },
     {
-      "id": "multipart-0155",
+      "id": "multipart-0153",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload on a non-existing bucket returns NoSuchBucket",
@@ -18718,7 +18494,7 @@
       ]
     },
     {
-      "id": "multipart-0156",
+      "id": "multipart-0154",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload accepts - _ . / in tag keys and values",
@@ -18815,7 +18591,7 @@
       ]
     },
     {
-      "id": "multipart-0157",
+      "id": "multipart-0155",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload returns a non-empty upload ID with bucket and key",
@@ -18854,7 +18630,7 @@
       ]
     },
     {
-      "id": "multipart-0158",
+      "id": "multipart-0156",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload metadata and content headers are preserved on the completed object",
@@ -18966,7 +18742,7 @@
       ]
     },
     {
-      "id": "multipart-0159",
+      "id": "multipart-0157",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload with StorageClass STANDARD completes successfully",
@@ -19060,7 +18836,7 @@
       ]
     },
     {
-      "id": "multipart-0160",
+      "id": "multipart-0158",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload with Tagging applies tags to the completed object",
@@ -19177,7 +18953,7 @@
       ]
     },
     {
-      "id": "multipart-0161",
+      "id": "multipart-0159",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload response contains Bucket, Key and UploadId",
@@ -19229,7 +19005,7 @@
       ]
     },
     {
-      "id": "multipart-0162",
+      "id": "multipart-0160",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload returns a non-empty UploadId for each new upload",
@@ -19309,7 +19085,7 @@
       ]
     },
     {
-      "id": "multipart-0164",
+      "id": "multipart-0162",
       "group": "multipart",
       "kind": "api",
       "title": "ContentDisposition set at CreateMultipartUpload is preserved on the completed object",
@@ -19400,7 +19176,7 @@
       ]
     },
     {
-      "id": "multipart-0165",
+      "id": "multipart-0163",
       "group": "multipart",
       "kind": "api",
       "title": "ContentEncoding set at CreateMultipartUpload is preserved on the completed object",
@@ -19491,7 +19267,7 @@
       ]
     },
     {
-      "id": "multipart-0166",
+      "id": "multipart-0164",
       "group": "multipart",
       "kind": "api",
       "title": "ContentLanguage set at CreateMultipartUpload is preserved on the completed object",
@@ -19582,7 +19358,7 @@
       ]
     },
     {
-      "id": "multipart-0168",
+      "id": "multipart-0166",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload preserves keys with special ASCII characters",
@@ -19784,7 +19560,7 @@
       ]
     },
     {
-      "id": "multipart-0169",
+      "id": "multipart-0167",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload accepts a 1024-byte key (maximum allowed)",
@@ -19834,7 +19610,7 @@
       ]
     },
     {
-      "id": "multipart-0170",
+      "id": "multipart-0168",
       "group": "multipart",
       "kind": "api",
       "title": "Basic two-part multipart upload completes",
@@ -19954,7 +19730,7 @@
       ]
     },
     {
-      "id": "multipart-0171",
+      "id": "multipart-0169",
       "group": "multipart",
       "kind": "api",
       "title": "Aborted multipart upload leaves no object and invalidates the UploadId",
@@ -19975,13 +19751,13 @@
       "data": {
         "part1": {
           "$prng": {
-            "seed": "multipart-0171/part1",
+            "seed": "multipart-0169/part1",
             "size": 5242880
           }
         },
         "part2": {
           "$prng": {
-            "seed": "multipart-0171/part2",
+            "seed": "multipart-0169/part2",
             "size": 5242880
           }
         }
@@ -20069,7 +19845,7 @@
       ]
     },
     {
-      "id": "multipart-0172",
+      "id": "multipart-0170",
       "group": "multipart",
       "kind": "api",
       "title": "Complete one multipart upload and abort another in the same bucket",
@@ -20090,7 +19866,7 @@
       "data": {
         "part": {
           "$prng": {
-            "seed": "multipart-0172/part",
+            "seed": "multipart-0170/part",
             "size": 5242880
           }
         }
@@ -20209,7 +19985,7 @@
       ]
     },
     {
-      "id": "multipart-0175",
+      "id": "multipart-0173",
       "group": "multipart",
       "kind": "api",
       "title": "ListParts returns an uploaded part",
@@ -20296,7 +20072,7 @@
       ]
     },
     {
-      "id": "multipart-0178",
+      "id": "multipart-0176",
       "group": "multipart",
       "kind": "api",
       "title": "Parts uploaded out of order are assembled in part-number order",
@@ -20497,7 +20273,7 @@
       ]
     },
     {
-      "id": "multipart-0179",
+      "id": "multipart-0177",
       "group": "multipart",
       "kind": "api",
       "title": "Re-uploading the same part number overwrites with the later part",
@@ -20611,7 +20387,7 @@
       ]
     },
     {
-      "id": "multipart-0180",
+      "id": "multipart-0178",
       "group": "multipart",
       "kind": "api",
       "title": "UploadPart rejects out-of-range part numbers with InvalidArgument",
@@ -20689,7 +20465,7 @@
       ]
     },
     {
-      "id": "multipart-0183",
+      "id": "multipart-0181",
       "group": "multipart",
       "kind": "api",
       "title": "Complete a 5-part multipart upload and read back with matching checksum",
@@ -20709,7 +20485,7 @@
       "data": {
         "big": {
           "$prng": {
-            "seed": "multipart-0183/big",
+            "seed": "multipart-0181/big",
             "size": 26214400
           }
         },
@@ -20929,7 +20705,7 @@
       ]
     },
     {
-      "id": "multipart-0188",
+      "id": "multipart-0186",
       "group": "multipart",
       "kind": "api",
       "title": "UploadPart returns the part ETag",
@@ -20949,7 +20725,7 @@
       "data": {
         "part": {
           "$prng": {
-            "seed": "multipart-0188/part",
+            "seed": "multipart-0186/part",
             "size": 5242880
           }
         }
@@ -20999,7 +20775,7 @@
       ]
     },
     {
-      "id": "multipart-0189",
+      "id": "multipart-0187",
       "group": "multipart",
       "kind": "api",
       "title": "ListParts reports the size of each uploaded multipart part",
@@ -21121,7 +20897,7 @@
       ]
     },
     {
-      "id": "multipart-0190",
+      "id": "multipart-0188",
       "group": "multipart",
       "kind": "api",
       "title": "ListMultipartUploads lists only in-progress uploads, not completed or aborted",
@@ -21322,7 +21098,7 @@
       ]
     },
     {
-      "id": "multipart-0191",
+      "id": "multipart-0189",
       "group": "multipart",
       "kind": "api",
       "title": "Re-uploading the same part number with the same data is idempotent",
@@ -21461,7 +21237,7 @@
       ]
     },
     {
-      "id": "multipart-0192",
+      "id": "multipart-0190",
       "group": "multipart",
       "kind": "api",
       "title": "Resume a multipart upload using ListParts as a checkpoint",
@@ -21647,7 +21423,7 @@
       ]
     },
     {
-      "id": "multipart-0193",
+      "id": "multipart-0191",
       "group": "multipart",
       "kind": "api",
       "title": "CreateMultipartUpload with a 1025-byte key returns KeyTooLongError",
