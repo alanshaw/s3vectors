@@ -460,61 +460,76 @@
                 "Parts": [
                   {
                     "PartNumber": 1,
-                    "ETag": "${cap.e1}"
+                    "ETag": "${cap.e1}",
+                    "ChecksumSHA256": "${data.p1.sha256B64}"
                   },
                   {
                     "PartNumber": 2,
-                    "ETag": "${cap.e2}"
+                    "ETag": "${cap.e2}",
+                    "ChecksumSHA256": "${data.p2.sha256B64}"
                   },
                   {
                     "PartNumber": 3,
-                    "ETag": "${cap.e3}"
+                    "ETag": "${cap.e3}",
+                    "ChecksumSHA256": "${data.p3.sha256B64}"
                   },
                   {
                     "PartNumber": 4,
-                    "ETag": "${cap.e4}"
+                    "ETag": "${cap.e4}",
+                    "ChecksumSHA256": "${data.p4.sha256B64}"
                   },
                   {
                     "PartNumber": 5,
-                    "ETag": "${cap.e5}"
+                    "ETag": "${cap.e5}",
+                    "ChecksumSHA256": "${data.p5.sha256B64}"
                   },
                   {
                     "PartNumber": 6,
-                    "ETag": "${cap.e6}"
+                    "ETag": "${cap.e6}",
+                    "ChecksumSHA256": "${data.p6.sha256B64}"
                   },
                   {
                     "PartNumber": 7,
-                    "ETag": "${cap.e7}"
+                    "ETag": "${cap.e7}",
+                    "ChecksumSHA256": "${data.p7.sha256B64}"
                   },
                   {
                     "PartNumber": 8,
-                    "ETag": "${cap.e8}"
+                    "ETag": "${cap.e8}",
+                    "ChecksumSHA256": "${data.p8.sha256B64}"
                   },
                   {
                     "PartNumber": 9,
-                    "ETag": "${cap.e9}"
+                    "ETag": "${cap.e9}",
+                    "ChecksumSHA256": "${data.p9.sha256B64}"
                   },
                   {
                     "PartNumber": 10,
-                    "ETag": "${cap.e10}"
+                    "ETag": "${cap.e10}",
+                    "ChecksumSHA256": "${data.p10.sha256B64}"
                   },
                   {
                     "PartNumber": 11,
-                    "ETag": "${cap.e11}"
+                    "ETag": "${cap.e11}",
+                    "ChecksumSHA256": "${data.p11.sha256B64}"
                   },
                   {
                     "PartNumber": 12,
-                    "ETag": "${cap.e12}"
+                    "ETag": "${cap.e12}",
+                    "ChecksumSHA256": "${data.p12.sha256B64}"
                   },
                   {
                     "PartNumber": 13,
-                    "ETag": "${cap.e13}"
+                    "ETag": "${cap.e13}",
+                    "ChecksumSHA256": "${data.p13.sha256B64}"
                   }
                 ]
               }
             },
-            "capture": {
-              "uploadChecksum": "ChecksumSHA256"
+            "expect": {
+              "response": {
+                "ChecksumSHA256": "SEQLZecJfAuzR8se0jrm0V/lUZGxD19/GbM2ARQwNPw=-13"
+              }
             }
           }
         },
@@ -545,7 +560,8 @@
               "response": {
                 "ObjectSize": 67108864,
                 "Checksum": {
-                  "ChecksumSHA256": "${cap.uploadChecksum}"
+                  "ChecksumType": "COMPOSITE",
+                  "ChecksumSHA256": "SEQLZecJfAuzR8se0jrm0V/lUZGxD19/GbM2ARQwNPw="
                 },
                 "ObjectParts": {
                   "TotalPartsCount": 13,
