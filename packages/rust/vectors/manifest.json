@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "total": 1187,
+  "total": 1186,
   "schemaSha256": "5bf42eee7982ba136d38bc2667697f3387b0bf1928191e067bcef35707a811b9",
   "groups": [
     {
@@ -106,7 +106,7 @@
     {
       "group": "versioning",
       "file": "versioning.json",
-      "count": 93
+      "count": 92
     },
     {
       "group": "wire-headers",
