@@ -1540,8 +1540,8 @@
               "Bucket": "bucket-s3alias"
             },
             "expect": {
-              "status": 400,
-              "error": "InvalidBucketName"
+              "status": 403,
+              "error": "AccessDenied"
             }
           }
         },
@@ -1552,8 +1552,8 @@
               "Bucket": "bucket--ol-s3"
             },
             "expect": {
-              "status": 400,
-              "error": "InvalidBucketName"
+              "status": 403,
+              "error": "AccessDenied"
             }
           }
         },

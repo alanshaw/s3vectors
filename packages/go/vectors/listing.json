@@ -5620,7 +5620,7 @@
       "id": "listing-0067",
       "group": "listing",
       "kind": "api",
-      "title": "ListObjectsV2 with an empty ContinuationToken returns all keys",
+      "title": "ListObjectsV2 with an empty ContinuationToken returns InvalidArgument",
       "tags": [
         "tier-1",
         "listing",
@@ -5675,28 +5675,13 @@
               "ContinuationToken": ""
             },
             "expect": {
-              "response": {
-                "ContinuationToken": "",
-                "IsTruncated": false,
-                "Contents": [
-                  {
-                    "Key": "bar"
-                  },
-                  {
-                    "Key": "baz"
-                  },
-                  {
-                    "Key": "foo"
-                  },
-                  {
-                    "Key": "quxx"
-                  }
-                ]
-              }
+              "status": 400,
+              "error": "InvalidArgument"
             }
           }
         }
-      ]
+      ],
+      "description": "AWS rejects an empty continuation token with 400 InvalidArgument (verified against AWS S3); an empty token is not treated as \"no token\"."
     },
     {
       "id": "listing-0068",

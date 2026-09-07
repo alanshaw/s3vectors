@@ -146,6 +146,7 @@
       "tags": [
         "tier-2",
         "wire-headers",
+        "quirk:us-east-1-legacy",
         "source:ceph-s3-tests"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L337",
@@ -653,6 +654,7 @@
       "tags": [
         "tier-2",
         "wire-headers",
+        "quirk:us-east-1-legacy",
         "source:ceph-s3-tests"
       ],
       "source": "https://github.com/ceph/s3-tests/blob/5522d1c351f75bc00ae0f64f742f3f095f5939d9/s3tests/functional/test_headers.py#L512",

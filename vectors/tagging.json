@@ -3108,14 +3108,15 @@
               "Tagging": {
                 "TagSet": [
                   {
-                    "Key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "Key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
                     "Value": "value"
                   }
                 ]
               }
             },
             "expect": {
-              "status": 400
+              "status": 400,
+              "error": "InvalidTag"
             }
           }
         },

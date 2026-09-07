@@ -12671,7 +12671,7 @@
       "id": "object-crud-0129",
       "group": "object-crud",
       "kind": "api",
-      "title": "Special-character user metadata values round-trip unchanged",
+      "title": "ASCII special-character user metadata values round-trip unchanged",
       "tags": [
         "tier-1",
         "object-crud",
@@ -12696,7 +12696,6 @@
               "Key": "special-metadata",
               "Body": "test",
               "Metadata": {
-                "unicode": "🚀 测试 テスト",
                 "spaces": "value with spaces",
                 "empty": "",
                 "numbers": "12345",
@@ -12715,7 +12714,6 @@
             "expect": {
               "response": {
                 "Metadata": {
-                  "unicode": "🚀 测试 テスト",
                   "spaces": "value with spaces",
                   "empty": "",
                   "numbers": "12345",
@@ -12725,7 +12723,8 @@
             }
           }
         }
-      ]
+      ],
+      "description": "S3 user metadata must be US-ASCII; non-ASCII values are not portably supported (SDKs reject them or AWS RFC2047-encodes them). This vector covers ASCII special characters only."
     },
     {
       "id": "object-crud-0130",

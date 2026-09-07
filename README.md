@@ -78,7 +78,9 @@ Every vector has:
   deviates from AWS S3 semantics), `quirk:directory-bucket` (real AWS behavior, but only
   on S3 Express One Zone directory buckets — e.g. the `x-amz-if-match-size` and
   `x-amz-if-match-last-modified-time` conditional-delete headers), and
-  `quirk:us-east-1-legacy` (the us-east-1 legacy CreateBucket 200-on-recreate).
+  `quirk:us-east-1-legacy` (us-east-1 legacy CreateBucket behavior a raw request
+  cannot get elsewhere: a bare CreateBucket with no LocationConstraint succeeds,
+  and recreating your own bucket returns 200).
 - **`source`** — optional URL (typically a github permalink with line number) of the
   original test this vector was converted from, so conversion errors can be checked
   when a vector fails.
