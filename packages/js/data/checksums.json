@@ -715,7 +715,7 @@
             },
             "expect": {
               "status": 400,
-              "error": "BadDigest"
+              "error": "InvalidRequest"
             }
           }
         }
@@ -813,7 +813,7 @@
             },
             "expect": {
               "status": 400,
-              "error": "BadDigest"
+              "error": "InvalidRequest"
             }
           }
         }

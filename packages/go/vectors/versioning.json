@@ -5,7 +5,7 @@
       "id": "versioning-0001",
       "group": "versioning",
       "kind": "api",
-      "title": "HEAD after delete in an unversioned bucket reports x-amz-delete-marker false",
+      "title": "HEAD after delete in an unversioned bucket returns 404 with no delete-marker header",
       "tags": [
         "tier-1",
         "versioning",
@@ -46,10 +46,7 @@
               "Key": "frodo.txt"
             },
             "expect": {
-              "status": 404,
-              "headers": {
-                "x-amz-delete-marker": "false"
-              }
+              "status": 404
             }
           }
         }

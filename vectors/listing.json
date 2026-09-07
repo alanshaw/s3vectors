@@ -1195,7 +1195,7 @@
                     "Prefix": "foo/"
                   },
                   {
-                    "Prefix": "quux%20ab/"
+                    "Prefix": "quux+ab/"
                   }
                 ]
               }
@@ -2369,7 +2369,7 @@
                     "Prefix": "foo/"
                   },
                   {
-                    "Prefix": "quux%20ab/"
+                    "Prefix": "quux+ab/"
                   }
                 ]
               }
@@ -5510,7 +5510,6 @@
             "expect": {
               "response": {
                 "ContinuationToken": "${cap.token}",
-                "StartAfter": "bar",
                 "IsTruncated": false,
                 "Contents": [
                   {

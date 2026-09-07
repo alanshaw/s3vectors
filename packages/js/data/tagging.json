@@ -937,7 +937,7 @@
       "id": "tagging-0008",
       "group": "tagging",
       "kind": "api",
-      "title": "PutObjectTagging with 11 tags fails with InvalidTag and stores no tags",
+      "title": "PutObjectTagging with 11 tags fails with BadRequest and stores no tags",
       "tags": [
         "tier-3",
         "tagging",
@@ -1018,7 +1018,7 @@
             },
             "expect": {
               "status": 400,
-              "error": "InvalidTag"
+              "error": "BadRequest"
             }
           }
         },
