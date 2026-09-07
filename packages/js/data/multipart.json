@@ -6911,6 +6911,7 @@
               "Key": "mymultipart3",
               "UploadId": "${cap.uploadId}",
               "ChecksumCRC32": "WgDhBQ==",
+              "ChecksumType": "FULL_OBJECT",
               "MultipartUpload": {
                 "Parts": [
                   {
@@ -6997,12 +6998,17 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 1
+              "PartNumber": 1,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
-                "ChecksumType": "FULL_OBJECT",
-                "ChecksumCRC32": "${data.pa.crc32B64}"
+                "ChecksumCRC32": {
+                  "$absent": true
+                },
+                "ChecksumType": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -7013,12 +7019,17 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 2
+              "PartNumber": 2,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
-                "ChecksumType": "FULL_OBJECT",
-                "ChecksumCRC32": "${data.pb.crc32B64}"
+                "ChecksumCRC32": {
+                  "$absent": true
+                },
+                "ChecksumType": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -7029,12 +7040,17 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 3
+              "PartNumber": 3,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
-                "ChecksumType": "FULL_OBJECT",
-                "ChecksumCRC32": "${data.pc.crc32B64}"
+                "ChecksumCRC32": {
+                  "$absent": true
+                },
+                "ChecksumType": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -7165,6 +7181,7 @@
               "Key": "mymultipart3",
               "UploadId": "${cap.uploadId}",
               "ChecksumCRC32C": "xU+Krw==",
+              "ChecksumType": "FULL_OBJECT",
               "MultipartUpload": {
                 "Parts": [
                   {
@@ -7251,12 +7268,17 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 1
+              "PartNumber": 1,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
-                "ChecksumType": "FULL_OBJECT",
-                "ChecksumCRC32C": "${data.pa.crc32cB64}"
+                "ChecksumCRC32C": {
+                  "$absent": true
+                },
+                "ChecksumType": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -7267,12 +7289,17 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 2
+              "PartNumber": 2,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
-                "ChecksumType": "FULL_OBJECT",
-                "ChecksumCRC32C": "${data.pb.crc32cB64}"
+                "ChecksumCRC32C": {
+                  "$absent": true
+                },
+                "ChecksumType": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -7283,12 +7310,17 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 3
+              "PartNumber": 3,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
-                "ChecksumType": "FULL_OBJECT",
-                "ChecksumCRC32C": "${data.pc.crc32cB64}"
+                "ChecksumCRC32C": {
+                  "$absent": true
+                },
+                "ChecksumType": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -7505,12 +7537,17 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 1
+              "PartNumber": 1,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
-                "ChecksumType": "FULL_OBJECT",
-                "ChecksumCRC64NVME": "${data.pa.crc64nvmeB64}"
+                "ChecksumCRC64NVME": {
+                  "$absent": true
+                },
+                "ChecksumType": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -7521,12 +7558,17 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 2
+              "PartNumber": 2,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
-                "ChecksumType": "FULL_OBJECT",
-                "ChecksumCRC64NVME": "${data.pb.crc64nvmeB64}"
+                "ChecksumCRC64NVME": {
+                  "$absent": true
+                },
+                "ChecksumType": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -7537,12 +7579,17 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 3
+              "PartNumber": 3,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
-                "ChecksumType": "FULL_OBJECT",
-                "ChecksumCRC64NVME": "${data.pc.crc64nvmeB64}"
+                "ChecksumCRC64NVME": {
+                  "$absent": true
+                },
+                "ChecksumType": {
+                  "$absent": true
+                }
               }
             }
           }
@@ -7747,7 +7794,7 @@
               "response": {
                 "Checksum": {
                   "ChecksumType": "COMPOSITE",
-                  "ChecksumSHA1": "sizjvY4eud3MrcHdZM3cQ/ol39o=-3"
+                  "ChecksumSHA1": "sizjvY4eud3MrcHdZM3cQ/ol39o="
                 }
               }
             }
@@ -7759,7 +7806,8 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 1
+              "PartNumber": 1,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
@@ -7775,7 +7823,8 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 2
+              "PartNumber": 2,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
@@ -7791,7 +7840,8 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 3
+              "PartNumber": 3,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
@@ -8001,7 +8051,7 @@
               "response": {
                 "Checksum": {
                   "ChecksumType": "COMPOSITE",
-                  "ChecksumSHA256": "uWBwpe1dxI4Vw8Gf0X9ynOdw/SS6VBzfWm9giiv1sf4=-3"
+                  "ChecksumSHA256": "uWBwpe1dxI4Vw8Gf0X9ynOdw/SS6VBzfWm9giiv1sf4="
                 }
               }
             }
@@ -8013,7 +8063,8 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 1
+              "PartNumber": 1,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
@@ -8029,7 +8080,8 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 2
+              "PartNumber": 2,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
@@ -8045,7 +8097,8 @@
             "params": {
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
-              "PartNumber": 3
+              "PartNumber": 3,
+              "ChecksumMode": "ENABLED"
             },
             "expect": {
               "response": {
