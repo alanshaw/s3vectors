@@ -8149,7 +8149,7 @@
       ]
     },
     {
-      "id": "acl-0068",
+      "id": "acl-0066",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl accepts canned ACL public-read",
@@ -8179,7 +8179,7 @@
       ]
     },
     {
-      "id": "acl-0069",
+      "id": "acl-0067",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl accepts canned ACL public-read-write",
@@ -8209,7 +8209,7 @@
       ]
     },
     {
-      "id": "acl-0070",
+      "id": "acl-0068",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl accepts canned ACL authenticated-read",
@@ -8239,7 +8239,7 @@
       ]
     },
     {
-      "id": "acl-0071",
+      "id": "acl-0069",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl GrantReadACP to owner id produces a READ_ACP grant",
@@ -8297,7 +8297,7 @@
       ]
     },
     {
-      "id": "acl-0072",
+      "id": "acl-0070",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl GrantWriteACP to owner id produces a WRITE_ACP grant",
@@ -8355,7 +8355,7 @@
       ]
     },
     {
-      "id": "acl-0073",
+      "id": "acl-0071",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl with an invalid canned ACL value returns InvalidArgument",
@@ -8390,7 +8390,7 @@
       ]
     },
     {
-      "id": "acl-0074",
+      "id": "acl-0072",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl with both a canned ACL and a grant header returns InvalidRequest",
@@ -8426,7 +8426,7 @@
       ]
     },
     {
-      "id": "acl-0075",
+      "id": "acl-0073",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl on a non-existing bucket returns NoSuchBucket",
@@ -8454,7 +8454,7 @@
       ]
     },
     {
-      "id": "acl-0077",
+      "id": "acl-0074",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl canned ACL private succeeds and GetBucketAcl returns Owner and Grants",
@@ -8502,7 +8502,7 @@
       ]
     },
     {
-      "id": "acl-0078",
+      "id": "acl-0075",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl canned ACL public-read succeeds and GetBucketAcl returns grants",
@@ -8547,7 +8547,7 @@
       ]
     },
     {
-      "id": "acl-0079",
+      "id": "acl-0076",
       "group": "acl",
       "kind": "api",
       "title": "Bucket ACL can be updated repeatedly across canned values",
@@ -8610,7 +8610,7 @@
       ]
     },
     {
-      "id": "acl-0080",
+      "id": "acl-0077",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl with a full AccessControlPolicy granting owner FULL_CONTROL",
@@ -8679,7 +8679,7 @@
       ]
     },
     {
-      "id": "acl-0081",
+      "id": "acl-0078",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl GrantFullControl to owner id produces a FULL_CONTROL grant",
@@ -8737,7 +8737,7 @@
       ]
     },
     {
-      "id": "acl-0082",
+      "id": "acl-0079",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl GrantRead to owner id produces a READ grant",
@@ -8795,7 +8795,7 @@
       ]
     },
     {
-      "id": "acl-0083",
+      "id": "acl-0080",
       "group": "acl",
       "kind": "api",
       "title": "PutBucketAcl GrantWrite to owner id produces a WRITE grant",
@@ -8853,7 +8853,7 @@
       ]
     },
     {
-      "id": "acl-0084",
+      "id": "acl-0081",
       "group": "acl",
       "kind": "api",
       "title": "Default bucket ACL has an owner and a FULL_CONTROL grant",

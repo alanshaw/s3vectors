@@ -433,7 +433,7 @@
       ]
     },
     {
-      "id": "bucket-0017",
+      "id": "bucket-0016",
       "group": "bucket",
       "kind": "api",
       "title": "DeleteBucket on a non-empty bucket returns BucketNotEmpty",
@@ -476,7 +476,7 @@
       ]
     },
     {
-      "id": "bucket-0018",
+      "id": "bucket-0017",
       "group": "bucket",
       "kind": "api",
       "title": "DeleteBucket on a nonexistent bucket returns NoSuchBucket",
@@ -504,7 +504,7 @@
       ]
     },
     {
-      "id": "bucket-0019",
+      "id": "bucket-0018",
       "group": "bucket",
       "kind": "api",
       "title": "HeadBucket on an existing bucket returns 200",
@@ -537,7 +537,7 @@
       ]
     },
     {
-      "id": "bucket-0020",
+      "id": "bucket-0019",
       "group": "bucket",
       "kind": "api",
       "title": "HeadBucket on a nonexistent bucket returns 404",
@@ -564,7 +564,7 @@
       ]
     },
     {
-      "id": "bucket-0021",
+      "id": "bucket-0020",
       "group": "bucket",
       "kind": "api",
       "title": "ListObjects on a nonexistent bucket returns NoSuchBucket",
@@ -591,7 +591,7 @@
       ]
     },
     {
-      "id": "bucket-0022",
+      "id": "bucket-0021",
       "group": "bucket",
       "kind": "api",
       "title": "Recreating an existing bucket with a new ACL returns BucketAlreadyExists",
@@ -628,7 +628,7 @@
       ]
     },
     {
-      "id": "bucket-0023",
+      "id": "bucket-0022",
       "group": "bucket",
       "kind": "api",
       "title": "Recreating a bucket created with public-read ACL returns BucketAlreadyExists",
@@ -665,7 +665,7 @@
       ]
     },
     {
-      "id": "bucket-0024",
+      "id": "bucket-0023",
       "group": "bucket",
       "kind": "api",
       "title": "ListBuckets includes every created bucket",
@@ -781,7 +781,7 @@
       ]
     },
     {
-      "id": "bucket-0025",
+      "id": "bucket-0024",
       "group": "bucket",
       "kind": "api",
       "title": "ListObjectsV2 on a nonexistent bucket returns NoSuchBucket",
@@ -808,7 +808,7 @@
       ]
     },
     {
-      "id": "bucket-0026",
+      "id": "bucket-0025",
       "group": "bucket",
       "kind": "api",
       "title": "Put, get and delete bucket ownership controls; get after delete returns 404",
@@ -892,7 +892,7 @@
       ]
     },
     {
-      "id": "bucket-0027",
+      "id": "bucket-0026",
       "group": "bucket",
       "kind": "api",
       "title": "CreateBucket succeeds for a name containing a hyphen",
@@ -917,7 +917,7 @@
       ]
     },
     {
-      "id": "bucket-0028",
+      "id": "bucket-0027",
       "group": "bucket",
       "kind": "api",
       "title": "CreateBucket succeeds for a name containing a period",
@@ -942,7 +942,7 @@
       ]
     },
     {
-      "id": "bucket-0029",
+      "id": "bucket-0028",
       "group": "bucket",
       "kind": "api",
       "title": "CreateBucket succeeds for a name starting with a lowercase letter",
@@ -967,7 +967,7 @@
       ]
     },
     {
-      "id": "bucket-0030",
+      "id": "bucket-0029",
       "group": "bucket",
       "kind": "api",
       "title": "CreateBucket succeeds for a name starting with a digit",
@@ -992,11 +992,11 @@
       ]
     },
     {
-      "id": "bucket-0031",
+      "id": "bucket-0030",
       "group": "bucket",
       "kind": "api",
       "title": "Re-creating an existing bucket does not remove its objects",
-      "description": "Re-creating a bucket you own succeeds here (200) — the AWS us-east-1 legacy behavior. Every other region returns BucketAlreadyOwnedByYou (see bucket-0039); the quirk:us-east-1-legacy tag lets non-us-east-1 targets skip this vector.",
+      "description": "Re-creating a bucket you own succeeds here (200) — the AWS us-east-1 legacy behavior. Every other region returns BucketAlreadyOwnedByYou (see bucket-0038); the quirk:us-east-1-legacy tag lets non-us-east-1 targets skip this vector.",
       "tags": [
         "tier-3",
         "bucket",
@@ -1079,7 +1079,7 @@
       ]
     },
     {
-      "id": "bucket-0032",
+      "id": "bucket-0031",
       "group": "bucket",
       "kind": "api",
       "title": "Anonymous ListBuckets succeeds and returns an empty bucket list",
@@ -1109,7 +1109,7 @@
       ]
     },
     {
-      "id": "bucket-0033",
+      "id": "bucket-0032",
       "group": "bucket",
       "kind": "api",
       "title": "ListBuckets with an unknown access key is rejected with 403",
@@ -1134,7 +1134,7 @@
       ]
     },
     {
-      "id": "bucket-0034",
+      "id": "bucket-0033",
       "group": "bucket",
       "kind": "api",
       "title": "Create and list a bucket with a 61-character name",
@@ -1173,7 +1173,7 @@
       ]
     },
     {
-      "id": "bucket-0035",
+      "id": "bucket-0034",
       "group": "bucket",
       "kind": "api",
       "title": "Created bucket appears in ListBuckets and HeadBucket returns 404 after deletion",
@@ -1237,7 +1237,7 @@
       ]
     },
     {
-      "id": "bucket-0036",
+      "id": "bucket-0035",
       "group": "bucket",
       "kind": "api",
       "title": "Request payment configuration defaults to BucketOwner and can be set to Requester",
@@ -1319,7 +1319,7 @@
       ]
     },
     {
-      "id": "bucket-0037",
+      "id": "bucket-0036",
       "group": "bucket",
       "kind": "api",
       "title": "Transfer acceleration status can be enabled, suspended and re-enabled",
@@ -1412,7 +1412,7 @@
       ]
     },
     {
-      "id": "bucket-0038",
+      "id": "bucket-0037",
       "group": "bucket",
       "kind": "api",
       "title": "CreateBucket rejects invalid bucket names",
@@ -1584,7 +1584,7 @@
       ]
     },
     {
-      "id": "bucket-0039",
+      "id": "bucket-0038",
       "group": "bucket",
       "kind": "api",
       "title": "CreateBucket on an existing bucket you own returns BucketAlreadyOwnedByYou",
@@ -1618,7 +1618,7 @@
       ]
     },
     {
-      "id": "bucket-0040",
+      "id": "bucket-0039",
       "group": "bucket",
       "kind": "api",
       "title": "CreateBucket succeeds and the bucket is accessible via HeadBucket",
@@ -1648,7 +1648,7 @@
       ]
     },
     {
-      "id": "bucket-0041",
+      "id": "bucket-0040",
       "group": "bucket",
       "kind": "api",
       "title": "Full bucket lifecycle: create, put and read an object, delete object, delete bucket",
@@ -1721,7 +1721,7 @@
       ]
     },
     {
-      "id": "bucket-0044",
+      "id": "bucket-0041",
       "group": "bucket",
       "kind": "api",
       "title": "DeleteBucket removes the bucket",
@@ -1761,7 +1761,7 @@
       ]
     },
     {
-      "id": "bucket-0045",
+      "id": "bucket-0042",
       "group": "bucket",
       "kind": "api",
       "title": "GetBucketLocation on a non-existent bucket returns NoSuchBucket",
@@ -1787,7 +1787,7 @@
       ]
     },
     {
-      "id": "bucket-0046",
+      "id": "bucket-0043",
       "group": "bucket",
       "kind": "api",
       "title": "GetBucketLocation succeeds on an existing bucket",
@@ -1817,7 +1817,7 @@
       ]
     },
     {
-      "id": "bucket-0049",
+      "id": "bucket-0044",
       "group": "bucket",
       "kind": "api",
       "title": "ListBuckets returns a Buckets list",
@@ -1845,7 +1845,7 @@
       ]
     },
     {
-      "id": "bucket-0050",
+      "id": "bucket-0045",
       "group": "bucket",
       "kind": "api",
       "title": "ListBuckets includes created buckets",
@@ -1902,7 +1902,7 @@
       ]
     },
     {
-      "id": "bucket-0051",
+      "id": "bucket-0046",
       "group": "bucket",
       "kind": "api",
       "title": "Empty bucket lists zero keys and can be deleted",
@@ -1944,7 +1944,7 @@
       ]
     },
     {
-      "id": "bucket-0052",
+      "id": "bucket-0047",
       "group": "bucket",
       "kind": "api",
       "title": "ListBuckets rejects a negative max-buckets value",
@@ -1980,7 +1980,7 @@
       ]
     },
     {
-      "id": "bucket-0053",
+      "id": "bucket-0048",
       "group": "bucket",
       "kind": "api",
       "title": "ListBuckets MaxBuckets truncates the listing and ContinuationToken resumes it",
@@ -2064,7 +2064,7 @@
       ]
     },
     {
-      "id": "bucket-0054",
+      "id": "bucket-0049",
       "group": "bucket",
       "kind": "api",
       "title": "ListBuckets with Prefix returns only buckets whose names match the prefix",

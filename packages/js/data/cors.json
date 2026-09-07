@@ -1221,7 +1221,7 @@
       ]
     },
     {
-      "id": "cors-0007",
+      "id": "cors-0006",
       "group": "cors",
       "kind": "api",
       "title": "CORS rule limit: 100 rules accepted, 101 rules rejected",
@@ -2879,7 +2879,7 @@
       ]
     },
     {
-      "id": "cors-0008",
+      "id": "cors-0007",
       "group": "cors",
       "kind": "api",
       "title": "PutBucketCors rejects unsupported HTTP methods in AllowedMethods",
@@ -2927,7 +2927,7 @@
       ]
     },
     {
-      "id": "cors-0009",
+      "id": "cors-0008",
       "group": "cors",
       "kind": "api",
       "title": "MaxAgeSeconds: negative rejected, zero and large values accepted",
@@ -3058,7 +3058,7 @@
       ]
     },
     {
-      "id": "cors-0010",
+      "id": "cors-0009",
       "group": "cors",
       "kind": "api",
       "title": "DeleteBucketCors removes the configuration; GetBucketCors then returns NoSuchCORSConfiguration",
@@ -3120,7 +3120,7 @@
       ]
     },
     {
-      "id": "cors-0011",
+      "id": "cors-0010",
       "group": "cors",
       "kind": "api",
       "title": "DeleteBucketCors on a non-existent bucket returns NoSuchBucket",
@@ -3146,7 +3146,7 @@
       ]
     },
     {
-      "id": "cors-0012",
+      "id": "cors-0011",
       "group": "cors",
       "kind": "api",
       "title": "DeleteBucketCors succeeds on unset configuration and removes a set configuration",
@@ -3221,7 +3221,7 @@
       ]
     },
     {
-      "id": "cors-0013",
+      "id": "cors-0012",
       "group": "cors",
       "kind": "api",
       "title": "GetBucketCors on a bucket without CORS configuration returns NoSuchCORSConfiguration",
@@ -3254,7 +3254,7 @@
       ]
     },
     {
-      "id": "cors-0014",
+      "id": "cors-0013",
       "group": "cors",
       "kind": "api",
       "title": "GetBucketCors on a non-existent bucket returns NoSuchBucket",
@@ -3280,7 +3280,7 @@
       ]
     },
     {
-      "id": "cors-0015",
+      "id": "cors-0014",
       "group": "cors",
       "kind": "api",
       "title": "PutBucketCors then GetBucketCors round-trips the rules",
@@ -3408,7 +3408,7 @@
       ]
     },
     {
-      "id": "cors-0016",
+      "id": "cors-0015",
       "group": "cors",
       "kind": "api",
       "title": "PutBucketCors with an empty CORSRules array returns MalformedXML",
@@ -3445,7 +3445,7 @@
       ]
     },
     {
-      "id": "cors-0017",
+      "id": "cors-0016",
       "group": "cors",
       "kind": "api",
       "title": "PutBucketCors rejects invalid header names in AllowedHeaders",
@@ -3678,7 +3678,7 @@
       ]
     },
     {
-      "id": "cors-0018",
+      "id": "cors-0017",
       "group": "cors",
       "kind": "api",
       "title": "PutBucketCors rejects invalid header names in ExposeHeaders",
@@ -3911,7 +3911,7 @@
       ]
     },
     {
-      "id": "cors-0019",
+      "id": "cors-0018",
       "group": "cors",
       "kind": "api",
       "title": "PutBucketCors rejects invalid HTTP methods in AllowedMethods",
@@ -4173,7 +4173,7 @@
       ]
     },
     {
-      "id": "cors-0020",
+      "id": "cors-0019",
       "group": "cors",
       "kind": "api",
       "title": "PutBucketCors with malformed Content-MD5 returns InvalidDigest and wrong Content-MD5 returns BadDigest",
@@ -4272,7 +4272,7 @@
       ]
     },
     {
-      "id": "cors-0021",
+      "id": "cors-0020",
       "group": "cors",
       "kind": "api",
       "title": "PutBucketCors on a non-existent bucket returns NoSuchBucket",
@@ -4310,7 +4310,7 @@
       ]
     },
     {
-      "id": "cors-0022",
+      "id": "cors-0021",
       "group": "cors",
       "kind": "api",
       "title": "PutBucketCors accepts multiple rules with wildcard origins and negative MaxAgeSeconds",

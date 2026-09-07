@@ -172,7 +172,7 @@
       ]
     },
     {
-      "id": "wire-headers-0007",
+      "id": "wire-headers-0006",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutBucketAcl with an invalid canned ACL value in x-amz-acl returns 400",
@@ -210,7 +210,7 @@
       ]
     },
     {
-      "id": "wire-headers-0008",
+      "id": "wire-headers-0007",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty Authorization header returns 403",
@@ -246,7 +246,7 @@
       ]
     },
     {
-      "id": "wire-headers-0009",
+      "id": "wire-headers-0008",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject without an Authorization header returns 403",
@@ -279,7 +279,7 @@
       ]
     },
     {
-      "id": "wire-headers-0010",
+      "id": "wire-headers-0009",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty Content-Length header returns 400",
@@ -314,7 +314,7 @@
       ]
     },
     {
-      "id": "wire-headers-0011",
+      "id": "wire-headers-0010",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with a negative Content-Length header returns 400",
@@ -348,7 +348,7 @@
       ]
     },
     {
-      "id": "wire-headers-0012",
+      "id": "wire-headers-0011",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty Content-Type succeeds",
@@ -380,7 +380,7 @@
       ]
     },
     {
-      "id": "wire-headers-0013",
+      "id": "wire-headers-0012",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an ordinary Content-Type header succeeds",
@@ -423,7 +423,7 @@
       ]
     },
     {
-      "id": "wire-headers-0015",
+      "id": "wire-headers-0013",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty Expect header succeeds",
@@ -466,7 +466,7 @@
       ]
     },
     {
-      "id": "wire-headers-0017",
+      "id": "wire-headers-0014",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject without an Expect header succeeds",
@@ -506,7 +506,7 @@
       ]
     },
     {
-      "id": "wire-headers-0018",
+      "id": "wire-headers-0015",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with a well-formed but non-matching Content-MD5 returns BadDigest",
@@ -542,7 +542,7 @@
       ]
     },
     {
-      "id": "wire-headers-0019",
+      "id": "wire-headers-0016",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty Content-MD5 header returns InvalidDigest",
@@ -578,7 +578,7 @@
       ]
     },
     {
-      "id": "wire-headers-0020",
+      "id": "wire-headers-0017",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with a Content-MD5 that decodes to the wrong length returns InvalidDigest",
@@ -614,7 +614,7 @@
       ]
     },
     {
-      "id": "wire-headers-0022",
+      "id": "wire-headers-0018",
       "group": "wire-headers",
       "kind": "api",
       "title": "CreateBucket with malformed SigV2-style Authorization header 'AWS HAHAHA' returns InvalidArgument",
@@ -645,7 +645,7 @@
       ]
     },
     {
-      "id": "wire-headers-0023",
+      "id": "wire-headers-0019",
       "group": "wire-headers",
       "kind": "api",
       "title": "CreateBucket with an empty User-Agent header succeeds",
@@ -673,7 +673,7 @@
       ]
     },
     {
-      "id": "wire-headers-0025",
+      "id": "wire-headers-0020",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with malformed SigV2-style Authorization header 'AWS HAHAHA' returns InvalidArgument",
@@ -712,7 +712,7 @@
       ]
     },
     {
-      "id": "wire-headers-0026",
+      "id": "wire-headers-0021",
       "group": "wire-headers",
       "kind": "api",
       "title": "PutObject with an empty User-Agent header succeeds",

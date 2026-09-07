@@ -125,8 +125,8 @@
               "PartNumber": 2
             },
             "expect": {
-              "status": 400,
-              "error": "InvalidPart"
+              "status": 416,
+              "error": "InvalidPartNumber"
             }
           }
         },
@@ -197,8 +197,8 @@
               "SSECustomerKeyMD5": "DWygnHRtgiJ77HCm+1rvHw=="
             },
             "expect": {
-              "status": 400,
-              "error": "InvalidPart"
+              "status": 416,
+              "error": "InvalidPartNumber"
             }
           }
         },

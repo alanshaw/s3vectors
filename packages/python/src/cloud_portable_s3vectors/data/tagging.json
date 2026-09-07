@@ -575,7 +575,7 @@
       ]
     },
     {
-      "id": "tagging-0006",
+      "id": "tagging-0005",
       "group": "tagging",
       "kind": "api",
       "title": "Bucket policy allowing s3:GetObjectTagging to everyone lets another account read object tags",
@@ -731,7 +731,7 @@
       ]
     },
     {
-      "id": "tagging-0007",
+      "id": "tagging-0006",
       "group": "tagging",
       "kind": "api",
       "title": "DeleteObjectTagging returns 204 and removes all tags",
@@ -833,7 +833,7 @@
       ]
     },
     {
-      "id": "tagging-0008",
+      "id": "tagging-0007",
       "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging with 129-char tag keys fails with InvalidTag and stores no tags",
@@ -934,7 +934,7 @@
       ]
     },
     {
-      "id": "tagging-0009",
+      "id": "tagging-0008",
       "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging with 11 tags fails with InvalidTag and stores no tags",
@@ -1039,7 +1039,7 @@
       ]
     },
     {
-      "id": "tagging-0010",
+      "id": "tagging-0009",
       "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging with 257-char tag values fails with InvalidTag and stores no tags",
@@ -1140,7 +1140,7 @@
       ]
     },
     {
-      "id": "tagging-0011",
+      "id": "tagging-0010",
       "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging accepts 10 tags with maximum-size 128-char keys and 256-char values",
@@ -1246,7 +1246,7 @@
       ]
     },
     {
-      "id": "tagging-0012",
+      "id": "tagging-0011",
       "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging accepts the maximum of 10 tags and returns them all",
@@ -1386,7 +1386,7 @@
       ]
     },
     {
-      "id": "tagging-0013",
+      "id": "tagging-0012",
       "group": "tagging",
       "kind": "api",
       "title": "A second PutObjectTagging replaces the previous tag set entirely",
@@ -1501,7 +1501,7 @@
       ]
     },
     {
-      "id": "tagging-0014",
+      "id": "tagging-0013",
       "group": "tagging",
       "kind": "api",
       "title": "PutObject with an x-amz-tagging header (including a valueless tag) stores tags readable via GetObjectTagging",
@@ -1568,7 +1568,7 @@
       ]
     },
     {
-      "id": "tagging-0015",
+      "id": "tagging-0014",
       "group": "tagging",
       "kind": "api",
       "title": "Bucket policy allowing s3:PutObjectTagging to everyone lets another account write object tags",
@@ -1724,7 +1724,7 @@
       ]
     },
     {
-      "id": "tagging-0016",
+      "id": "tagging-0015",
       "group": "tagging",
       "kind": "api",
       "title": "Bucket tagging lifecycle: NoSuchTagSet before set, tag readable after put, NoSuchTagSet again after delete",
@@ -1816,7 +1816,7 @@
       ]
     },
     {
-      "id": "tagging-0017",
+      "id": "tagging-0016",
       "group": "tagging",
       "kind": "api",
       "title": "Tagging supplied on CreateMultipartUpload is readable after complete and removable via DeleteObjectTagging",
@@ -1936,7 +1936,7 @@
       ]
     },
     {
-      "id": "tagging-0018",
+      "id": "tagging-0017",
       "group": "tagging",
       "kind": "api",
       "title": "Object tagging: set at upload, update, special characters, 10-tag maximum, and delete",
@@ -2222,7 +2222,7 @@
       ]
     },
     {
-      "id": "tagging-0019",
+      "id": "tagging-0018",
       "group": "tagging",
       "kind": "api",
       "title": "Tags supplied at CreateMultipartUpload are present on the completed object",
@@ -2319,7 +2319,7 @@
       ]
     },
     {
-      "id": "tagging-0020",
+      "id": "tagging-0019",
       "group": "tagging",
       "kind": "api",
       "title": "DeleteObjectTagging on a missing key returns NoSuchKey",
@@ -2354,7 +2354,7 @@
       ]
     },
     {
-      "id": "tagging-0021",
+      "id": "tagging-0020",
       "group": "tagging",
       "kind": "api",
       "title": "DeleteObjectTagging removes all tags",
@@ -2385,7 +2385,7 @@
       "data": {
         "body": {
           "$prng": {
-            "seed": "tagging-0021/body",
+            "seed": "tagging-0020/body",
             "size": 100
           }
         }
@@ -2438,7 +2438,7 @@
       ]
     },
     {
-      "id": "tagging-0022",
+      "id": "tagging-0021",
       "group": "tagging",
       "kind": "api",
       "title": "DeleteObjectTagging succeeds on a tagged object",
@@ -2494,7 +2494,7 @@
       ]
     },
     {
-      "id": "tagging-0023",
+      "id": "tagging-0022",
       "group": "tagging",
       "kind": "api",
       "title": "GetObjectTagging for a key nested under an existing file-like key returns NoSuchKey",
@@ -2537,7 +2537,7 @@
       ]
     },
     {
-      "id": "tagging-0024",
+      "id": "tagging-0023",
       "group": "tagging",
       "kind": "api",
       "title": "GetObjectTagging on a missing key returns NoSuchKey",
@@ -2572,7 +2572,7 @@
       ]
     },
     {
-      "id": "tagging-0025",
+      "id": "tagging-0024",
       "group": "tagging",
       "kind": "api",
       "title": "GetObjectTagging returns exactly the three tags that were set",
@@ -2602,7 +2602,7 @@
       "data": {
         "body": {
           "$prng": {
-            "seed": "tagging-0025/body",
+            "seed": "tagging-0024/body",
             "size": 100
           }
         }
@@ -2694,7 +2694,7 @@
       ]
     },
     {
-      "id": "tagging-0026",
+      "id": "tagging-0025",
       "group": "tagging",
       "kind": "api",
       "title": "GetObjectTagging on an untagged object returns an empty TagSet",
@@ -2725,7 +2725,7 @@
       "data": {
         "body": {
           "$prng": {
-            "seed": "tagging-0026/body",
+            "seed": "tagging-0025/body",
             "size": 100
           }
         }
@@ -2748,7 +2748,7 @@
       ]
     },
     {
-      "id": "tagging-0027",
+      "id": "tagging-0026",
       "group": "tagging",
       "kind": "api",
       "title": "Tags can be set, updated and deleted repeatedly on one object",
@@ -2779,7 +2779,7 @@
       "data": {
         "body": {
           "$prng": {
-            "seed": "tagging-0027/body",
+            "seed": "tagging-0026/body",
             "size": 100
           }
         }
@@ -2887,7 +2887,7 @@
       ]
     },
     {
-      "id": "tagging-0028",
+      "id": "tagging-0027",
       "group": "tagging",
       "kind": "api",
       "title": "Tag values may contain slashes, at-signs and spaces",
@@ -2917,7 +2917,7 @@
       "data": {
         "body": {
           "$prng": {
-            "seed": "tagging-0028/body",
+            "seed": "tagging-0027/body",
             "size": 100
           }
         }
@@ -3008,7 +3008,7 @@
       ]
     },
     {
-      "id": "tagging-0029",
+      "id": "tagging-0028",
       "group": "tagging",
       "kind": "api",
       "title": "Duplicate tag keys in one TagSet are rejected",
@@ -3071,7 +3071,7 @@
       ]
     },
     {
-      "id": "tagging-0030",
+      "id": "tagging-0029",
       "group": "tagging",
       "kind": "api",
       "title": "Tag key over 128 chars or tag value over 256 chars is rejected",
@@ -3142,7 +3142,7 @@
       ]
     },
     {
-      "id": "tagging-0031",
+      "id": "tagging-0030",
       "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging on a missing key returns NoSuchKey",
@@ -3185,7 +3185,7 @@
       ]
     },
     {
-      "id": "tagging-0032",
+      "id": "tagging-0031",
       "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging replaces the entire existing tag set",
@@ -3215,7 +3215,7 @@
       "data": {
         "body": {
           "$prng": {
-            "seed": "tagging-0032/body",
+            "seed": "tagging-0031/body",
             "size": 100
           }
         }
@@ -3278,7 +3278,7 @@
       ]
     },
     {
-      "id": "tagging-0033",
+      "id": "tagging-0032",
       "group": "tagging",
       "kind": "api",
       "title": "PutObjectTagging sets tags retrievable via GetObjectTagging",
@@ -3308,7 +3308,7 @@
       "data": {
         "body": {
           "$prng": {
-            "seed": "tagging-0033/body",
+            "seed": "tagging-0032/body",
             "size": 100
           }
         }
@@ -3376,7 +3376,7 @@
       ]
     },
     {
-      "id": "tagging-0034",
+      "id": "tagging-0033",
       "group": "tagging",
       "kind": "api",
       "title": "More than 10 tags on an object is rejected",
@@ -3467,7 +3467,7 @@
       ]
     },
     {
-      "id": "tagging-0035",
+      "id": "tagging-0034",
       "group": "tagging",
       "kind": "api",
       "title": "DeleteBucketTagging removes all bucket tags",
@@ -3539,7 +3539,7 @@
       ]
     },
     {
-      "id": "tagging-0036",
+      "id": "tagging-0035",
       "group": "tagging",
       "kind": "api",
       "title": "GetBucketTagging on a bucket with no tags returns NoSuchTagSet",
@@ -3573,7 +3573,7 @@
       ]
     },
     {
-      "id": "tagging-0037",
+      "id": "tagging-0036",
       "group": "tagging",
       "kind": "api",
       "title": "GetBucketTagging on a non-existent bucket returns NoSuchBucket",
@@ -3600,7 +3600,7 @@
       ]
     },
     {
-      "id": "tagging-0038",
+      "id": "tagging-0037",
       "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging with duplicate tag keys returns InvalidTag",
@@ -3654,7 +3654,7 @@
       ]
     },
     {
-      "id": "tagging-0039",
+      "id": "tagging-0038",
       "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging rejects a 200-char tag key and a 300-char tag value with InvalidTag",
@@ -3717,7 +3717,7 @@
       ]
     },
     {
-      "id": "tagging-0040",
+      "id": "tagging-0039",
       "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging on a non-existent bucket returns NoSuchBucket",
@@ -3747,7 +3747,7 @@
       ]
     },
     {
-      "id": "tagging-0041",
+      "id": "tagging-0040",
       "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging with two valid tags succeeds and GetBucketTagging returns exactly those tags",
@@ -3825,7 +3825,7 @@
       ]
     },
     {
-      "id": "tagging-0042",
+      "id": "tagging-0041",
       "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging with a valid tag succeeds",
@@ -3864,7 +3864,7 @@
       ]
     },
     {
-      "id": "tagging-0043",
+      "id": "tagging-0042",
       "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging with 51 tags is rejected with a 400 error",
@@ -4106,7 +4106,7 @@
       ]
     },
     {
-      "id": "tagging-0044",
+      "id": "tagging-0043",
       "group": "tagging",
       "kind": "api",
       "title": "PutBucketTagging replaces the entire existing tag set",
@@ -4200,7 +4200,7 @@
       ]
     },
     {
-      "id": "tagging-0045",
+      "id": "tagging-0044",
       "group": "tagging",
       "kind": "api",
       "title": "PutObject with Tagging sets tags readable via GetObjectTagging",
@@ -4221,7 +4221,7 @@
       "data": {
         "body": {
           "$prng": {
-            "seed": "tagging-0045/body",
+            "seed": "tagging-0044/body",
             "size": 100
           }
         }

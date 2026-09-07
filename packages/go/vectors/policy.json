@@ -3140,7 +3140,7 @@
       ]
     },
     {
-      "id": "policy-0045",
+      "id": "policy-0044",
       "group": "policy",
       "kind": "api",
       "title": "DeleteBucketPolicy removes the policy; subsequent GetBucketPolicy returns NoSuchBucketPolicy",
@@ -3206,7 +3206,7 @@
       ]
     },
     {
-      "id": "policy-0046",
+      "id": "policy-0045",
       "group": "policy",
       "kind": "api",
       "title": "GetBucketPolicy on a bucket without a policy returns NoSuchBucketPolicy",
@@ -3240,7 +3240,7 @@
       ]
     },
     {
-      "id": "policy-0047",
+      "id": "policy-0046",
       "group": "policy",
       "kind": "api",
       "title": "GetBucketPolicy on a non-existent bucket returns NoSuchBucket",
@@ -3268,7 +3268,7 @@
       ]
     },
     {
-      "id": "policy-0048",
+      "id": "policy-0047",
       "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy with syntactically invalid JSON returns MalformedPolicy",
@@ -3304,7 +3304,7 @@
       ]
     },
     {
-      "id": "policy-0049",
+      "id": "policy-0048",
       "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy on a non-existent bucket returns NoSuchBucket",
@@ -3332,7 +3332,7 @@
       ]
     },
     {
-      "id": "policy-0051",
+      "id": "policy-0049",
       "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy with a Deny statement succeeds and is retrievable",
@@ -3377,7 +3377,7 @@
       ]
     },
     {
-      "id": "policy-0052",
+      "id": "policy-0050",
       "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy accepts an IpAddress condition block and GetBucketPolicy returns it",
@@ -3422,7 +3422,7 @@
       ]
     },
     {
-      "id": "policy-0053",
+      "id": "policy-0051",
       "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy accepts a StringLike condition block and GetBucketPolicy returns it",
@@ -3467,7 +3467,7 @@
       ]
     },
     {
-      "id": "policy-0054",
+      "id": "policy-0052",
       "group": "policy",
       "kind": "api",
       "title": "PutBucketPolicy stores a policy that GetBucketPolicy returns",
@@ -3513,7 +3513,7 @@
       ]
     },
     {
-      "id": "policy-0056",
+      "id": "policy-0053",
       "group": "policy",
       "kind": "api",
       "title": "DeleteBucketPolicy removes the policy so GetBucketPolicy returns NoSuchBucketPolicy",

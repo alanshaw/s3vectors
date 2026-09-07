@@ -5695,7 +5695,7 @@
       ]
     },
     {
-      "id": "versioning-0022",
+      "id": "versioning-0020",
       "group": "versioning",
       "kind": "api",
       "title": "Create and remove ten versions of a key with special name \":\"",
@@ -6969,7 +6969,7 @@
       ]
     },
     {
-      "id": "versioning-0023",
+      "id": "versioning-0021",
       "group": "versioning",
       "kind": "api",
       "title": "Create and remove ten versions of a key with special name \" \"",
@@ -8243,7 +8243,7 @@
       ]
     },
     {
-      "id": "versioning-0024",
+      "id": "versioning-0022",
       "group": "versioning",
       "kind": "api",
       "title": "ListObjectVersions orders versions by key, newest first within each key",
@@ -8580,7 +8580,7 @@
       ]
     },
     {
-      "id": "versioning-0025",
+      "id": "versioning-0023",
       "group": "versioning",
       "kind": "api",
       "title": "Overwrite a pre-versioning object after enabling versioning, then delete each version by id",
@@ -8736,7 +8736,7 @@
       ]
     },
     {
-      "id": "versioning-0026",
+      "id": "versioning-0024",
       "group": "versioning",
       "kind": "api",
       "title": "Overwriting a pre-versioning object under suspended versioning replaces the null version",
@@ -8906,7 +8906,7 @@
       ]
     },
     {
-      "id": "versioning-0027",
+      "id": "versioning-0025",
       "group": "versioning",
       "kind": "api",
       "title": "Deleting the null version of a pre-versioning object removes it entirely",
@@ -9015,7 +9015,7 @@
       ]
     },
     {
-      "id": "versioning-0028",
+      "id": "versioning-0026",
       "group": "versioning",
       "kind": "api",
       "title": "Suspend and re-enable versioning with interleaved deletes and overwrites, then remove every version by id",
@@ -10014,7 +10014,7 @@
       ]
     },
     {
-      "id": "versioning-0029",
+      "id": "versioning-0027",
       "group": "versioning",
       "kind": "api",
       "title": "Copy a null-version object under suspended versioning within and across buckets",
@@ -10139,7 +10139,7 @@
       ]
     },
     {
-      "id": "versioning-0030",
+      "id": "versioning-0028",
       "group": "versioning",
       "kind": "api",
       "title": "Repeated unversioned deletes on a versioned key stack delete markers",
@@ -10214,7 +10214,7 @@
       ]
     },
     {
-      "id": "versioning-0031",
+      "id": "versioning-0029",
       "group": "versioning",
       "kind": "api",
       "title": "Deleting a specific version of a nested key echoes that VersionId",
@@ -10270,7 +10270,7 @@
       ]
     },
     {
-      "id": "versioning-0032",
+      "id": "versioning-0030",
       "group": "versioning",
       "kind": "api",
       "title": "Objects uploaded with checksum algorithms appear in the version listing",
@@ -10344,7 +10344,7 @@
       ]
     },
     {
-      "id": "versioning-0033",
+      "id": "versioning-0031",
       "group": "versioning",
       "kind": "api",
       "title": "Version created while versioning is suspended is listed with VersionId null",
@@ -10452,7 +10452,7 @@
       ]
     },
     {
-      "id": "versioning-0034",
+      "id": "versioning-0032",
       "group": "versioning",
       "kind": "api",
       "title": "ListObjectVersions returns every version of every key, grouped by key",
@@ -10646,7 +10646,7 @@
       ]
     },
     {
-      "id": "versioning-0035",
+      "id": "versioning-0033",
       "group": "versioning",
       "kind": "api",
       "title": "All versions of a single key are listed newest-first with IsLatest on the first",
@@ -10773,7 +10773,7 @@
       ]
     },
     {
-      "id": "versioning-0036",
+      "id": "versioning-0034",
       "group": "versioning",
       "kind": "api",
       "title": "MaxKeys truncates the version listing and markers resume it",
@@ -10943,7 +10943,7 @@
       ]
     },
     {
-      "id": "versioning-0037",
+      "id": "versioning-0035",
       "group": "versioning",
       "kind": "api",
       "title": "ListObjectVersions on a missing bucket returns NoSuchBucket",
@@ -10978,7 +10978,7 @@
       ]
     },
     {
-      "id": "versioning-0038",
+      "id": "versioning-0036",
       "group": "versioning",
       "kind": "api",
       "title": "Pre-versioning object is listed as the null version beneath its delete marker",
@@ -11057,7 +11057,7 @@
       ]
     },
     {
-      "id": "versioning-0039",
+      "id": "versioning-0037",
       "group": "versioning",
       "kind": "api",
       "title": "Delete marker appears in DeleteMarkers with IsLatest alongside older versions",
@@ -11147,7 +11147,7 @@
       ]
     },
     {
-      "id": "versioning-0040",
+      "id": "versioning-0038",
       "group": "versioning",
       "kind": "api",
       "title": "ListObjectVersions on an unversioned bucket returns null version IDs",
@@ -11328,7 +11328,7 @@
       ]
     },
     {
-      "id": "versioning-0041",
+      "id": "versioning-0039",
       "group": "versioning",
       "kind": "api",
       "title": "Versioning toggles through unset, Enabled, Suspended and back to Enabled",
@@ -11437,7 +11437,7 @@
       ]
     },
     {
-      "id": "versioning-0043",
+      "id": "versioning-0040",
       "group": "versioning",
       "kind": "api",
       "title": "GetBucketVersioning on a non-existing bucket returns NoSuchBucket",
@@ -11464,7 +11464,7 @@
       ]
     },
     {
-      "id": "versioning-0044",
+      "id": "versioning-0041",
       "group": "versioning",
       "kind": "api",
       "title": "GetBucketVersioning on a versioning-enabled bucket returns Status Enabled",
@@ -11499,7 +11499,7 @@
       ]
     },
     {
-      "id": "versioning-0045",
+      "id": "versioning-0042",
       "group": "versioning",
       "kind": "api",
       "title": "PutBucketVersioning with an invalid Status value is rejected",
@@ -11536,7 +11536,7 @@
       ]
     },
     {
-      "id": "versioning-0046",
+      "id": "versioning-0043",
       "group": "versioning",
       "kind": "api",
       "title": "Enabling bucket versioning succeeds and is reflected by GetBucketVersioning",
@@ -11581,7 +11581,7 @@
       ]
     },
     {
-      "id": "versioning-0047",
+      "id": "versioning-0044",
       "group": "versioning",
       "kind": "api",
       "title": "Suspending versioning after enabling it succeeds and is reflected by GetBucketVersioning",
@@ -11637,7 +11637,7 @@
       ]
     },
     {
-      "id": "versioning-0048",
+      "id": "versioning-0045",
       "group": "versioning",
       "kind": "api",
       "title": "DeleteBucket on a versioned bucket holding object versions fails",
@@ -11688,7 +11688,7 @@
       ]
     },
     {
-      "id": "versioning-0049",
+      "id": "versioning-0046",
       "group": "versioning",
       "kind": "api",
       "title": "Five rapid overwrites of one key create five distinct, individually retrievable versions",
@@ -11875,7 +11875,7 @@
       ]
     },
     {
-      "id": "versioning-0050",
+      "id": "versioning-0047",
       "group": "versioning",
       "kind": "api",
       "title": "CopyObject from a versioned source key containing '?' and '&' echoes CopySourceVersionId",
@@ -11935,7 +11935,7 @@
       ]
     },
     {
-      "id": "versioning-0051",
+      "id": "versioning-0048",
       "group": "versioning",
       "kind": "api",
       "title": "GetObjectAttributes on a delete marker fails",
@@ -12021,7 +12021,7 @@
       ]
     },
     {
-      "id": "versioning-0052",
+      "id": "versioning-0049",
       "group": "versioning",
       "kind": "api",
       "title": "GetObjectAttributes returns per-version attributes and defaults to the latest version",
@@ -12127,7 +12127,7 @@
       ]
     },
     {
-      "id": "versioning-0053",
+      "id": "versioning-0050",
       "group": "versioning",
       "kind": "api",
       "title": "DeleteObject with VersionId permanently removes that version only",
@@ -12213,7 +12213,7 @@
       ]
     },
     {
-      "id": "versioning-0054",
+      "id": "versioning-0051",
       "group": "versioning",
       "kind": "api",
       "title": "DeleteObject on a non-existing key in a versioned bucket returns 204",
@@ -12248,7 +12248,7 @@
       ]
     },
     {
-      "id": "versioning-0055",
+      "id": "versioning-0052",
       "group": "versioning",
       "kind": "api",
       "title": "GetObject with a malformed VersionId returns InvalidArgument",
@@ -12294,7 +12294,7 @@
       ]
     },
     {
-      "id": "versioning-0056",
+      "id": "versioning-0053",
       "group": "versioning",
       "kind": "api",
       "title": "GetObject with VersionId=null retrieves the pre-versioning object",
@@ -12386,7 +12386,7 @@
       ]
     },
     {
-      "id": "versioning-0057",
+      "id": "versioning-0054",
       "group": "versioning",
       "kind": "api",
       "title": "GetObject by VersionId and without it both return the stored version",
@@ -12463,7 +12463,7 @@
       ]
     },
     {
-      "id": "versioning-0058",
+      "id": "versioning-0055",
       "group": "versioning",
       "kind": "api",
       "title": "HeadObject with a malformed VersionId returns 400",
@@ -12508,7 +12508,7 @@
       ]
     },
     {
-      "id": "versioning-0059",
+      "id": "versioning-0056",
       "group": "versioning",
       "kind": "api",
       "title": "HeadObject with and without VersionId returns the version's metadata",
@@ -12582,7 +12582,7 @@
       ]
     },
     {
-      "id": "versioning-0060",
+      "id": "versioning-0057",
       "group": "versioning",
       "kind": "api",
       "title": "HeadObject without VersionId returns the latest version",
@@ -12645,7 +12645,7 @@
       ]
     },
     {
-      "id": "versioning-0061",
+      "id": "versioning-0058",
       "group": "versioning",
       "kind": "api",
       "title": "Object created before versioning is enabled remains readable as versionId=null",
@@ -12746,7 +12746,7 @@
       ]
     },
     {
-      "id": "versioning-0062",
+      "id": "versioning-0059",
       "group": "versioning",
       "kind": "api",
       "title": "Overwrites after enabling versioning create new versions above the null version",
@@ -12841,7 +12841,7 @@
       ]
     },
     {
-      "id": "versioning-0063",
+      "id": "versioning-0060",
       "group": "versioning",
       "kind": "api",
       "title": "PutObject to a versioning-enabled bucket returns a non-empty VersionId",
@@ -12880,7 +12880,7 @@
       ]
     },
     {
-      "id": "versioning-0064",
+      "id": "versioning-0061",
       "group": "versioning",
       "kind": "api",
       "title": "CopyObject with a versionId CopySource copies the specified (older) version",
@@ -12948,7 +12948,7 @@
       ]
     },
     {
-      "id": "versioning-0065",
+      "id": "versioning-0062",
       "group": "versioning",
       "kind": "api",
       "title": "CopyObject onto an existing key in a versioned bucket creates a new version",
@@ -13040,7 +13040,7 @@
       ]
     },
     {
-      "id": "versioning-0066",
+      "id": "versioning-0063",
       "group": "versioning",
       "kind": "api",
       "title": "DeleteObject with VersionId=null permanently removes the pre-versioning null version",
@@ -13123,7 +13123,7 @@
       ]
     },
     {
-      "id": "versioning-0067",
+      "id": "versioning-0064",
       "group": "versioning",
       "kind": "api",
       "title": "Deleting a delete marker restores visibility of the previous version",
@@ -13213,7 +13213,7 @@
       ]
     },
     {
-      "id": "versioning-0068",
+      "id": "versioning-0065",
       "group": "versioning",
       "kind": "api",
       "title": "DeleteObject with versioning suspended returns 204 and existing versions remain readable",
@@ -13279,7 +13279,7 @@
       ]
     },
     {
-      "id": "versioning-0069",
+      "id": "versioning-0066",
       "group": "versioning",
       "kind": "api",
       "title": "DeleteObjects with explicit version IDs permanently removes the delete marker and the object version",
@@ -13362,7 +13362,7 @@
       ]
     },
     {
-      "id": "versioning-0070",
+      "id": "versioning-0067",
       "group": "versioning",
       "kind": "api",
       "title": "DeleteObjects on a versioned bucket creates delete markers hiding all keys",
@@ -13476,7 +13476,7 @@
       ]
     },
     {
-      "id": "versioning-0071",
+      "id": "versioning-0068",
       "group": "versioning",
       "kind": "api",
       "title": "GetObject addressing a delete-marker version returns MethodNotAllowed",
@@ -13533,7 +13533,7 @@
       ]
     },
     {
-      "id": "versioning-0072",
+      "id": "versioning-0069",
       "group": "versioning",
       "kind": "api",
       "title": "GetObject without version ID on a key whose latest version is a delete marker returns NoSuchKey",
@@ -13586,7 +13586,7 @@
       ]
     },
     {
-      "id": "versioning-0073",
+      "id": "versioning-0070",
       "group": "versioning",
       "kind": "api",
       "title": "HeadObject on a delete-marker version returns 405; HeadObject without version returns 404",
@@ -13664,7 +13664,7 @@
       ]
     },
     {
-      "id": "versioning-0074",
+      "id": "versioning-0071",
       "group": "versioning",
       "kind": "api",
       "title": "Aborted multipart upload on a versioned bucket creates no version",
@@ -13760,7 +13760,7 @@
       ]
     },
     {
-      "id": "versioning-0075",
+      "id": "versioning-0072",
       "group": "versioning",
       "kind": "api",
       "title": "Multipart upload over existing versions creates a distinct third, latest version",
@@ -13941,7 +13941,7 @@
       ]
     },
     {
-      "id": "versioning-0076",
+      "id": "versioning-0073",
       "group": "versioning",
       "kind": "api",
       "title": "CompleteMultipartUpload on a versioned bucket returns a VersionId",
@@ -14128,7 +14128,7 @@
       ]
     },
     {
-      "id": "versioning-0077",
+      "id": "versioning-0074",
       "group": "versioning",
       "kind": "api",
       "title": "Multipart upload metadata and content type are preserved on the created version",
@@ -14254,7 +14254,7 @@
       ]
     },
     {
-      "id": "versioning-0078",
+      "id": "versioning-0075",
       "group": "versioning",
       "kind": "api",
       "title": "UploadPartCopy from a specific source version copies that version's bytes",
@@ -14396,7 +14396,7 @@
       ]
     },
     {
-      "id": "versioning-0079",
+      "id": "versioning-0076",
       "group": "versioning",
       "kind": "api",
       "title": "Copy-to-self with REPLACE metadata creates a new version each time",
@@ -14551,7 +14551,7 @@
       ]
     },
     {
-      "id": "versioning-0080",
+      "id": "versioning-0077",
       "group": "versioning",
       "kind": "api",
       "title": "A captured version is immutable under subsequent overwrites",
@@ -14692,7 +14692,7 @@
       ]
     },
     {
-      "id": "versioning-0081",
+      "id": "versioning-0078",
       "group": "versioning",
       "kind": "api",
       "title": "Historical versions are retrievable by VersionId",
@@ -14821,7 +14821,7 @@
       ]
     },
     {
-      "id": "versioning-0082",
+      "id": "versioning-0079",
       "group": "versioning",
       "kind": "api",
       "title": "Enable then suspend bucket versioning across the object version lifecycle",
@@ -15000,7 +15000,7 @@
       ]
     },
     {
-      "id": "versioning-0083",
+      "id": "versioning-0080",
       "group": "versioning",
       "kind": "api",
       "title": "Three PUTs of one key on a versioned bucket yield three versions",
@@ -15067,7 +15067,7 @@
       ]
     },
     {
-      "id": "versioning-0084",
+      "id": "versioning-0081",
       "group": "versioning",
       "kind": "api",
       "title": "New bucket reports no versioning status",
@@ -15104,7 +15104,7 @@
       ]
     },
     {
-      "id": "versioning-0086",
+      "id": "versioning-0082",
       "group": "versioning",
       "kind": "api",
       "title": "Repeated puts create distinct retrievable versions, listed newest-first",
@@ -15229,7 +15229,7 @@
       ]
     },
     {
-      "id": "versioning-0087",
+      "id": "versioning-0083",
       "group": "versioning",
       "kind": "api",
       "title": "Deleting a specific version leaves the other versions intact",
@@ -15322,7 +15322,7 @@
       ]
     },
     {
-      "id": "versioning-0088",
+      "id": "versioning-0084",
       "group": "versioning",
       "kind": "api",
       "title": "Deleting current version creates a delete marker; removing it restores the object",
@@ -15442,7 +15442,7 @@
       ]
     },
     {
-      "id": "versioning-0089",
+      "id": "versioning-0085",
       "group": "versioning",
       "kind": "api",
       "title": "Suspending versioning makes a new put get the null version id",
@@ -15512,7 +15512,7 @@
       ]
     },
     {
-      "id": "versioning-0090",
+      "id": "versioning-0086",
       "group": "versioning",
       "kind": "api",
       "title": "Each version retains its own user metadata",
@@ -15602,7 +15602,7 @@
       ]
     },
     {
-      "id": "versioning-0091",
+      "id": "versioning-0087",
       "group": "versioning",
       "kind": "api",
       "title": "Copy the current object and copy a specific version by id",
@@ -15682,7 +15682,7 @@
       ]
     },
     {
-      "id": "versioning-0092",
+      "id": "versioning-0088",
       "group": "versioning",
       "kind": "api",
       "title": "Two multipart uploads to one key create two independent versions",
@@ -15849,7 +15849,7 @@
       ]
     },
     {
-      "id": "versioning-0093",
+      "id": "versioning-0089",
       "group": "versioning",
       "kind": "api",
       "title": "Delete marker hides object, version-id read bypasses it, removing the marker restores it",
@@ -15950,7 +15950,7 @@
       ]
     },
     {
-      "id": "versioning-0094",
+      "id": "versioning-0090",
       "group": "versioning",
       "kind": "api",
       "title": "Three put/delete cycles yield three versions and three delete markers",
@@ -16048,7 +16048,7 @@
       ]
     },
     {
-      "id": "versioning-0095",
+      "id": "versioning-0091",
       "group": "versioning",
       "kind": "api",
       "title": "Deleting a non-current version preserves the remaining versions",
@@ -16159,7 +16159,7 @@
       ]
     },
     {
-      "id": "versioning-0096",
+      "id": "versioning-0092",
       "group": "versioning",
       "kind": "api",
       "title": "Deleting an already-deleted object creates a second, distinct delete marker",

@@ -71,8 +71,14 @@ Every vector has:
 
   Other conventional tags: the feature group (`multipart`, `versioning`, …), provenance
   (`source:ceph-s3-tests`, `source:msst-s3`, `source:aws-sigv4-suite`,
-  `source:storage-test`), quirk markers (`quirk:not-aws` — asserts behavior where AWS
-  itself deviates from common S3 semantics), and free-form compliance overlays (`soc2`).
+  `source:storage-test`), quirk markers, and free-form compliance overlays (`soc2`).
+  Quirk markers share the `quirk:` prefix and flag behavior a general-purpose AWS S3
+  endpoint does not reproduce, so a target tracking AWS filters them by prefix (see
+  `quirk:*` filtering in the runner packages): `quirk:not-aws` (a non-AWS implementation
+  deviates from AWS S3 semantics), `quirk:directory-bucket` (real AWS behavior, but only
+  on S3 Express One Zone directory buckets — e.g. the `x-amz-if-match-size` and
+  `x-amz-if-match-last-modified-time` conditional-delete headers), and
+  `quirk:us-east-1-legacy` (the us-east-1 legacy CreateBucket 200-on-recreate).
 - **`source`** — optional URL (typically a github permalink with line number) of the
   original test this vector was converted from, so conversion errors can be checked
   when a vector fails.

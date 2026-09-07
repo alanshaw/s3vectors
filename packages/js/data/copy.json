@@ -436,7 +436,7 @@
       ]
     },
     {
-      "id": "copy-0010",
+      "id": "copy-0009",
       "group": "copy",
       "kind": "api",
       "title": "Copy from another user's private object into own bucket is denied",
@@ -494,7 +494,7 @@
       ]
     },
     {
-      "id": "copy-0011",
+      "id": "copy-0010",
       "group": "copy",
       "kind": "api",
       "title": "Grantee with FULL_CONTROL on object and bucket can copy within the owner's bucket",
@@ -621,7 +621,7 @@
       ]
     },
     {
-      "id": "copy-0012",
+      "id": "copy-0011",
       "group": "copy",
       "kind": "api",
       "title": "Copy with REPLACE directive overwrites metadata and content type (3-byte object)",
@@ -695,7 +695,7 @@
       ]
     },
     {
-      "id": "copy-0014",
+      "id": "copy-0012",
       "group": "copy",
       "kind": "api",
       "title": "Copy retains metadata and content type (3-byte object)",
@@ -760,7 +760,7 @@
       ]
     },
     {
-      "id": "copy-0017",
+      "id": "copy-0013",
       "group": "copy",
       "kind": "api",
       "title": "Copy an object onto itself without changes returns InvalidRequest",
@@ -805,7 +805,7 @@
       ]
     },
     {
-      "id": "copy-0018",
+      "id": "copy-0014",
       "group": "copy",
       "kind": "api",
       "title": "Copy an object onto itself with the REPLACE metadata directive",
@@ -864,7 +864,7 @@
       ]
     },
     {
-      "id": "copy-0019",
+      "id": "copy-0015",
       "group": "copy",
       "kind": "api",
       "title": "Copy preserves the source object's Content-Type",
@@ -920,7 +920,7 @@
       ]
     },
     {
-      "id": "copy-0020",
+      "id": "copy-0016",
       "group": "copy",
       "kind": "api",
       "title": "Copy specific versions across versioned and non-versioned buckets",
@@ -1102,7 +1102,7 @@
       ]
     },
     {
-      "id": "copy-0021",
+      "id": "copy-0017",
       "group": "copy",
       "kind": "api",
       "title": "Copy a specific version of an object whose key needs URL encoding",
@@ -1162,7 +1162,7 @@
       ]
     },
     {
-      "id": "copy-0022",
+      "id": "copy-0018",
       "group": "copy",
       "kind": "api",
       "title": "Copy versions of a multipart object across versioned and non-versioned buckets, retaining body, metadata and content type",
@@ -1196,7 +1196,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0022/src",
+            "seed": "copy-0018/src",
             "size": 31457280
           }
         },
@@ -1578,7 +1578,7 @@
       ]
     },
     {
-      "id": "copy-0023",
+      "id": "copy-0019",
       "group": "copy",
       "kind": "api",
       "title": "Copy a zero-length object",
@@ -1641,7 +1641,7 @@
       ]
     },
     {
-      "id": "copy-0024",
+      "id": "copy-0020",
       "group": "copy",
       "kind": "api",
       "title": "Checksums are preserved across overwrite and server-side copy",
@@ -1766,7 +1766,7 @@
       ]
     },
     {
-      "id": "copy-0025",
+      "id": "copy-0021",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject to a new key within the same bucket succeeds",
@@ -1805,7 +1805,7 @@
       ]
     },
     {
-      "id": "copy-0028",
+      "id": "copy-0022",
       "group": "copy",
       "kind": "api",
       "title": "CopySource with a leading slash is accepted",
@@ -1877,7 +1877,7 @@
       ]
     },
     {
-      "id": "copy-0029",
+      "id": "copy-0023",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject onto itself with an invalid MetadataDirective is rejected",
@@ -1922,7 +1922,7 @@
       ]
     },
     {
-      "id": "copy-0030",
+      "id": "copy-0024",
       "group": "copy",
       "kind": "api",
       "title": "CopySource without a bucket/key slash separator is rejected",
@@ -1995,7 +1995,7 @@
       ]
     },
     {
-      "id": "copy-0031",
+      "id": "copy-0025",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with an invalid TaggingDirective is rejected",
@@ -2041,7 +2041,7 @@
       ]
     },
     {
-      "id": "copy-0032",
+      "id": "copy-0026",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with MetadataDirective=COPY preserves metadata and Content-Type",
@@ -2104,7 +2104,7 @@
       ]
     },
     {
-      "id": "copy-0033",
+      "id": "copy-0027",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with MetadataDirective=REPLACE applies new metadata and Content-Type",
@@ -2174,7 +2174,7 @@
       ]
     },
     {
-      "id": "copy-0034",
+      "id": "copy-0028",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject of a non-existent directory-style key returns NoSuchKey",
@@ -2210,7 +2210,7 @@
       ]
     },
     {
-      "id": "copy-0035",
+      "id": "copy-0029",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with MetadataDirective=REPLACE updates content headers",
@@ -2277,7 +2277,7 @@
       ]
     },
     {
-      "id": "copy-0036",
+      "id": "copy-0030",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with spaces in the source key",
@@ -2329,7 +2329,7 @@
       ]
     },
     {
-      "id": "copy-0037",
+      "id": "copy-0031",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with TaggingDirective=COPY preserves source tags",
@@ -2412,7 +2412,7 @@
       ]
     },
     {
-      "id": "copy-0038",
+      "id": "copy-0032",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with TaggingDirective=REPLACE applies new tags",
@@ -2496,7 +2496,7 @@
       ]
     },
     {
-      "id": "copy-0039",
+      "id": "copy-0033",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with a malformed x-amz-copy-source (no bucket/key separator) is rejected",
@@ -2532,7 +2532,7 @@
       ]
     },
     {
-      "id": "copy-0041",
+      "id": "copy-0034",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject to a non-existing destination bucket returns NoSuchBucket",
@@ -2563,7 +2563,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0041/src",
+            "seed": "copy-0034/src",
             "size": 100
           }
         }
@@ -2586,7 +2586,7 @@
       ]
     },
     {
-      "id": "copy-0042",
+      "id": "copy-0035",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with a non-existing source key returns NoSuchKey",
@@ -2623,7 +2623,7 @@
       ]
     },
     {
-      "id": "copy-0043",
+      "id": "copy-0036",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject preserves the source ContentType by default",
@@ -2654,7 +2654,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0043/src",
+            "seed": "copy-0036/src",
             "size": 100
           }
         }
@@ -2687,7 +2687,7 @@
       ]
     },
     {
-      "id": "copy-0044",
+      "id": "copy-0037",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject response includes a CopyObjectResult and the copy has an ETag",
@@ -2717,7 +2717,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0044/src",
+            "seed": "copy-0037/src",
             "size": 128
           }
         }
@@ -2759,7 +2759,7 @@
       ]
     },
     {
-      "id": "copy-0047",
+      "id": "copy-0038",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with default tagging directive copies the source tags",
@@ -2780,7 +2780,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0047/src",
+            "seed": "copy-0038/src",
             "size": 100
           }
         }
@@ -2831,7 +2831,7 @@
       ]
     },
     {
-      "id": "copy-0048",
+      "id": "copy-0039",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with TaggingDirective REPLACE replaces the source tags",
@@ -2852,7 +2852,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0048/src",
+            "seed": "copy-0039/src",
             "size": 100
           }
         }
@@ -2906,7 +2906,7 @@
       ]
     },
     {
-      "id": "copy-0049",
+      "id": "copy-0040",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject between buckets preserves ContentType and custom metadata",
@@ -2945,7 +2945,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0049/src",
+            "seed": "copy-0040/src",
             "size": 100
           }
         }
@@ -2981,7 +2981,7 @@
       ]
     },
     {
-      "id": "copy-0051",
+      "id": "copy-0041",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject preserves all content headers and custom metadata by default",
@@ -3002,7 +3002,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0051/src",
+            "seed": "copy-0041/src",
             "size": 100
           }
         }
@@ -3068,7 +3068,7 @@
       ]
     },
     {
-      "id": "copy-0053",
+      "id": "copy-0042",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject onto itself with REPLACE sets the new metadata map",
@@ -3101,7 +3101,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0053/src",
+            "seed": "copy-0042/src",
             "size": 100
           }
         }
@@ -3142,7 +3142,7 @@
       ]
     },
     {
-      "id": "copy-0054",
+      "id": "copy-0043",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject preserves CacheControl and Expires headers",
@@ -3163,7 +3163,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0054/src",
+            "seed": "copy-0043/src",
             "size": 100
           }
         }
@@ -3213,7 +3213,7 @@
       ]
     },
     {
-      "id": "copy-0055",
+      "id": "copy-0044",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject preserves the CRC32 checksum of the source object",
@@ -3234,7 +3234,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0055/src",
+            "seed": "copy-0044/src",
             "size": 512
           }
         }
@@ -3285,7 +3285,7 @@
       ]
     },
     {
-      "id": "copy-0056",
+      "id": "copy-0045",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject tagging directives: default copies tags, REPLACE substitutes them",
@@ -3306,7 +3306,7 @@
       "data": {
         "src": {
           "$prng": {
-            "seed": "copy-0056/src",
+            "seed": "copy-0045/src",
             "size": 100
           }
         }
@@ -3389,7 +3389,7 @@
       ]
     },
     {
-      "id": "copy-0063",
+      "id": "copy-0046",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject with CopySourceIfMatch: matching ETag succeeds, wrong ETag fails",
@@ -3449,7 +3449,7 @@
       ]
     },
     {
-      "id": "copy-0064",
+      "id": "copy-0047",
       "group": "copy",
       "kind": "api",
       "title": "CopyObject of a 6 MiB object preserves its size",
@@ -3517,7 +3517,7 @@
       ]
     },
     {
-      "id": "copy-0065",
+      "id": "copy-0048",
       "group": "copy",
       "kind": "api",
       "title": "Prefix rename via CopyObject + DeleteObject leaves old prefix empty and content intact",
