@@ -24,20 +24,10 @@
       "steps": [
         {
           "$operation": {
-            "name": "PutBucketAcl",
-            "params": {
-              "Bucket": "${res.b1.name}",
-              "ACL": "public-read"
-            }
-          }
-        },
-        {
-          "$operation": {
             "name": "PutObject",
             "params": {
               "Bucket": "${res.b1.name}",
-              "Key": "foo",
-              "ACL": "public-read"
+              "Key": "foo"
             }
           }
         },

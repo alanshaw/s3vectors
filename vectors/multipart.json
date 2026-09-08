@@ -7098,7 +7098,8 @@
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
               "ObjectAttributes": [
-                "Checksum"
+                "Checksum",
+                "ObjectParts"
               ]
             },
             "expect": {
@@ -7106,6 +7107,24 @@
                 "Checksum": {
                   "ChecksumType": "FULL_OBJECT",
                   "ChecksumCRC32": "WgDhBQ=="
+                },
+                "ObjectParts": {
+                  "TotalPartsCount": 3,
+                  "PartNumberMarker": {
+                    "$absent": true
+                  },
+                  "NextPartNumberMarker": {
+                    "$absent": true
+                  },
+                  "MaxParts": {
+                    "$absent": true
+                  },
+                  "IsTruncated": {
+                    "$absent": true
+                  },
+                  "Parts": {
+                    "$absent": true
+                  }
                 }
               }
             }
@@ -7368,7 +7387,8 @@
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
               "ObjectAttributes": [
-                "Checksum"
+                "Checksum",
+                "ObjectParts"
               ]
             },
             "expect": {
@@ -7376,6 +7396,24 @@
                 "Checksum": {
                   "ChecksumType": "FULL_OBJECT",
                   "ChecksumCRC32C": "xU+Krw=="
+                },
+                "ObjectParts": {
+                  "TotalPartsCount": 3,
+                  "PartNumberMarker": {
+                    "$absent": true
+                  },
+                  "NextPartNumberMarker": {
+                    "$absent": true
+                  },
+                  "MaxParts": {
+                    "$absent": true
+                  },
+                  "IsTruncated": {
+                    "$absent": true
+                  },
+                  "Parts": {
+                    "$absent": true
+                  }
                 }
               }
             }
@@ -7637,7 +7675,8 @@
               "Bucket": "${res.b1.name}",
               "Key": "mymultipart3",
               "ObjectAttributes": [
-                "Checksum"
+                "Checksum",
+                "ObjectParts"
               ]
             },
             "expect": {
@@ -7645,6 +7684,24 @@
                 "Checksum": {
                   "ChecksumType": "FULL_OBJECT",
                   "ChecksumCRC64NVME": "i+6LR0y3eFo="
+                },
+                "ObjectParts": {
+                  "TotalPartsCount": 3,
+                  "PartNumberMarker": {
+                    "$absent": true
+                  },
+                  "NextPartNumberMarker": {
+                    "$absent": true
+                  },
+                  "MaxParts": {
+                    "$absent": true
+                  },
+                  "IsTruncated": {
+                    "$absent": true
+                  },
+                  "Parts": {
+                    "$absent": true
+                  }
                 }
               }
             }
@@ -9715,7 +9772,22 @@
                 },
                 "ObjectSize": 15728640,
                 "ObjectParts": {
-                  "TotalPartsCount": 3
+                  "TotalPartsCount": 3,
+                  "PartNumberMarker": {
+                    "$absent": true
+                  },
+                  "NextPartNumberMarker": {
+                    "$absent": true
+                  },
+                  "MaxParts": {
+                    "$absent": true
+                  },
+                  "IsTruncated": {
+                    "$absent": true
+                  },
+                  "Parts": {
+                    "$absent": true
+                  }
                 }
               }
             }

@@ -298,7 +298,9 @@
             "name": "CreateMultipartUpload",
             "params": {
               "Bucket": "${res.b1.name}",
-              "Key": "multipart"
+              "Key": "multipart",
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumType": "COMPOSITE"
             },
             "capture": {
               "uploadId": "UploadId"
@@ -315,7 +317,9 @@
               "PartNumber": 1,
               "Body": {
                 "$data": "p1"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p1.sha256B64}"
             },
             "capture": {
               "etag1": "ETag"
@@ -332,7 +336,9 @@
               "PartNumber": 2,
               "Body": {
                 "$data": "p2"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p2.sha256B64}"
             },
             "capture": {
               "etag2": "ETag"
@@ -349,7 +355,9 @@
               "PartNumber": 3,
               "Body": {
                 "$data": "p3"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p3.sha256B64}"
             },
             "capture": {
               "etag3": "ETag"
@@ -366,7 +374,9 @@
               "PartNumber": 4,
               "Body": {
                 "$data": "p4"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p4.sha256B64}"
             },
             "capture": {
               "etag4": "ETag"
@@ -383,7 +393,9 @@
               "PartNumber": 5,
               "Body": {
                 "$data": "p5"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p5.sha256B64}"
             },
             "capture": {
               "etag5": "ETag"
@@ -400,7 +412,9 @@
               "PartNumber": 6,
               "Body": {
                 "$data": "p6"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p6.sha256B64}"
             },
             "capture": {
               "etag6": "ETag"
@@ -418,27 +432,33 @@
                 "Parts": [
                   {
                     "PartNumber": 1,
-                    "ETag": "${cap.etag1}"
+                    "ETag": "${cap.etag1}",
+                    "ChecksumSHA256": "${data.p1.sha256B64}"
                   },
                   {
                     "PartNumber": 2,
-                    "ETag": "${cap.etag2}"
+                    "ETag": "${cap.etag2}",
+                    "ChecksumSHA256": "${data.p2.sha256B64}"
                   },
                   {
                     "PartNumber": 3,
-                    "ETag": "${cap.etag3}"
+                    "ETag": "${cap.etag3}",
+                    "ChecksumSHA256": "${data.p3.sha256B64}"
                   },
                   {
                     "PartNumber": 4,
-                    "ETag": "${cap.etag4}"
+                    "ETag": "${cap.etag4}",
+                    "ChecksumSHA256": "${data.p4.sha256B64}"
                   },
                   {
                     "PartNumber": 5,
-                    "ETag": "${cap.etag5}"
+                    "ETag": "${cap.etag5}",
+                    "ChecksumSHA256": "${data.p5.sha256B64}"
                   },
                   {
                     "PartNumber": 6,
-                    "ETag": "${cap.etag6}"
+                    "ETag": "${cap.etag6}",
+                    "ChecksumSHA256": "${data.p6.sha256B64}"
                   }
                 ]
               }
@@ -468,49 +488,40 @@
                 "StorageClass": "STANDARD",
                 "ObjectParts": {
                   "TotalPartsCount": 6,
+                  "PartNumberMarker": 0,
+                  "MaxParts": 1000,
+                  "NextPartNumberMarker": 6,
                   "IsTruncated": false,
                   "Parts": [
                     {
                       "PartNumber": 1,
                       "Size": 5242880,
-                      "ChecksumSHA256": {
-                        "$absent": true
-                      }
+                      "ChecksumSHA256": "${data.p1.sha256B64}"
                     },
                     {
                       "PartNumber": 2,
                       "Size": 5242880,
-                      "ChecksumSHA256": {
-                        "$absent": true
-                      }
+                      "ChecksumSHA256": "${data.p2.sha256B64}"
                     },
                     {
                       "PartNumber": 3,
                       "Size": 5242880,
-                      "ChecksumSHA256": {
-                        "$absent": true
-                      }
+                      "ChecksumSHA256": "${data.p3.sha256B64}"
                     },
                     {
                       "PartNumber": 4,
                       "Size": 5242880,
-                      "ChecksumSHA256": {
-                        "$absent": true
-                      }
+                      "ChecksumSHA256": "${data.p4.sha256B64}"
                     },
                     {
                       "PartNumber": 5,
                       "Size": 5242880,
-                      "ChecksumSHA256": {
-                        "$absent": true
-                      }
+                      "ChecksumSHA256": "${data.p5.sha256B64}"
                     },
                     {
                       "PartNumber": 6,
                       "Size": 5242880,
-                      "ChecksumSHA256": {
-                        "$absent": true
-                      }
+                      "ChecksumSHA256": "${data.p6.sha256B64}"
                     }
                   ]
                 }
@@ -595,7 +606,9 @@
             "name": "CreateMultipartUpload",
             "params": {
               "Bucket": "${res.b1.name}",
-              "Key": "multipart"
+              "Key": "multipart",
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumType": "COMPOSITE"
             },
             "capture": {
               "uploadId": "UploadId"
@@ -612,7 +625,9 @@
               "PartNumber": 1,
               "Body": {
                 "$data": "p1"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p1.sha256B64}"
             },
             "capture": {
               "etag1": "ETag"
@@ -629,7 +644,9 @@
               "PartNumber": 2,
               "Body": {
                 "$data": "p2"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p2.sha256B64}"
             },
             "capture": {
               "etag2": "ETag"
@@ -646,7 +663,9 @@
               "PartNumber": 3,
               "Body": {
                 "$data": "p3"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p3.sha256B64}"
             },
             "capture": {
               "etag3": "ETag"
@@ -663,7 +682,9 @@
               "PartNumber": 4,
               "Body": {
                 "$data": "p4"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p4.sha256B64}"
             },
             "capture": {
               "etag4": "ETag"
@@ -680,7 +701,9 @@
               "PartNumber": 5,
               "Body": {
                 "$data": "p5"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p5.sha256B64}"
             },
             "capture": {
               "etag5": "ETag"
@@ -697,7 +720,9 @@
               "PartNumber": 6,
               "Body": {
                 "$data": "p6"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.p6.sha256B64}"
             },
             "capture": {
               "etag6": "ETag"
@@ -715,27 +740,33 @@
                 "Parts": [
                   {
                     "PartNumber": 1,
-                    "ETag": "${cap.etag1}"
+                    "ETag": "${cap.etag1}",
+                    "ChecksumSHA256": "${data.p1.sha256B64}"
                   },
                   {
                     "PartNumber": 2,
-                    "ETag": "${cap.etag2}"
+                    "ETag": "${cap.etag2}",
+                    "ChecksumSHA256": "${data.p2.sha256B64}"
                   },
                   {
                     "PartNumber": 3,
-                    "ETag": "${cap.etag3}"
+                    "ETag": "${cap.etag3}",
+                    "ChecksumSHA256": "${data.p3.sha256B64}"
                   },
                   {
                     "PartNumber": 4,
-                    "ETag": "${cap.etag4}"
+                    "ETag": "${cap.etag4}",
+                    "ChecksumSHA256": "${data.p4.sha256B64}"
                   },
                   {
                     "PartNumber": 5,
-                    "ETag": "${cap.etag5}"
+                    "ETag": "${cap.etag5}",
+                    "ChecksumSHA256": "${data.p5.sha256B64}"
                   },
                   {
                     "PartNumber": 6,
-                    "ETag": "${cap.etag6}"
+                    "ETag": "${cap.etag6}",
+                    "ChecksumSHA256": "${data.p6.sha256B64}"
                   }
                 ]
               }
@@ -767,17 +798,15 @@
                 "StorageClass": "STANDARD",
                 "ObjectParts": {
                   "TotalPartsCount": 6,
-                  "MaxParts": 1,
                   "PartNumberMarker": 3,
-                  "IsTruncated": true,
+                  "MaxParts": 1,
                   "NextPartNumberMarker": 4,
+                  "IsTruncated": true,
                   "Parts": [
                     {
                       "PartNumber": 4,
                       "Size": 5242880,
-                      "ChecksumSHA256": {
-                        "$absent": true
-                      }
+                      "ChecksumSHA256": "${data.p4.sha256B64}"
                     }
                   ]
                 }
@@ -810,23 +839,20 @@
                 "StorageClass": "STANDARD",
                 "ObjectParts": {
                   "TotalPartsCount": 6,
-                  "MaxParts": 10,
                   "PartNumberMarker": 4,
+                  "MaxParts": 10,
+                  "NextPartNumberMarker": 6,
                   "IsTruncated": false,
                   "Parts": [
                     {
                       "PartNumber": 5,
                       "Size": 5242880,
-                      "ChecksumSHA256": {
-                        "$absent": true
-                      }
+                      "ChecksumSHA256": "${data.p5.sha256B64}"
                     },
                     {
                       "PartNumber": 6,
                       "Size": 5242880,
-                      "ChecksumSHA256": {
-                        "$absent": true
-                      }
+                      "ChecksumSHA256": "${data.p6.sha256B64}"
                     }
                   ]
                 }
@@ -869,7 +895,9 @@
             "name": "CreateMultipartUpload",
             "params": {
               "Bucket": "${res.b1.name}",
-              "Key": "multipart"
+              "Key": "multipart",
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumType": "COMPOSITE"
             },
             "capture": {
               "uploadId": "UploadId"
@@ -886,7 +914,9 @@
               "PartNumber": 1,
               "Body": {
                 "$data": "obj"
-              }
+              },
+              "ChecksumAlgorithm": "SHA256",
+              "ChecksumSHA256": "${data.obj.sha256B64}"
             },
             "capture": {
               "etag1": "ETag"
@@ -904,7 +934,8 @@
                 "Parts": [
                   {
                     "PartNumber": 1,
-                    "ETag": "${cap.etag1}"
+                    "ETag": "${cap.etag1}",
+                    "ChecksumSHA256": "${data.obj.sha256B64}"
                   }
                 ]
               }
@@ -934,13 +965,15 @@
                 "StorageClass": "STANDARD",
                 "ObjectParts": {
                   "TotalPartsCount": 1,
+                  "PartNumberMarker": 0,
+                  "MaxParts": 1000,
+                  "NextPartNumberMarker": 1,
+                  "IsTruncated": false,
                   "Parts": [
                     {
                       "PartNumber": 1,
                       "Size": 5242880,
-                      "ChecksumSHA256": {
-                        "$absent": true
-                      }
+                      "ChecksumSHA256": "${data.obj.sha256B64}"
                     }
                   ]
                 }
